@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Creator · ProLoveHub</title>
+<meta name="description" content="View a creator's profile, perks, and members-only live on ProLoveHub." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================================================
+   RESET
+============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  background: #0A0A0F;
+  color: #ffffff;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+img { max-width: 100%; display: block; }
+ul { list-style: none; }
+
+/* ============================================================
+   VARIABLES
+============================================================ */
+:root {
+  --pink: #FE2C55;
+  --cyan: #25F4EE;
+  --dark: #0A0A0F;
+  --card: #14141C;
+  --border: #1F1F2A;
+  --muted: #9CA3AF;
+  --dim: #6B7280;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --container: 1080px;
+}
+
+/* ============================================================
+   UTILITIES
+============================================================ */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.grad-text {
+  background: linear-gradient(90deg, var(--pink), var(--cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.dot-white { background: #ffffff; }
+.pulse { animation: pulseLive 1.5s ease-in-out infinite; }
+@keyframes pulseLive {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.5; transform: scale(1.3); }
+}
+
+/* ============================================================
+   BUTTONS
+============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  line-height: 1;
+}
+.btn-primary {
+  background: linear-gradient(90deg, var(--pink), var(--cyan));
+  color: #ffffff;
+  font-weight: 700;
+}
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-ghost {
+  border: 1px solid var(--border);
+  background: rgba(20, 20, 28, 0.6);
+  color: #ffffff;
+}
+.btn-ghost:hover { background: var(--card); }
+.btn-lg { padding: 14px 24px; font-size: 15px; }
+.btn-block { width: 100%; }
+
+.btn-member {
+  background: rgba(37, 244, 238, 0.12);
+  border: 1px solid rgba(37, 244, 238, 0.5);
+  color: var(--cyan);
+  font-weight: 700;
+  cursor: default;
+}
+.btn-member:hover { transform: none; opacity: 1; }
+
+/* ============================================================
+   NAVBAR
+============================================================ */
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 50;
+  transition: all 0.3s ease;
+  background: transparent;
+}
+.navbar.scrolled {
+  background: rgba(10, 10, 15, 0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-mark {
+  position: relative;
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--pink), var(--cyan));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 14px;
+  color: #0A0A0F;
+}
+.logo-dot {
+  position: absolute;
+  top: -2px; right: -2px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--pink);
+  animation: pulseLive 1.5s ease-in-out infinite;
+}
+.logo-text { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; }
+.nav-links { display: none; gap: 32px; font-size: 14px; color: #D1D5DB; }
+.nav-links a { transition: color 0.2s; }
+.nav-links a:hover { color: #ffffff; }
+.nav-actions { display: flex; align-items: center; gap: 12px; }
+.nav-user {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  font-size: 13px;
+}
+.nav-user-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cyan);
+}
+@media (min-width: 768px) {
+  .nav-links { display: flex; }
+  .nav-user  { display: inline-flex; }
+}
+
+/* ============================================================
+   HERO / COVER
+============================================================ */
+.creator-hero {
+  position: relative;
+  padding: 96px 0 48px;
+  overflow: hidden;
+}
+.cover {
+  position: relative;
+  height: 220px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.cover-bg {
+  position: absolute;
+  inset: 0;
+  background-size: 200% 200%;
+  animation: coverMove 10s ease-in-out infinite;
+}
+@keyframes coverMove {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+.cover-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10,10,15,0.9), rgba(10,10,15,0.2));
+}
+
+/* Profile bar */
+.profile-bar {
+  position: relative;
+  margin-top: -72px;
+  padding: 0 24px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  z-index: 2;
+}
+.profile-id {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+}
+.profile-avatar {
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  border: 4px solid var(--dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.9);
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 2px var(--border);
+}
+.profile-live-badge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--pink);
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  border: 2px solid var(--dark);
+}
+.profile-meta {
+  padding-bottom: 12px;
+}
+.profile-name {
+  font-size: clamp(24px, 4vw, 32px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.verified {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink), var(--cyan));
+  font-size: 11px;
+  color: #0A0A0F;
+  font-weight: 900;
+}
+.profile-handle {
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.profile-tags {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.tag {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  font-size: 11px;
+  color: #D1D5DB;
+}
+
+/* Join button area */
+.profile-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   STATS ROW
+============================================================ */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 32px;
+}
+.stat-card {
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--card);
+  text-align: center;
+}
+.stat-num {
+  font-size: 22px;
+  font-weight: 800;
+  background: linear-gradient(90deg, var(--pink), var(--cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.stat-lbl {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* ============================================================
+   SECTIONS
+============================================================ */
+.section {
+  padding: 32px 0;
+}
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title .icon {
+  font-size: 18px;
+}
+
+/* Two column layout */
+.split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+@media (min-width: 900px) {
+  .split { grid-template-columns: 1fr 1.4fr; }
+}
+
+/* About card */
+.about-card {
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--card);
+}
+.about-bio {
+  font-size: 15px;
+  color: #D1D5DB;
+  line-height: 1.7;
+  margin-bottom: 20px;
+  white-space: pre-line;
+}
+.about-schedule {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.schedule-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  gap: 12px;
+}
+.schedule-row .day {
+  color: var(--muted);
+}
+.schedule-row .time {
+  color: #ffffff;
+  font-weight: 600;
+}
+.schedule-row .sub-only {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(254, 44, 85, 0.15);
+  border: 1px solid rgba(254, 44, 85, 0.4);
+  color: var(--pink);
+  font-weight: 700;
+}
+
+/* Live preview */
+.live-preview {
+  position: relative;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--card);
+  padding: 16px;
+}
+.live-stage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background-size: 200% 200%;
+  animation: coverMove 8s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.live-stage-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.2));
+  pointer-events: none;
+}
+.live-top-bar {
+  position: absolute;
+  top: 12px; left: 12px; right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 2;
+}
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: var(--pink);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+.view-badge {
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  font-size: 11px;
+  font-weight: 600;
+}
+.live-center {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 24px;
+}
+.live-emoji {
+  font-size: 64px;
+  line-height: 1;
+  filter: drop-shadow(0 0 30px rgba(254, 44, 85, 0.6));
+  margin-bottom: 8px;
+}
+.live-label {
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: #D1D5DB;
+}
+
+/* Locked overlay */
+.locked-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 15, 0.85);
+  backdrop-filter: blur(6px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  z-index: 3;
+}
+.locked-overlay.show { display: flex; }
+.lock-icon-lg {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+.lock-title-lg {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.lock-desc-lg {
+  font-size: 12px;
+  color: var(--muted);
+  max-width: 260px;
+  margin: 0 auto 14px;
+  line-height: 1.5;
+}
+
+/* Chat preview */
+.chat-preview {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.chat-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+.chip {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 700;
+}
+.chip-pink { background: var(--pink); color: #ffffff; }
+.chip-cyan { background: var(--cyan); color: #0A0A0F; }
+.chat-user { font-weight: 600; }
+.chat-user.cyan { color: var(--cyan); }
+.chat-user.pink { color: var(--pink); }
+.chat-msg { color: #D1D5DB; }
+.chat-blurred { filter: blur(3px); pointer-events: none; user-select: none; }
+
+/* ============================================================
+   PERKS GRID
+============================================================ */
+.perks-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 640px) {
+  .perks-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 900px) {
+  .perks-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.perk {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--card);
+  transition: all 0.25s ease;
+}
+.perk:hover {
+  border-color: rgba(37, 244, 238, 0.4);
+  transform: translateY(-2px);
+}
+.perk-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(254,44,85,0.15), rgba(37,244,238,0.15));
+  border: 1px solid var(--border);
+}
+.perk-body { min-width: 0; }
+.perk-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+.perk-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* ============================================================
+   MEMBERSHIP CARD (bottom CTA)
+============================================================ */
+.membership-card {
+  position: relative;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  background: linear-gradient(135deg, var(--card), var(--dark), var(--card));
+  padding: 32px 24px;
+  overflow: hidden;
+  text-align: center;
+}
+@media (min-width: 640px) {
+  .membership-card { padding: 40px 32px; }
+}
+.mem-blob {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+}
+.mem-blob-pink { top: -80px; left: -80px; background: rgba(254, 44, 85, 0.35); }
+.mem-blob-cyan { bottom: -80px; right: -80px; background: rgba(37, 244, 238, 0.35); }
+.mem-content { position: relative; z-index: 1; }
+.mem-title {
+  font-size: clamp(22px, 3.5vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.mem-sub {
+  font-size: 14px;
+  color: var(--muted);
+  max-width: 460px;
+  margin: 0 auto 20px;
+  line-height: 1.6;
+}
+.mem-price-tag {
+  display: inline-block;
+  margin-bottom: 20px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(37, 244, 238, 0.4);
+  background: rgba(37, 244, 238, 0.08);
+  color: var(--cyan);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+/* ============================================================
+   FOOTER
+============================================================ */
+.footer {
+  margin-top: 64px;
+  border-top: 1px solid var(--border);
+  padding: 32px 0;
+}
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--dim);
+  text-align: center;
+}
+@media (min-width: 640px) {
+  .footer-inner { flex-direction: row; text-align: left; }
+}
+.footer-links { display: flex; gap: 16px; }
+.footer-links a { transition: color 0.2s; }
+.footer-links a:hover { color: #ffffff; }
+
+/* ============================================================
+   TOAST
+============================================================ */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(120%);
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  background: var(--card);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.success { border-color: rgba(37,244,238,0.5); color: var(--cyan); }
+.toast.error   { border-color: rgba(254,44,85,0.5); color: var(--pink); }
+
+/* Loading */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  color: var(--muted);
+  font-size: 14px;
+}
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top-color: var(--cyan);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-right: 10px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+
+<body>
+
+<!-- ============================================================
+     NAVBAR
+============================================================ -->
+<header class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-mark">P<span class="logo-dot"></span></div>
+      <span class="logo-text">Pro<span class="grad-text">LoveHub</span></span>
+    </a>
+
+    <nav class="nav-links">
+      <a href="index.html#creators">Creators</a>
+      <a href="index.html#perks">Perks</a>
+      <a href="index.html#how">How it works</a>
+      <a href="live.html">Live Now</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-primary" style="padding:8px 16px; font-size:13px;" id="navCta">Join Free</a>
+      <div class="nav-user" id="navUser" style="display:none;">
+        <span class="nav-user-dot"></span>
+        <span id="navUserName">user</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     LOADING STATE
+============================================================ -->
+<div class="loading" id="loading">
+  <span class="spinner"></span> Loading creator…
+</div>
+
+<!-- ============================================================
+     MAIN CONTENT
+============================================================ -->
+<main id="content" style="display:none;">
+
+  <!-- Hero / cover -->
+  <section class="creator-hero">
+    <div class="container">
+      <div class="cover">
+        <div class="cover-bg" id="coverBg"></div>
+        <div class="cover-shade"></div>
+      </div>
+
+      <div class="profile-bar">
+        <div class="profile-id">
+          <div class="profile-avatar" id="profileAvatar">
+            LR
+            <span class="profile-live-badge" id="avatarLiveBadge" style="display:none;">
+              <span class="dot dot-white pulse"></span>LIVE
+            </span>
+          </div>
+          <div class="profile-meta">
+            <h1 class="profile-name">
+              <span id="profileName">Loading…</span>
+              <span class="verified" title="Verified creator">✓</span>
+            </h1>
+            <div class="profile-handle" id="profileHandle">@handle</div>
+            <div class="profile-tags" id="profileTags"></div>
+          </div>
+        </div>
+
+        <div class="profile-actions">
+          <button class="btn btn-lg btn-ghost" onclick="toast('Share link copied!', 'success')">🔗 Share</button>
+          <button class="btn btn-lg btn-primary" id="joinBtn" onclick="toggleMembership()">
+            ⭐ Join Free
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-num" id="statMembers">0</div>
+          <div class="stat-lbl">Members</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="statLive">0</div>
+          <div class="stat-lbl">Live now</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="statStreams">0</div>
+          <div class="stat-lbl">Streams</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Two-column body -->
+  <section class="section">
+    <div class="container">
+      <div class="split">
+
+        <!-- About -->
+        <div>
+          <h2 class="section-title"><span class="icon">👤</span> About Me</h2>
+          <div class="about-card">
+            <p class="about-bio" id="aboutBio"></p>
+            <div class="about-schedule" id="aboutSchedule"></div>
+          </div>
+        </div>
+
+        <!-- Live preview -->
+        <div>
+          <h2 class="section-title"><span class="icon">🔴</span> Live Preview</h2>
+          <div class="live-preview">
+            <div class="live-stage" id="liveStage">
+              <div class="live-stage-overlay"></div>
+
+              <div class="live-top-bar">
+                <span class="live-badge" id="liveBadge">
+                  <span class="dot dot-white pulse"></span> LIVE
+                </span>
+                <span class="view-badge" id="viewBadge">👁 0</span>
+              </div>
+
+              <div class="live-center">
+                <div class="live-emoji">🎭</div>
+                <div class="live-label">3D AVATAR LIVE</div>
+              </div>
+
+              <!-- Locked overlay -->
+              <div class="locked-overlay" id="lockedOverlay">
+                <div>
+                  <div class="lock-icon-lg">🔒</div>
+                  <div class="lock-title-lg">Members only</div>
+                  <p class="lock-desc-lg" id="lockDesc">
+                    Join free to unlock this room and every members-only live.
+                  </p>
+                  <button class="btn btn-primary" onclick="toggleMembership()">⭐ Join Free</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Chat -->
+            <div class="chat-preview" id="chatPreview">
+              <div class="chat-line">
+                <span class="chip chip-pink">🏅</span>
+                <span class="chat-user cyan">mia_22</span>
+                <span class="chat-msg">this avatar 😭</span>
+              </div>
+              <div class="chat-line">
+                <span class="chip chip-cyan">🏅</span>
+                <span class="chat-user pink">dvn</span>
+                <span class="chat-msg">joined for free 🔥</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Perks -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title"><span class="icon">✨</span> What members unlock</h2>
+      <div class="perks-grid" id="perksGrid"></div>
+    </div>
+  </section>
+
+  <!-- Membership CTA -->
+  <section class="section">
+    <div class="container">
+      <div class="membership-card">
+        <div class="mem-blob mem-blob-pink"></div>
+        <div class="mem-blob mem-blob-cyan"></div>
+
+        <div class="mem-content">
+          <span class="mem-price-tag" id="memPriceTag">100% FREE</span>
+          <h2 class="mem-title" id="memTitle">
+            Join <span class="grad-text" id="memCreatorName">this creator</span>
+          </h2>
+          <p class="mem-sub" id="memSub">
+            Get instant access to members-only live, custom emotes, private chat,
+            and a badge next to your name.
+          </p>
+          <button class="btn btn-primary btn-lg" id="memJoinBtn" onclick="toggleMembership()">
+            ⭐ Join Free
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div>© <span id="year"></span> ProLoveHub. All rights reserved.</div>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   ProLoveHub — Creator Page
+============================================================ */
+
+// ---- Creator database (demo) ----
+const CREATORS = {
+  lunaflows: {
+    name: "Luna Rivers",
+    handle: "lunaflows",
+    initials: "LR",
+    gradient: "linear-gradient(135deg, #FE2C55, #A855F7)",
+    tags: ["Music", "Sunset sessions", "Lo-fi"],
+    bio: "Hey! I'm Luna 🌙\nI stream live sunset sessions and lo-fi sets from my studio by the sea. Members-only live every Tuesday — I play requests, share unreleased demos, and we just hang out.\nCome build a cozy corner of the internet with me.",
+    schedule: [
+      { day: "Mon", time: "8:00 PM", subOnly: false },
+      { day: "Tue", time: "9:00 PM", subOnly: true },
+      { day: "Thu", time: "8:30 PM", subOnly: false },
+      { day: "Sat", time: "10:00 PM", subOnly: true },
+    ],
+    stats: { members: "12.4K", live: "12.8K", streams: "182" },
+    isLive: true,
+    isSubOnly: false,
+  },
+  kaijudances: {
+    name: "Kai Nakamura",
+    handle: "kaijudances",
+    initials: "KN",
+    gradient: "linear-gradient(135deg, #25F4EE, #3B82F6)",
+    tags: ["Dance", "Choreo", "Freestyle"],
+    bio: "Kai here 🕺\nChoreographer and dancer. I break down routines step-by-step, host private freestyle rooms for members, and answer technique questions live.\nTrained in hip-hop, breaking, and house.",
+    schedule: [
+      { day: "Tue", time: "7:00 PM", subOnly: false },
+      { day: "Wed", time: "9:00 PM", subOnly: true },
+      { day: "Fri", time: "8:00 PM", subOnly: false },
+      { day: "Sun", time: "6:00 PM", subOnly: true },
+    ],
+    stats: { members: "8.1K", live: "8.2K", streams: "126" },
+    isLive: true,
+    isSubOnly: true,
+  },
+  pixelwithpia: {
+    name: "Pia Solberg",
+    handle: "pixelwithpia",
+    initials: "PS",
+    gradient: "linear-gradient(135deg, #A855F7, #FE2C55)",
+    tags: ["Gaming", "Art", "Cozy"],
+    bio: "Cozy game nights & art streams 🎨\nMembers vote on the game and pick the art prompt. We build worlds together, chill, and I answer questions about art, code, and creativity.\nCurrently playing: Hollow Knight, Stardew.",
+    schedule: [
+      { day: "Mon", time: "9:00 PM", subOnly: false },
+      { day: "Wed", time: "9:00 PM", subOnly: false },
+      { day: "Fri", time: "10:00 PM", subOnly: true },
+    ],
+    stats: { members: "21.7K", live: "0", streams: "304" },
+    isLive: false,
+    isSubOnly: true,
+  },
+  chefmateo: {
+    name: "Mateo Alvarez",
+    handle: "chefmateo",
+    initials: "MA",
+    gradient: "linear-gradient(135deg, #F97316, #FE2C55)",
+    tags: ["Food", "Late-night", "Recipes"],
+    bio: "Chef by trade, kitchen-hang enthusiast 🍳\nLate-night cooking streams from my tiny apartment kitchen. Members get recipe cards, ingredient lists, and a private Q&A before each stream.\nBring your questions, I'll bring the garlic.",
+    schedule: [
+      { day: "Tue", time: "11:00 PM", subOnly: false },
+      { day: "Thu", time: "11:30 PM", subOnly: true },
+      { day: "Sat", time: "10:00 PM", subOnly: false },
+    ],
+    stats: { members: "5.9K", live: "4.2K", streams: "89" },
+    isLive: true,
+    isSubOnly: false,
+  },
+};
+
+const PERKS = [
+  { icon: "🏅", title: "Member Badge",        desc: "A glowing icon next to your name in every chat." },
+  { icon: "😀", title: "Custom Emotes",       desc: "Creator-made emotes only members can use." },
+  { icon: "💬", title: "Members-Only Chat",   desc: "Private chat mode — just you and the crew." },
+  { icon: "🔴", title: "Members-Only Live",   desc: "Private streams hidden from the public feed." },
+  { icon: "🎭", title: "3D Avatar Streams",   desc: "Watch the creator perform as their animated avatar." },
+  { icon: "🎁", title: "Monthly Drops",       desc: "Exclusive clips, playlists, and behind-the-scenes." },
+];
+
+// ---- Helpers ----
+function getHandleFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("handle") || "lunaflows";
+}
+
+function getUser() {
+  try {
+    return JSON.parse(localStorage.getItem("plh_user") || "null");
+  } catch (_) {
+    return null;
+  }
+}
+
+function getMemberships() {
+  try {
+    return JSON.parse(localStorage.getItem("plh_memberships") || "{}");
+  } catch (_) {
+    return {};
+  }
+}
+
+function saveMemberships(m) {
+  localStorage.setItem("plh_memberships", JSON.stringify(m));
+}
+
+function isMember(handle) {
+  const m = getMemberships();
+  return !!m[handle];
+}
+
+// ---- Toast ----
+let toastTimer;
+function toast(msg, type = "success") {
+  const el = document.getElementById("toast");
+  el.textContent = (type === "success" ? "✓ " : "⚠ ") + msg;
+  el.className = "toast show " + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 2400);
+}
+
+// ---- Render ----
+const handle = getHandleFromUrl();
+const creator = CREATORS[handle] || CREATORS.lunaflows;
+
+function renderCreator() {
+  document.title = `${creator.name} · ProLoveHub`;
+
+  // Cover
+  document.getElementById("coverBg").style.background = creator.gradient;
+
+  // Avatar
+  document.getElementById("profileAvatar").firstChild.textContent = creator.initials;
+  const liveBadge = document.getElementById("avatarLiveBadge");
+  liveBadge.style.display = creator.isLive ? "inline-flex" : "none";
+
+  // Meta
+  document.getElementById("profileName").textContent = creator.name;
+  document.getElementById("profileHandle").textContent = "@" + creator.handle;
+
+  // Tags
+  document.getElementById("profileTags").innerHTML = creator.tags
+    .map(t => `<span class="tag">${t}</span>`)
+    .join("");
+
+  // Stats
+  document.getElementById("statMembers").textContent = creator.stats.members;
+  document.getElementById("statLive").textContent    = creator.stats.live;
+  document.getElementById("statStreams").textContent = creator.stats.streams;
+
+  // About
+  document.getElementById("aboutBio").textContent = creator.bio;
+  document.getElementById("aboutSchedule").innerHTML = creator.schedule
+    .map(s => `
+      <div class="schedule-row">
+        <span class="day">${s.day}</span>
+        <span class="time">${s.time}</span>
+        ${s.subOnly ? '<span class="sub-only">MEMBERS ONLY</span>' : ''}
+      </div>
+    `).join("");
+
+  // Live preview
+  document.getElementById("liveStage").style.background = creator.gradient;
+  document.getElementById("viewBadge").textContent = "👁 " + creator.stats.live;
+
+  const liveBadgeEl = document.getElementById("liveBadge");
+  if (creator.isLive) {
+    liveBadgeEl.innerHTML = '<span class="dot dot-white pulse"></span> LIVE';
+    liveBadgeEl.style.display = "inline-flex";
+  } else {
+    liveBadgeEl.innerHTML = "OFFLINE";
+    liveBadgeEl.style.background = "rgba(255,255,255,0.1)";
+  }
+
+  // Perks
+  document.getElementById("perksGrid").innerHTML = PERKS.map(p => `
+    <div class="perk">
+      <div class="perk-icon">${p.icon}</div>
+      <div class="perk-body">
+        <div class="perk-title">${p.title}</div>
+        <div class="perk-desc">${p.desc}</div>
+      </div>
+    </div>
+  `).join("");
+
+  // Memory CTA name
+  document.getElementById("memCreatorName").textContent = creator.name;
+
+  // Lock state (depends on membership)
+  updateUIForMembership();
+}
+
+function updateUIForMembership() {
+  const member = isMember(handle);
+  const lockedOverlay = document.getElementById("lockedOverlay");
+  const chatPreview   = document.getElementById("chatPreview");
+  const joinBtn       = document.getElementById("joinBtn");
+  const memJoinBtn    = document.getElementById("memJoinBtn");
+  const memTitle      = document.getElementById("memTitle");
+  const memSub        = document.getElementById("memSub");
+  const memPriceTag   = document.getElementById("memPriceTag");
+
+  if (member) {
+    // Unlocked
+    lockedOverlay.classList.remove("show");
+    chatPreview.classList.remove("chat-blurred");
+
+    joinBtn.textContent = "✓ Member";
+    joinBtn.classList.remove("btn-primary");
+    joinBtn.classList.add("btn-member");
+    joinBtn.setAttribute("onclick", "");
+
+    memTitle.innerHTML = `You're a member of <span class="grad-text">${creator.name}</span> 🎉`;
+    memSub.textContent = "You have full access to members-only live, private chat, badges, and every drop.";
+    memPriceTag.textContent = "MEMBER ✓";
+
+    memJoinBtn.textContent = "Leave community";
+    memJoinBtn.classList.remove("btn-primary");
+    memJoinBtn.classList.add("btn-ghost");
+  } else {
+    // Locked (only if stream is members-only)
+    if (creator.isSubOnly) {
+      lockedOverlay.classList.add("show");
+      chatPreview.classList.add("chat-blurred");
+    } else {
+      lockedOverlay.classList.remove("show");
+      chatPreview.classList.remove("chat-blurred");
+    }
+
+    joinBtn.textContent = "⭐ Join Free";
+    joinBtn.classList.add("btn-primary");
+    joinBtn.classList.remove("btn-member");
+    joinBtn.setAttribute("onclick", "toggleMembership()");
+
+    memTitle.innerHTML = `Join <span class="grad-text">${creator.name}</span>`;
+    memSub.textContent = "Get instant access to members-only live, custom emotes, private chat, and a badge next to your name.";
+    memPriceTag.textContent = "100% FREE";
+
+    memJoinBtn.textContent = "⭐ Join Free";
+    memJoinBtn.classList.add("btn-primary");
+    memJoinBtn.classList.remove("btn-ghost");
+  }
+}
+
+function toggleMembership() {
+  const user = getUser();
+  if (!user) {
+    toast("Please log in first", "error");
+    setTimeout(() => { window.location.href = "login.html"; }, 900);
+    return;
+  }
+
+  const memberships = getMemberships();
+  if (memberships[handle]) {
+    delete memberships[handle];
+    saveMemberships(memberships);
+    toast(`Left ${creator.name}'s community`, "success");
+  } else {
+    memberships[handle] = {
+      joinedAt: new Date().toISOString(),
+      creatorName: creator.name,
+      handle,
+    };
+    saveMemberships(memberships);
+    toast(`Joined ${creator.name}! 🎉`, "success");
+  }
+  updateUIForMembership();
+}
+
+// ---- Nav state ----
+function renderNav() {
+  const user = getUser();
+  if (user) {
+    document.getElementById("navCta").style.display = "none";
+    document.getElementById("navUser").style.display = "inline-flex";
+    document.getElementById("navUserName").textContent = user.username;
+  }
+}
+
+// ---- Navbar scroll ----
+window.addEventListener("scroll", () => {
+  document.getElementById("navbar").classList.toggle("scrolled", window.scrollY > 20);
+});
+
+// ---- Footer year ----
+document.getElementById("year").textContent = new Date().getFullYear();
+
+// ---- Boot ----
+setTimeout(() => {
+  document.getElementById("loading").style.display = "none";
+  document.getElementById("content").style.display = "block";
+  renderCreator();
+  renderNav();
+}, 400);
+</script>
+
+</body>
+</html>
