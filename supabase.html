@@ -978,4 +978,157 @@ function saveCreds(url, key) {
 
 // ---- Status ----
 function showStatus(type, icon, html) {
- 
+  statusBox.className = "status-box show " + type;
+  statusIcon.textContent = icon;
+  statusText.innerHTML = html;
+}
+function hideStatus() {
+  statusBox.className = "status-box";
+}
+
+function showDetails(text) {
+  connDetails.textContent = text;
+  connDetails.classList.add("show");
+}
+function hideDetails() {
+  connDetails.classList.remove("show");
+}
+
+// ---- Validate ----
+function validateInputs() {
+  const url = supaUrl.value.trim();
+  const key = supaKey.value.trim();
+
+  if (!url) { toast("Project URL is required", "error"); return null; }
+  if (!/^https:\/\/[a-z0-9]+\.supabase\.co\/?$/i.test(url)) {
+    toast("URL looks wrong — should be https://xxx.supabase.co", "error");
+    return null;
+  }
+  if (!key) { toast("Anon key is required", "error"); return null; }
+  if (key.length < 100) {
+    toast("Anon key looks too short", "error");
+    return null;
+  }
+
+  return { url: url.replace(/\/$/, ""), key };
+}
+
+// ---- Save only ----
+function saveOnly() {
+  const creds = validateInputs();
+  if (!creds) return;
+
+  saveCreds(creds.url, creds.key);
+  showStatus("success", "✓", "Credentials saved. Other ProLoveHub pages will now use these.");
+  toast("Credentials saved");
+  nextSection.style.display = "block";
+}
+
+// ---- Test connection ----
+async function testConnection() {
+  const creds = validateInputs();
+  if (!creds) return;
+
+  hideDetails();
+  showStatus("info", "⏳", "Testing connection to Supabase…");
+  testBtn.disabled = true;
+  testBtn.textContent = "Testing…";
+
+  const t0 = performance.now();
+
+  try {
+    if (typeof supabase === "undefined") {
+      throw new Error("Supabase SDK failed to load. Check your internet connection.");
+    }
+
+    const client = supabase.createClient(creds.url, creds.key);
+
+    // Test 1: ping auth
+    const { error: authErr } = await client.auth.getSession();
+    if (authErr) throw new Error("Auth check failed: " + authErr.message);
+
+    // Test 2: read from creators table
+    const { data, error: dbErr, count } = await client
+      .from("creators")
+      .select("*", { count: "exact" })
+      .limit(10);
+
+    if (dbErr) {
+      if (dbErr.message.includes("does not exist") || dbErr.code === "42P01") {
+        throw new Error(
+          "Table 'creators' not found. Did you run the schema SQL in Step 2?"
+        );
+      }
+      if (dbErr.message.toLowerCase().includes("row-level security")) {
+        throw new Error(
+          "RLS policy blocking reads. Re-run the policy section of the schema SQL."
+        );
+      }
+      throw new Error("Database error: " + dbErr.message);
+    }
+
+    const elapsed = Math.round(performance.now() - t0);
+
+    // Save on success
+    saveCreds(creds.url, creds.key);
+
+    // Show success
+    showStatus(
+      "success",
+      "✓",
+      `<strong>Connection successful!</strong> Found <strong>${count || data.length}</strong> creators in your database. Round trip: ${elapsed}ms.`
+    );
+
+    // Show details
+    let details = "─── CONNECTION DETAILS ───\n";
+    details += `URL        ${creds.url}\n`;
+    details += `Project    ${creds.url.replace("https://", "").replace(".supabase.co", "")}\n`;
+    details += `Latency    ${elapsed}ms\n`;
+    details += `Creators   ${count || data.length}\n\n`;
+    details += "─── CREATORS ───\n";
+    (data || []).slice(0, 10).forEach(c => {
+      details += `• @${c.handle}  —  ${c.name}  ${c.is_live ? "[LIVE]" : ""}\n`;
+    });
+    showDetails(details);
+
+    // Reveal next steps
+    nextSection.style.display = "block";
+
+    toast("Connected successfully!");
+
+  } catch (err) {
+    console.error(err);
+    showStatus("error", "✕", "Connection failed: " + escapeHtml(err.message));
+    toast("Connection failed", "error");
+  } finally {
+    testBtn.disabled = false;
+    testBtn.textContent = "🔍 Test connection";
+  }
+}
+
+// ---- Clear ----
+function clearCreds() {
+  if (!confirm("Remove saved Supabase credentials?")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  supaUrl.value = "";
+  supaKey.value = "";
+  hideStatus();
+  hideDetails();
+  nextSection.style.display = "none";
+  toast("Credentials cleared");
+}
+
+// ---- Escape ----
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+// ---- Boot ----
+loadSaved();
+</script>
+
+</body>
+</html>
