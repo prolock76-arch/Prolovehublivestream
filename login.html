@@ -11,9 +11,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
 <style>
-/* ============================================================
-   RESET
-============================================================ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
 body{
@@ -26,13 +23,10 @@ a{color:inherit;text-decoration:none}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
 input{font-family:inherit}
 
-/* ============================================================
-   VARIABLES
-============================================================ */
 :root{
   --pink:#FE2C55;--cyan:#25F4EE;--dark:#0A0A0F;--card:#14141C;
   --border:#1F1F2A;--muted:#9CA3AF;--dim:#6B7280;--green:#22C55E;
-  --radius:12px;--radius-lg:16px;
+  --amber:#F59E0B;--radius:12px;--radius-lg:16px;
 }
 .grad-text{
   background:linear-gradient(90deg,var(--pink),var(--cyan));
@@ -42,15 +36,10 @@ input{font-family:inherit}
 .pulse{animation:pulseLive 1.5s ease-in-out infinite}
 @keyframes pulseLive{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
 
-/* ============================================================
-   LAYOUT
-============================================================ */
 .auth{display:grid;grid-template-columns:1fr;min-height:100vh}
 @media (min-width:1024px){.auth{grid-template-columns:1fr 1fr}}
 
-/* ============================================================
-   LEFT PANEL
-============================================================ */
+/* LEFT */
 .auth-brand{
   position:relative;display:none;overflow:hidden;padding:64px;
   background:
@@ -59,13 +48,8 @@ input{font-family:inherit}
     #0A0A0F;
   background-size:48px 48px,48px 48px,auto;
 }
-@media (min-width:1024px){
-  .auth-brand{display:flex;flex-direction:column;justify-content:space-between}
-}
-.brand-blob{
-  position:absolute;width:500px;height:500px;border-radius:50%;
-  filter:blur(120px);pointer-events:none;
-}
+@media (min-width:1024px){.auth-brand{display:flex;flex-direction:column;justify-content:space-between}}
+.brand-blob{position:absolute;width:500px;height:500px;border-radius:50%;filter:blur(120px);pointer-events:none}
 .brand-blob-pink{top:-160px;left:-160px;background:rgba(254,44,85,.25)}
 .brand-blob-cyan{bottom:-160px;right:-160px;background:rgba(37,244,238,.25)}
 .brand-content{position:relative;z-index:1;max-width:460px}
@@ -82,10 +66,7 @@ input{font-family:inherit}
   animation:pulseLive 1.5s ease-in-out infinite;
 }
 .brand-wordmark{font-size:20px;font-weight:800;letter-spacing:-.02em}
-.brand-headline{
-  font-size:44px;font-weight:900;line-height:1.1;
-  letter-spacing:-.03em;margin-bottom:20px;
-}
+.brand-headline{font-size:44px;font-weight:900;line-height:1.1;letter-spacing:-.03em;margin-bottom:20px}
 .brand-sub{font-size:16px;color:var(--muted);line-height:1.65;margin-bottom:40px}
 .brand-perks{display:flex;flex-direction:column;gap:14px}
 .brand-perk{display:flex;align-items:center;gap:14px;font-size:14px;color:#D1D5DB}
@@ -97,18 +78,10 @@ input{font-family:inherit}
 }
 .brand-foot{position:relative;z-index:1;font-size:12px;color:var(--dim)}
 
-/* ============================================================
-   RIGHT PANEL
-============================================================ */
-.auth-form-wrap{
-  display:flex;align-items:center;justify-content:center;
-  padding:40px 24px;background:#0A0A0F;
-}
+/* RIGHT */
+.auth-form-wrap{display:flex;align-items:center;justify-content:center;padding:40px 24px;background:#0A0A0F}
 .auth-form-box{width:100%;max-width:420px}
-.mobile-logo{
-  display:flex;align-items:center;gap:10px;
-  margin-bottom:32px;justify-content:center;
-}
+.mobile-logo{display:flex;align-items:center;gap:10px;margin-bottom:32px;justify-content:center}
 @media (min-width:1024px){.mobile-logo{display:none}}
 
 .auth-title{font-size:30px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
@@ -130,21 +103,14 @@ input{font-family:inherit}
 .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
 .form-label{font-size:13px;font-weight:500;color:#D1D5DB}
 .form-label .req{color:var(--pink)}
-
 .form-input{
   width:100%;padding:12px 14px;border-radius:var(--radius);
   border:1px solid var(--border);background:var(--card);color:#fff;
   font-size:14px;transition:all .2s;outline:none;
 }
 .form-input::placeholder{color:var(--dim)}
-.form-input:focus{
-  border-color:var(--cyan);
-  box-shadow:0 0 0 3px rgba(37,244,238,.12);
-}
-.form-input.invalid{
-  border-color:var(--pink);
-  box-shadow:0 0 0 3px rgba(254,44,85,.12);
-}
+.form-input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(37,244,238,.12)}
+.form-input.invalid{border-color:var(--pink);box-shadow:0 0 0 3px rgba(254,44,85,.12)}
 .form-error{font-size:12px;color:var(--pink);margin-top:2px;min-height:14px}
 
 .form-pass-wrap{position:relative}
@@ -165,10 +131,7 @@ input{font-family:inherit}
   border-radius:4px;border:1px solid var(--border);background:var(--card);
   cursor:pointer;position:relative;transition:all .2s;
 }
-.checkbox input:checked{
-  background:linear-gradient(135deg,var(--pink),var(--cyan));
-  border-color:transparent;
-}
+.checkbox input:checked{background:linear-gradient(135deg,var(--pink),var(--cyan));border-color:transparent}
 .checkbox input:checked::after{
   content:"";position:absolute;left:4px;top:1px;
   width:5px;height:9px;border:solid #0A0A0F;
@@ -202,6 +165,26 @@ input{font-family:inherit}
 .alert-error{background:rgba(254,44,85,.1);border:1px solid rgba(254,44,85,.3);color:#FF8099}
 .alert-success{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#86EFAC}
 .alert-info{background:rgba(37,244,238,.1);border:1px solid rgba(37,244,238,.3);color:var(--cyan)}
+.alert-warn{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:#FCD34D}
+.alert a{color:#fff;text-decoration:underline;font-weight:600}
+
+.resend-box{
+  margin-top:12px;padding:12px;border-radius:10px;
+  background:rgba(37,244,238,.06);
+  border:1px solid rgba(37,244,238,.25);
+  display:none;font-size:12px;color:#D1D5DB;
+  text-align:center;line-height:1.5;
+}
+.resend-box.show{display:block}
+.resend-btn{
+  margin-top:8px;padding:8px 16px;border-radius:8px;
+  background:rgba(37,244,238,.15);
+  border:1px solid rgba(37,244,238,.4);
+  color:var(--cyan);font-weight:700;font-size:12px;
+  transition:all .15s;
+}
+.resend-btn:hover:not(:disabled){background:rgba(37,244,238,.25)}
+.resend-btn:disabled{opacity:.5;cursor:not-allowed}
 
 .back-home{
   display:inline-flex;align-items:center;gap:6px;font-size:13px;
@@ -261,9 +244,6 @@ input{font-family:inherit}
 
 <div class="auth">
 
-  <!-- ============================================================
-       LEFT — BRAND
-  ============================================================ -->
   <aside class="auth-brand">
     <div class="brand-blob brand-blob-pink"></div>
     <div class="brand-blob brand-blob-cyan"></div>
@@ -286,22 +266,10 @@ input{font-family:inherit}
       </p>
 
       <div class="brand-perks">
-        <div class="brand-perk">
-          <div class="brand-perk-icon">🎭</div>
-          <span>Full-body 3D avatar streaming</span>
-        </div>
-        <div class="brand-perk">
-          <div class="brand-perk-icon">🏅</div>
-          <span>Member badges &amp; custom emotes</span>
-        </div>
-        <div class="brand-perk">
-          <div class="brand-perk-icon">💬</div>
-          <span>Members-only chat &amp; private live</span>
-        </div>
-        <div class="brand-perk">
-          <div class="brand-perk-icon">✨</div>
-          <span>Free forever — no card needed</span>
-        </div>
+        <div class="brand-perk"><div class="brand-perk-icon">🎭</div><span>Full-body 3D avatar streaming</span></div>
+        <div class="brand-perk"><div class="brand-perk-icon">🏅</div><span>Member badges &amp; custom emotes</span></div>
+        <div class="brand-perk"><div class="brand-perk-icon">💬</div><span>Members-only chat &amp; private live</span></div>
+        <div class="brand-perk"><div class="brand-perk-icon">✨</div><span>Free forever — no card needed</span></div>
       </div>
     </div>
 
@@ -310,9 +278,6 @@ input{font-family:inherit}
     </div>
   </aside>
 
-  <!-- ============================================================
-       RIGHT — FORM
-  ============================================================ -->
   <main class="auth-form-wrap">
     <div class="auth-form-box">
 
@@ -323,7 +288,6 @@ input{font-family:inherit}
         <span class="brand-wordmark">Pro<span class="grad-text">LoveHub</span></span>
       </div>
 
-      <!-- ===== SIGNED-IN STATE ===== -->
       <div class="signed-in" id="signedIn">
         <div class="signed-avatar" id="siAvatar">?</div>
         <div class="signed-name" id="siName">User</div>
@@ -341,7 +305,6 @@ input{font-family:inherit}
         </div>
       </div>
 
-      <!-- ===== LOGIN / SIGNUP FORM ===== -->
       <div id="authFormWrap">
         <h2 class="auth-title" id="authTitle">Welcome back</h2>
         <p class="auth-sub" id="authSub">Log in to continue to your world.</p>
@@ -354,6 +317,13 @@ input{font-family:inherit}
         <div class="alert alert-error" id="alertError"></div>
         <div class="alert alert-success" id="alertSuccess"></div>
         <div class="alert alert-info" id="alertInfo"></div>
+        <div class="alert alert-warn" id="alertWarn"></div>
+
+        <div class="resend-box" id="resendBox">
+          Didn't get the email? Check spam, or send another one.
+          <br>
+          <button class="resend-btn" id="resendBtn" onclick="handleResend()">📧 Resend confirmation email</button>
+        </div>
 
         <form id="authForm" novalidate>
 
@@ -414,21 +384,21 @@ input{font-family:inherit}
 
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
 <script>
 /* ============================================================
-   ProLoveHub — Real Supabase Auth
-   Credentials baked in. No config.js needed.
+   ProLoveHub — Auth (Render-deployed)
 ============================================================ */
 
-// ---- Your credentials ----
 const SUPABASE_URL = "https://apwyqkxyglfcmooqedsk.supabase.co";
 const SUPABASE_KEY = "sb_publishable_YuAnouzmvWgxJLhmazjiIg_K8utDLRz";
+
+// ---- App URL (Render) ----
+const APP_URL = "https://prolovehublivestream.onrender.com";
+const LOGIN_URL = APP_URL + "/login.html";
 
 // ---- DOM ----
 const signedInBox   = document.getElementById("signedIn");
@@ -460,12 +430,16 @@ const errConfirm    = document.getElementById("errConfirm");
 const alertError    = document.getElementById("alertError");
 const alertSuccess  = document.getElementById("alertSuccess");
 const alertInfo     = document.getElementById("alertInfo");
+const alertWarn     = document.getElementById("alertWarn");
 const passToggle    = document.getElementById("passToggle");
 const toastEl       = document.getElementById("toast");
+const resendBox     = document.getElementById("resendBox");
+const resendBtn     = document.getElementById("resendBtn");
 
 // ---- State ----
 let mode = "login";
 let supabaseClient = null;
+let lastSignupEmail = "";
 
 // ============================================================
 // INIT
@@ -521,8 +495,8 @@ function showSignedIn(user) {
   signedInBox.classList.add("show");
   authFormWrap.style.display = "none";
   hideAlerts();
+  resendBox.classList.remove("show");
 
-  // Mirror for other pages that read plh_user
   try {
     localStorage.setItem("plh_user", JSON.stringify({
       id: user.id,
@@ -565,6 +539,7 @@ function setMode(newMode) {
   bindFootToggle();
   clearErrors();
   hideAlerts();
+  resendBox.classList.remove("show");
 }
 
 tabs.forEach(tab => tab.addEventListener("click", () => setMode(tab.dataset.mode)));
@@ -597,10 +572,17 @@ function hideAlerts() {
   alertError.classList.remove("show");
   alertSuccess.classList.remove("show");
   alertInfo.classList.remove("show");
+  alertWarn.classList.remove("show");
 }
 function showAlert(type, message) {
-  const el = type === "error" ? alertError : type === "info" ? alertInfo : alertSuccess;
-  el.textContent = message;
+  const map = {
+    error: alertError,
+    success: alertSuccess,
+    info: alertInfo,
+    warn: alertWarn,
+  };
+  const el = map[type] || alertSuccess;
+  el.innerHTML = message;
   el.classList.add("show");
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -645,7 +627,7 @@ async function handleForgot(e) {
   }
   try {
     const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + "/login.html",
+      redirectTo: LOGIN_URL,
     });
     if (error) throw error;
     showAlert("success", "Password reset email sent! Check your inbox.");
@@ -657,12 +639,52 @@ async function handleForgot(e) {
 }
 
 // ============================================================
+// RESEND CONFIRMATION
+// ============================================================
+async function handleResend() {
+  if (!lastSignupEmail) {
+    toast("Sign up again to resend", "error");
+    return;
+  }
+  resendBtn.disabled = true;
+  const orig = resendBtn.textContent;
+  resendBtn.textContent = "Sending…";
+
+  try {
+    const { error } = await supabaseClient.auth.resend({
+      type: "signup",
+      email: lastSignupEmail,
+      options: {
+        emailRedirectTo: LOGIN_URL,
+      },
+    });
+    if (error) throw error;
+    showAlert("success", "✓ Confirmation email resent. Check your inbox.");
+    toast("Email resent");
+    setTimeout(() => {
+      resendBtn.disabled = false;
+      resendBtn.textContent = orig;
+    }, 30000);
+  } catch (err) {
+    console.error(err);
+    let msg = err.message || "Could not resend.";
+    if (msg.toLowerCase().includes("rate limit")) {
+      msg = "Too many requests. Please wait a few minutes before trying again.";
+    }
+    showAlert("error", msg);
+    resendBtn.disabled = false;
+    resendBtn.textContent = orig;
+  }
+}
+
+// ============================================================
 // SUBMIT
 // ============================================================
 authForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   clearErrors();
   hideAlerts();
+  resendBox.classList.remove("show");
 
   const username = inputUsername.value.trim();
   const email    = inputEmail.value.trim();
@@ -714,7 +736,6 @@ authForm.addEventListener("submit", async (e) => {
     return;
   }
 
-  // Loading state
   submitBtn.disabled = true;
   const origText = submitText.textContent;
   submitText.innerHTML = `<span class="btn-spinner"></span>${mode === "signup" ? "Creating account…" : "Logging in…"}`;
@@ -724,17 +745,28 @@ authForm.addEventListener("submit", async (e) => {
       const { data, error } = await supabaseClient.auth.signUp({
         email,
         password,
-        options: { data: { username } },
+        options: {
+          data: { username },
+          emailRedirectTo: LOGIN_URL,
+        },
       });
 
       if (error) throw error;
 
-      // If email confirmation is enabled, data.session is null
+      lastSignupEmail = email;
+
       if (!data.session) {
         showAlert(
           "success",
-          "✓ Account created! Check your email to confirm it, then come back and log in."
+          `✓ Account created!<br>
+          We sent a confirmation email to <strong>${escapeHtml(email)}</strong>.<br>
+          Click the link in that email to activate your account, then log in here.`
         );
+        showAlert("warn",
+          "⚠️ <strong>Email confirmation required.</strong><br>" +
+          "Check your <strong>spam / promotions</strong> folder if you don't see it within a minute."
+        );
+        resendBox.classList.add("show");
         toast("Confirmation email sent");
         setMode("login");
         submitText.textContent = "Log In";
@@ -742,7 +774,6 @@ authForm.addEventListener("submit", async (e) => {
         return;
       }
 
-      // Auto-logged in
       toast("Welcome to ProLoveHub!");
       showAlert("success", "Account created! Redirecting…");
       setTimeout(() => { window.location.href = "index.html"; }, 800);
@@ -764,11 +795,17 @@ authForm.addEventListener("submit", async (e) => {
     let msg = err.message || "Something went wrong.";
 
     const low = msg.toLowerCase();
-    if (low.includes("invalid login"))           msg = "Incorrect email or password.";
-    else if (low.includes("user already"))       msg = "That email is already registered. Try logging in instead.";
-    else if (low.includes("email not confirmed"))msg = "Please confirm your email first — check your inbox.";
-    else if (low.includes("rate limit"))         msg = "Too many attempts. Please wait a minute and try again.";
-    else if (low.includes("password"))           msg = "Password must be at least 8 characters.";
+    if (low.includes("invalid login"))               msg = "Incorrect email or password.";
+    else if (low.includes("user already registered"))msg = "That email is already registered. Try logging in instead.";
+    else if (low.includes("email not confirmed")) {
+      msg = `Your email hasn't been confirmed yet.<br>
+             Check your inbox for the confirmation link, or use the resend button below.`;
+      resendBox.classList.add("show");
+      lastSignupEmail = email;
+    }
+    else if (low.includes("rate limit"))             msg = "Too many attempts. Please wait a minute and try again.";
+    else if (low.includes("password"))               msg = "Password must be at least 8 characters.";
+    else if (low.includes("invalid email"))          msg = "That email address doesn't look valid.";
 
     showAlert("error", msg);
     toast("Failed", "error");
@@ -804,7 +841,24 @@ function watchAuthState() {
   supabaseClient.auth.onAuthStateChange((event, session) => {
     if (event === "SIGNED_IN" && session) showSignedIn(session.user);
     if (event === "SIGNED_OUT") showAuthForm();
+
+    // Handle errors coming back in URL (from email confirmation failure)
+    const params = new URLSearchParams(window.location.search);
+    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+    const errDesc = params.get("error_description") || hashParams.get("error_description");
+    if (errDesc) {
+      showAlert("error",
+        "Email confirmation failed: " + escapeHtml(errDesc) + "<br>" +
+        "Try signing up again or use the resend option."
+      );
+    }
   });
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 
 // ============================================================
@@ -812,7 +866,6 @@ function watchAuthState() {
 // ============================================================
 function boot() {
   if (!initSupabase()) {
-    // Show a friendly message if SDK or credentials failed
     document.querySelector(".auth-form-box").innerHTML = `
       <div style="padding:20px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.35);border-radius:12px;color:#FCD34D;font-size:14px;line-height:1.65;">
         ⚠️ <strong>Auth unavailable</strong><br>
@@ -824,6 +877,12 @@ function boot() {
   checkSession();
   watchAuthState();
   setMode("login");
+
+  // If the URL has confirmation params, show a nice message
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("confirmed") === "1") {
+    showAlert("success", "✓ Email confirmed! You can now log in.");
+  }
 }
 
 boot();
