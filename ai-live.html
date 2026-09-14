@@ -32,7 +32,7 @@ input,textarea,select{font-family:inherit}
 .pulse{animation:pulseLive 1.5s ease-in-out infinite}
 @keyframes pulseLive{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
 
-/* Top nav */
+/* NAV */
 .topnav{
   position:fixed;top:0;left:0;right:0;height:var(--nav-h);
   background:rgba(10,10,15,.95);backdrop-filter:blur(16px);
@@ -56,7 +56,7 @@ input,textarea,select{font-family:inherit}
 .user-pill .dot{background:var(--cyan)}
 @media (min-width:640px){.user-pill{display:inline-flex}}
 
-/* Layout */
+/* LAYOUT */
 .layout{
   display:grid;grid-template-columns:1fr;
   height:calc(100vh - var(--nav-h));
@@ -64,74 +64,188 @@ input,textarea,select{font-family:inherit}
 }
 @media (min-width:1024px){.layout{grid-template-columns:1fr 380px}}
 
-/* Stage */
+/* STAGE */
 .stage{
   position:relative;background:#000;
   display:flex;align-items:center;justify-content:center;overflow:hidden;
 }
 
-/* Avatar stage */
+/* Animated gradient background */
+.stage::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 40%,rgba(254,44,85,.15),transparent 60%);
+  pointer-events:none;
+  animation:bgPulse 6s ease-in-out infinite;
+}
+@keyframes bgPulse{
+  0%,100%{opacity:.6}
+  50%{opacity:1}
+}
+
 .avatar-stage{
   position:relative;
   display:flex;align-items:center;justify-content:center;
   width:100%;height:100%;
-  perspective:1000px;
+  perspective:1200px;
+  z-index:2;
 }
+
+.avatar-wrap{
+  position:relative;
+  width:min(80%,540px);
+  aspect-ratio:1;
+  transform-style:preserve-3d;
+  animation:breathe 4s ease-in-out infinite;
+}
+@keyframes breathe{
+  0%,100%{transform:translateY(0) rotateZ(-0.4deg) rotateY(0deg)}
+  25%{transform:translateY(-8px) rotateZ(0.2deg) rotateY(2deg)}
+  50%{transform:translateY(-12px) rotateZ(0.5deg) rotateY(0deg)}
+  75%{transform:translateY(-6px) rotateZ(-0.2deg) rotateY(-2deg)}
+}
+
+/* Sway layer */
+.avatar-sway{
+  position:absolute;inset:0;
+  animation:sway 7s ease-in-out infinite;
+  transform-style:preserve-3d;
+}
+@keyframes sway{
+  0%,100%{transform:translateX(0) rotateZ(0deg)}
+  33%{transform:translateX(6px) rotateZ(0.6deg)}
+  66%{transform:translateX(-6px) rotateZ(-0.6deg)}
+}
+
+/* The frame with gradient border */
 .avatar-frame{
   position:relative;
-  width:min(80%,520px);
-  aspect-ratio:1;
+  width:100%;height:100%;
   border-radius:24px;
   overflow:hidden;
+  box-shadow:
+    0 24px 80px rgba(0,0,0,.7),
+    0 0 60px rgba(254,44,85,.2);
   background:linear-gradient(135deg,#FE2C55,#A855F7);
-  box-shadow:0 24px 80px rgba(0,0,0,.6);
-  animation:bob 4s ease-in-out infinite;
+  isolation:isolate;
 }
-@keyframes bob{
-  0%,100%{transform:translateY(0) rotate(-0.3deg)}
-  50%{transform:translateY(-10px) rotate(0.3deg)}
+
+/* Gradient border animation */
+.avatar-frame::before{
+  content:"";position:absolute;inset:-3px;
+  border-radius:26px;
+  background:conic-gradient(from 0deg,#FE2C55,#25F4EE,#A855F7,#FE2C55);
+  z-index:-1;
+  animation:borderSpin 6s linear infinite;
 }
+@keyframes borderSpin{
+  to{transform:rotate(360deg)}
+}
+
+/* Speaking aura ring */
+.aura{
+  position:absolute;
+  inset:-16px;
+  border-radius:30px;
+  background:radial-gradient(circle,rgba(254,44,85,.4),transparent 70%);
+  opacity:0;
+  transition:opacity .3s;
+  z-index:-2;
+  pointer-events:none;
+}
+.aura.speaking{
+  opacity:1;
+  animation:auraPulse 1.2s ease-in-out infinite;
+}
+@keyframes auraPulse{
+  0%,100%{transform:scale(1);opacity:.5}
+  50%{transform:scale(1.08);opacity:.9}
+}
+
 .avatar-img{
   width:100%;height:100%;object-fit:cover;
   display:block;
+  position:relative;z-index:2;
   transition:filter .3s;
+  will-change:transform;
 }
 .avatar-img.hidden{display:none}
 
-/* Placeholder when no picture */
-.avatar-placeholder{
-  position:absolute;inset:0;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  color:rgba(255,255,255,.7);
-  font-size:14px;
-  text-align:center;
-  padding:24px;
+/* Blink overlay */
+.blink-overlay{
+  position:absolute;
+  top:38%;left:8%;right:8%;
+  height:8%;
+  background:rgba(0,0,0,.85);
+  border-radius:50%;
+  opacity:0;
+  pointer-events:none;
+  z-index:3;
+  filter:blur(6px);
 }
-.avatar-placeholder-icon{
-  font-size:80px;margin-bottom:16px;
-  filter:drop-shadow(0 0 30px rgba(254,44,85,.6));
+.blink-overlay.blink{
+  animation:blinkAnim .15s ease-in-out;
+}
+@keyframes blinkAnim{
+  0%,100%{opacity:0;transform:scaleY(.5)}
+  50%{opacity:1;transform:scaleY(1.2)}
 }
 
-/* Mouth overlay (for lip sync) */
+/* Mouth overlay */
 .mouth-overlay{
   position:absolute;
   top:62%;left:50%;
   transform:translate(-50%,-50%);
-  width:60px;height:60px;
+  width:70px;
+  height:6px;
   border-radius:50%;
-  background:radial-gradient(circle,rgba(0,0,0,.55),transparent 70%);
+  background:radial-gradient(circle,rgba(0,0,0,.85),transparent 75%);
   opacity:0;
-  transition:opacity .1s;
+  transition:opacity .1s,height .05s,width .05s;
   pointer-events:none;
-  mix-blend-mode:multiply;
+  z-index:4;
+  filter:blur(2px);
 }
-.mouth-overlay.speaking{opacity:1;animation:mouthTalk .25s steps(2) infinite}
-@keyframes mouthTalk{
-  0%,100%{transform:translate(-50%,-50%) scaleY(.7)}
-  50%{transform:translate(-50%,-50%) scaleY(1.4)}
+.mouth-overlay.speaking{opacity:1}
+
+/* Sparkles */
+.sparkles{
+  position:absolute;inset:0;
+  pointer-events:none;z-index:5;overflow:hidden;border-radius:24px;
+}
+.sparkle{
+  position:absolute;
+  width:4px;height:4px;
+  border-radius:50%;
+  background:#25F4EE;
+  filter:blur(1px);
+  box-shadow:0 0 8px #25F4EE;
+  animation:sparkleFloat 4s linear infinite;
+}
+@keyframes sparkleFloat{
+  0%{transform:translateY(100%) scale(0);opacity:0}
+  20%{opacity:1}
+  100%{transform:translateY(-100%) scale(1);opacity:0}
 }
 
-/* Overlay top */
+/* Placeholder */
+.avatar-placeholder{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:rgba(255,255,255,.7);
+  font-size:14px;text-align:center;padding:24px;
+  z-index:1;
+}
+.avatar-placeholder-icon{
+  font-size:80px;margin-bottom:16px;
+  filter:drop-shadow(0 0 30px rgba(254,44,85,.6));
+  animation:idle 3s ease-in-out infinite;
+}
+@keyframes idle{
+  0%,100%{transform:translateY(0) scale(1)}
+  50%{transform:translateY(-8px) scale(1.05)}
+}
+
+/* Stage overlays */
 .stage-top{
   position:absolute;top:16px;left:16px;right:16px;z-index:5;
   display:flex;align-items:center;justify-content:space-between;gap:12px;
@@ -155,12 +269,9 @@ input,textarea,select{font-family:inherit}
   border:1px solid rgba(255,255,255,.08);
   font-size:12px;font-weight:600;
 }
-
-/* Stage bottom controls */
 .stage-bottom{
   position:absolute;bottom:16px;left:16px;right:16px;z-index:5;
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  flex-wrap:wrap;
+  display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;
 }
 .end-btn{
   padding:14px 28px;border-radius:999px;
@@ -170,7 +281,18 @@ input,textarea,select{font-family:inherit}
 }
 .end-btn:hover{opacity:.9;transform:translateY(-1px)}
 
-/* Sidebar */
+/* Tracking indicator */
+.track-pill{
+  position:absolute;bottom:16px;left:16px;z-index:5;
+  display:none;align-items:center;gap:6px;
+  padding:6px 12px;border-radius:999px;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(10px);
+  border:1px solid rgba(37,244,238,.4);
+  color:var(--cyan);font-size:11px;font-weight:600;
+}
+.track-pill.on{display:inline-flex}
+
+/* SIDEBAR */
 .sidebar{
   background:#0F0F15;border-left:1px solid var(--border);
   display:flex;flex-direction:column;height:100%;overflow:hidden;
@@ -178,7 +300,7 @@ input,textarea,select{font-family:inherit}
 @media (max-width:1023px){
   .sidebar{
     position:fixed;bottom:0;left:0;right:0;
-    height:70vh;border-left:none;border-top:1px solid var(--border);
+    height:75vh;border-left:none;border-top:1px solid var(--border);
     transform:translateY(100%);transition:transform .3s ease;
     z-index:20;border-top-left-radius:20px;border-top-right-radius:20px;
   }
@@ -195,7 +317,7 @@ input,textarea,select{font-family:inherit}
 
 .sidebar-body{
   flex:1;overflow-y:auto;padding:16px 20px;
-  display:flex;flex-direction:column;gap:20px;
+  display:flex;flex-direction:column;gap:18px;
 }
 .sidebar-body::-webkit-scrollbar{width:6px}
 .sidebar-body::-webkit-scrollbar-thumb{background:#22222C;border-radius:6px}
@@ -219,16 +341,43 @@ input,textarea,select{font-family:inherit}
 
 .file-drop{
   border:2px dashed var(--border);
-  border-radius:12px;padding:20px;
-  text-align:center;cursor:pointer;
-  transition:all .2s;
-  font-size:13px;color:var(--muted);
+  border-radius:12px;padding:20px;text-align:center;cursor:pointer;
+  transition:all .2s;font-size:13px;color:var(--muted);
 }
 .file-drop:hover{border-color:var(--cyan);background:rgba(37,244,238,.04)}
-.file-drop.has-file{border-style:solid;border-color:rgba(34,197,94,.5);background:rgba(34,197,94,.05);color:#86EFAC}
+.file-drop.has-file{
+  border-style:solid;border-color:rgba(34,197,94,.5);
+  background:rgba(34,197,94,.05);color:#86EFAC;
+}
 .file-drop-icon{font-size:28px;margin-bottom:8px}
 .file-drop input{display:none}
 .file-name{font-size:11px;color:var(--dim);margin-top:4px}
+
+.toggle-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 12px;border-radius:10px;
+  background:var(--card);border:1px solid var(--border);
+  font-size:13px;
+}
+.toggle-row + .toggle-row{margin-top:6px}
+.toggle-label{display:flex;align-items:center;gap:8px}
+.switch{position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0}
+.switch .slider{
+  position:absolute;cursor:pointer;inset:0;
+  background:#2A2A38;border-radius:20px;transition:.2s;
+}
+.switch .slider::before{
+  content:"";position:absolute;height:14px;width:14px;
+  left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;
+}
+.switch input:checked + .slider{background:linear-gradient(135deg,var(--pink),var(--cyan))}
+.switch input:checked + .slider::before{transform:translateX(16px)}
+
+.slider-row{display:flex;gap:8px;align-items:center}
+.slider-row span:first-child{font-size:11px;color:var(--muted);width:36px}
+.slider-row input[type="range"]{flex:1;accent-color:#FE2C55}
+.slider-row span:last-child{font-size:11px;color:var(--cyan);width:32px;text-align:right}
 
 .btn-row{display:flex;gap:8px;flex-wrap:wrap}
 .btn{
@@ -243,17 +392,9 @@ input,textarea,select{font-family:inherit}
 .btn-ghost{border:1px solid var(--border);background:rgba(20,20,28,.6);color:#fff}
 .btn-ghost:hover:not(:disabled){background:var(--card)}
 .btn-sm{padding:9px 14px;font-size:12px}
+.btn-block{width:100%}
 
-/* Voice picker */
-.voice-select{
-  display:flex;flex-direction:column;gap:6px;
-}
-
-/* Share link */
-.share-box{
-  padding:12px 14px;border-radius:10px;
-  background:var(--card);border:1px solid var(--border);
-}
+.share-box{padding:12px 14px;border-radius:10px;background:var(--card);border:1px solid var(--border)}
 .share-label{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--dim);text-transform:uppercase;margin-bottom:6px}
 .share-input-wrap{display:flex;gap:6px}
 .share-input{
@@ -310,7 +451,6 @@ input,textarea,select{font-family:inherit}
 
 <body>
 
-<!-- TOPNAV -->
 <header class="topnav">
   <a href="index.html" class="back-btn">← Exit</a>
   <div class="topnav-title">🎭 AI Avatar Live</div>
@@ -321,19 +461,24 @@ input,textarea,select{font-family:inherit}
   </div>
 </header>
 
-<!-- LAYOUT -->
 <div class="layout">
 
-  <!-- STAGE -->
   <div class="stage" id="stage">
     <div class="avatar-stage">
-      <div class="avatar-frame" id="avatarFrame">
-        <img id="avatarImg" class="avatar-img hidden" alt="avatar" />
-        <div class="avatar-placeholder" id="avatarPlaceholder">
-          <div class="avatar-placeholder-icon">🎭</div>
-          <div>Upload a picture to see your avatar</div>
+      <div class="avatar-wrap" id="avatarWrap">
+        <div class="avatar-sway" id="avatarSway">
+          <div class="avatar-frame" id="avatarFrame">
+            <div class="aura" id="aura"></div>
+            <img id="avatarImg" class="avatar-img hidden" alt="avatar" />
+            <div class="avatar-placeholder" id="avatarPlaceholder">
+              <div class="avatar-placeholder-icon">🎭</div>
+              <div>Upload a picture to bring your avatar alive</div>
+            </div>
+            <div class="blink-overlay" id="blinkOverlay"></div>
+            <div class="mouth-overlay" id="mouthOverlay"></div>
+            <div class="sparkles" id="sparkles"></div>
+          </div>
         </div>
-        <div class="mouth-overlay" id="mouthOverlay"></div>
       </div>
     </div>
 
@@ -346,18 +491,19 @@ input,textarea,select{font-family:inherit}
       </span>
     </div>
 
+    <span class="track-pill" id="trackPill">
+      <span class="dot dot-cyan pulse"></span> Face tracking ON
+    </span>
+
     <div class="stage-bottom" id="stageBottom" style="display:none;">
       <button class="end-btn" onclick="endStream()">🛑 End Stream</button>
     </div>
 
-    <!-- Login overlay -->
     <div class="overlay hide" id="loginOverlay">
       <div class="overlay-inner">
         <div class="overlay-icon">🔐</div>
         <h2 class="overlay-title">Admin only</h2>
-        <p class="overlay-sub">
-          You need an admin account to use the AI avatar studio.
-        </p>
+        <p class="overlay-sub">You need an admin account to use the AI avatar studio.</p>
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
           <a href="login.html" class="btn btn-primary">🔑 Log in</a>
           <a href="index.html" class="btn btn-ghost">← Back</a>
@@ -365,32 +511,27 @@ input,textarea,select{font-family:inherit}
       </div>
     </div>
 
-    <!-- Access denied -->
     <div class="overlay hide" id="deniedOverlay">
       <div class="overlay-inner">
         <div class="overlay-icon">🚫</div>
         <h2 class="overlay-title">Access denied</h2>
-        <p class="overlay-sub">
-          This studio is only available to admins.
-        </p>
+        <p class="overlay-sub">This studio is only available to admins.</p>
         <a href="index.html" class="btn btn-primary">← Back to home</a>
       </div>
     </div>
   </div>
 
-  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <div>
-        <div class="sidebar-title">⚙️ Avatar setup</div>
-        <div class="sidebar-sub" id="sidebarSub">Configure your AI avatar</div>
+        <div class="sidebar-title">⚙️ Avatar studio</div>
+        <div class="sidebar-sub" id="sidebarSub">Configure your live AI avatar</div>
       </div>
       <button class="sidebar-close" onclick="toggleSidebar(false)">✕</button>
     </div>
 
     <div class="sidebar-body">
 
-      <!-- Picture upload -->
       <div class="field-group">
         <div class="field-label">1. Picture</div>
         <label class="file-drop" id="pictureDrop">
@@ -401,38 +542,73 @@ input,textarea,select{font-family:inherit}
         </label>
       </div>
 
-      <!-- Voice selection -->
       <div class="field-group">
         <div class="field-label">2. Voice</div>
         <select class="field-select" id="voiceSelect">
           <option value="">Loading voices…</option>
         </select>
-        <div class="field-hint">Uses your browser's built-in voices. Free, works offline.</div>
+        <div class="field-hint">Uses your browser's built-in voices. Free.</div>
       </div>
 
-      <!-- Rate / pitch -->
       <div class="field-group">
         <div class="field-label">3. Voice tune</div>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <span style="font-size:11px;color:var(--muted);">Rate</span>
-          <input type="range" id="voiceRate" min="0.5" max="1.5" step="0.1" value="1" style="flex:1;" />
-          <span id="voiceRateVal" style="font-size:11px;color:var(--cyan);width:32px;">1.0</span>
+        <div class="slider-row">
+          <span>Rate</span>
+          <input type="range" id="voiceRate" min="0.5" max="1.5" step="0.1" value="0.95" />
+          <span id="voiceRateVal">0.9</span>
         </div>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <span style="font-size:11px;color:var(--muted);">Pitch</span>
-          <input type="range" id="voicePitch" min="0.5" max="1.5" step="0.1" value="1" style="flex:1;" />
-          <span id="voicePitchVal" style="font-size:11px;color:var(--cyan);width:32px;">1.0</span>
+        <div class="slider-row">
+          <span>Pitch</span>
+          <input type="range" id="voicePitch" min="0.5" max="1.5" step="0.1" value="0.9" />
+          <span id="voicePitchVal">0.9</span>
         </div>
       </div>
 
-      <!-- Script input -->
       <div class="field-group">
         <div class="field-label">4. Script</div>
-        <textarea class="field-textarea" id="scriptInput" placeholder="Type what your avatar should say…&#10;&#10;Example: Hello everyone, welcome to my live. Today we're talking about…"></textarea>
-        <div class="field-hint">The avatar will speak this text out loud. Viewers hear it through your mic.</div>
+        <textarea class="field-textarea" id="scriptInput" placeholder="Type what your avatar should say…"></textarea>
+        <div class="field-hint">Or toggle "Mic mode" below to speak live.</div>
       </div>
 
-      <!-- Buttons -->
+      <div class="field-group">
+        <div class="field-label">Live control</div>
+        <div class="toggle-row">
+          <span class="toggle-label">🎤 Mic mode (speak live)</span>
+          <label class="switch">
+            <input type="checkbox" id="micMode" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">📷 Webcam face tracking</span>
+          <label class="switch">
+            <input type="checkbox" id="faceTracking" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">👁 Auto blink</span>
+          <label class="switch">
+            <input type="checkbox" id="autoBlink" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">✨ Sparkles</span>
+          <label class="switch">
+            <input type="checkbox" id="showSparkles" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">🔊 Loop script</span>
+          <label class="switch">
+            <input type="checkbox" id="loopMode" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
       <div class="btn-row">
         <button class="btn btn-primary btn-sm" id="speakBtn" onclick="speakScript()" disabled>
           🔊 Speak now
@@ -442,15 +618,6 @@ input,textarea,select{font-family:inherit}
         </button>
       </div>
 
-      <!-- Loop mode -->
-      <div class="field-group">
-        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;">
-          <input type="checkbox" id="loopMode" style="accent-color:#FE2C55;" />
-          <span>Loop script continuously</span>
-        </label>
-      </div>
-
-      <!-- Share link -->
       <div class="share-box" id="shareBox" style="display:none;">
         <div class="share-label">Share link</div>
         <div class="share-input-wrap">
@@ -459,15 +626,12 @@ input,textarea,select{font-family:inherit}
         </div>
       </div>
 
-      <!-- Start live -->
-      <div class="btn-row" style="margin-top:8px;">
-        <button class="btn btn-primary" id="goLiveBtn" onclick="goLive()" style="flex:1;">
-          🔴 Go Live
-        </button>
-      </div>
+      <button class="btn btn-primary btn-block" id="goLiveBtn" onclick="goLive()">
+        🔴 Go Live
+      </button>
 
       <div class="field-hint" style="text-align:center;">
-        ⚠️ Keep this tab open while live. Closing ends the stream.
+        ⚠️ Keep this tab open while live.
       </div>
 
     </div>
@@ -475,24 +639,25 @@ input,textarea,select{font-family:inherit}
 
 </div>
 
-<button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Toggle menu">⚙️</button>
+<button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Menu">⚙️</button>
 <div class="toast" id="toast"></div>
 
-<!-- Optional hidden webcam for streaming the canvas -->
 <canvas id="streamCanvas" style="display:none;"></canvas>
-<video id="hiddenWebcam" style="display:none;" autoplay playsinline muted></video>
+<video id="trackingVideo" style="display:none;" autoplay playsinline muted></video>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/livekit-client@2.5.6/dist/livekit-client.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/face_detection.js" crossorigin="anonymous"></script>
 
 <script>
 /* ============================================================
-   ProLoveHub — AI Avatar Live
-   - Admin uploads a picture
-   - Picks a voice (browser TTS)
-   - Types a script
-   - Avatar speaks → mouth overlay animates
-   - Streams to viewers via LiveKit (audio + canvas video)
+   ProLoveHub — Alive AI Avatar Studio
+   - Web Speech API TTS
+   - Web Audio API for waveform-driven lip sync
+   - MediaPipe face tracking to move the picture
+   - CSS animations for breathing, sway, blink, aura
+   - LiveKit streaming
 ============================================================ */
 
 const SUPABASE_URL = "https://apwyqkxyglfcmooqedsk.supabase.co";
@@ -501,20 +666,26 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ---- State ----
 let currentUser = null;
-let isAdmin = false;
 let roomName = "";
 let room = null;
 let voices = [];
 let pictureUrl = null;
 let isSpeaking = false;
-let loopInterval = null;
-let streamTrack = null;
-let audioCaptureStream = null;
+let loopTimeout = null;
 let animFrameId = null;
-let mouthAmplitude = 0;
+let blinkInterval = null;
+let sparkleInterval = null;
 let audioContext = null;
 let analyser = null;
 let micStream = null;
+let micAnalyser = null;
+let micDataArray = null;
+let trackingCamera = null;
+let faceDetection = null;
+
+// Face tracking targets
+let target = { rotY: 0, rotX: 0, posX: 0, posY: 0 };
+let smooth = { rotY: 0, rotX: 0, posX: 0, posY: 0 };
 
 // ---- Helpers ----
 let toastTimer;
@@ -541,16 +712,13 @@ function randomRoomId() {
 }
 
 // ============================================================
-// AUTH CHECK — must be admin
+// AUTH
 // ============================================================
 async function checkAdmin() {
   const { data: { session } } = await sb.auth.getSession();
   currentUser = session ? session.user : null;
 
-  if (!currentUser) {
-    showOverlay("loginOverlay");
-    return false;
-  }
+  if (!currentUser) { showOverlay("loginOverlay"); return false; }
 
   const { data: admin } = await sb
     .from("admin_users")
@@ -559,62 +727,47 @@ async function checkAdmin() {
     .eq("is_active", true)
     .maybeSingle();
 
-  if (!admin) {
-    showOverlay("deniedOverlay");
-    return false;
-  }
+  if (!admin) { showOverlay("deniedOverlay"); return false; }
 
   const username = currentUser.user_metadata?.username
-    || currentUser.email?.split("@")[0]
-    || "admin";
+    || currentUser.email?.split("@")[0] || "admin";
 
   document.getElementById("userPill").style.display = "inline-flex";
   document.getElementById("userPillName").textContent = "@" + username;
 
   roomName = "ai-" + username + "-" + randomRoomId().slice(0, 6);
-
   return true;
 }
 
 // ============================================================
-// LOAD VOICES (Web Speech API)
+// VOICES
 // ============================================================
 function loadVoices() {
   if (!("speechSynthesis" in window)) {
-    document.getElementById("voiceSelect").innerHTML =
-      `<option value="">Browser doesn't support TTS</option>`;
+    document.getElementById("voiceSelect").innerHTML = `<option>No TTS support</option>`;
     return;
   }
-
   const populate = () => {
     voices = window.speechSynthesis.getVoices();
     const select = document.getElementById("voiceSelect");
-    if (voices.length === 0) return;
-
+    if (!voices.length) return;
     select.innerHTML = voices.map((v, i) =>
       `<option value="${i}">${escapeHtml(v.name)} (${v.lang})</option>`
     ).join("");
-
-    // Prefer English voices
-    const englishIdx = voices.findIndex(v => v.lang.startsWith("en"));
-    if (englishIdx >= 0) select.value = englishIdx;
+    const engIdx = voices.findIndex(v => v.lang.startsWith("en"));
+    if (engIdx >= 0) select.value = engIdx;
   };
-
   populate();
   window.speechSynthesis.onvoiceschanged = populate;
 }
 
 // ============================================================
-// PICTURE UPLOAD
+// PICTURE
 // ============================================================
 document.getElementById("pictureInput").addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
-
-  if (!file.type.startsWith("image/")) {
-    toast("Please upload an image file", "error");
-    return;
-  }
+  if (!file.type.startsWith("image/")) { toast("Please upload an image", "error"); return; }
 
   if (pictureUrl) URL.revokeObjectURL(pictureUrl);
   pictureUrl = URL.createObjectURL(file);
@@ -626,16 +779,16 @@ document.getElementById("pictureInput").addEventListener("change", (e) => {
 
   const drop = document.getElementById("pictureDrop");
   drop.classList.add("has-file");
-  document.getElementById("pictureDrop").querySelector(".file-name").textContent = file.name;
+  drop.querySelector(".file-name").textContent = file.name;
 
-  // Enable speak button
   document.getElementById("speakBtn").disabled = false;
-
+  startSparkles();
+  startAutoBlink();
   toast("Picture loaded ✓");
 });
 
 // ============================================================
-// VOICE TUNE SLIDERS
+// VOICE TUNE
 // ============================================================
 document.getElementById("voiceRate").addEventListener("input", (e) => {
   document.getElementById("voiceRateVal").textContent = parseFloat(e.target.value).toFixed(1);
@@ -645,18 +798,141 @@ document.getElementById("voicePitch").addEventListener("input", (e) => {
 });
 
 // ============================================================
-// SPEAK SCRIPT (Web Speech API)
+// SPARKLES
+// ============================================================
+function startSparkles() {
+  const layer = document.getElementById("sparkles");
+  if (!layer) return;
+  if (sparkleInterval) clearInterval(sparkleInterval);
+  const spawn = () => {
+    if (!document.getElementById("showSparkles").checked) return;
+    const s = document.createElement("div");
+    s.className = "sparkle";
+    s.style.left = (Math.random() * 100) + "%";
+    s.style.animationDelay = "0s";
+    s.style.animationDuration = (3 + Math.random() * 2) + "s";
+    const colors = ["#25F4EE", "#FE2C55", "#A855F7"];
+    s.style.background = colors[Math.floor(Math.random() * colors.length)];
+    s.style.boxShadow = `0 0 8px ${s.style.background}`;
+    layer.appendChild(s);
+    setTimeout(() => s.remove(), 5000);
+  };
+  sparkleInterval = setInterval(spawn, 300);
+  for (let i = 0; i < 8; i++) spawn();
+}
+
+// ============================================================
+// AUTO BLINK
+// ============================================================
+function startAutoBlink() {
+  if (blinkInterval) clearInterval(blinkInterval);
+  const loop = () => {
+    if (!document.getElementById("autoBlink").checked) {
+      blinkInterval = setTimeout(loop, 2000);
+      return;
+    }
+    const overlay = document.getElementById("blinkOverlay");
+    overlay.classList.add("blink");
+    setTimeout(() => overlay.classList.remove("blink"), 150);
+    blinkInterval = setTimeout(loop, 2500 + Math.random() * 2500);
+  };
+  loop();
+}
+
+// ============================================================
+// FACE TRACKING — drive the picture with your real face
+// ============================================================
+async function startFaceTracking() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { width: 320, height: 240, facingMode: "user" }
+    });
+    const video = document.getElementById("trackingVideo");
+    video.srcObject = stream;
+    await video.play();
+
+    if (typeof FaceDetection === "undefined") {
+      console.warn("MediaPipe not loaded");
+      return;
+    }
+
+    faceDetection = new FaceDetection({
+      locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${f}`,
+    });
+    faceDetection.setOptions({ model: "short", minDetectionConfidence: 0.5 });
+
+    faceDetection.onResults((results) => {
+      if (!document.getElementById("faceTracking").checked) return;
+      const dets = results.detections || [];
+      if (!dets.length) {
+        target.rotY = 0; target.rotX = 0;
+        target.posX = 0; target.posY = 0;
+        return;
+      }
+      const box = dets[0].boundingBox;
+      const nx = (box.xCenter - 0.5) * 2;
+      const ny = (box.yCenter - 0.5) * 2;
+      target.rotY = -nx * 0.35;
+      target.rotX = -ny * 0.25;
+      target.posX = -nx * 20;
+      target.posY = -ny * 12;
+    });
+
+    trackingCamera = new Camera(video, {
+      onFrame: async () => {
+        if (faceDetection) await faceDetection.send({ image: video });
+      },
+      width: 320, height: 240,
+    });
+    trackingCamera.start();
+
+    document.getElementById("trackPill").classList.add("on");
+    console.log("✓ Face tracking started");
+  } catch (err) {
+    console.warn("Face tracking unavailable:", err.message);
+  }
+}
+
+// ============================================================
+// RENDER LOOP — applies smooth face tracking to the picture
+// ============================================================
+function startRenderLoop() {
+  const wrap = document.getElementById("avatarWrap");
+  const sway = document.getElementById("avatarSway");
+  const img = document.getElementById("avatarImg");
+
+  function tick() {
+    animFrameId = requestAnimationFrame(tick);
+    smooth.rotY += (target.rotY - smooth.rotY) * 0.1;
+    smooth.rotX += (target.rotX - smooth.rotX) * 0.1;
+    smooth.posX += (target.posX - smooth.posX) * 0.1;
+    smooth.posY += (target.posY - smooth.posY) * 0.1;
+
+    if (img) {
+      img.style.transform =
+        `translate(${smooth.posX}px, ${smooth.posY}px) ` +
+        `scale(${1 + Math.abs(smooth.posX) / 800})`;
+    }
+    if (wrap) {
+      wrap.style.transform =
+        `rotateY(${smooth.rotY * 20}deg) ` +
+        `rotateX(${-smooth.rotX * 15}deg)`;
+    }
+    if (sway) {
+      sway.style.transform =
+        `translateX(${smooth.posX}px) rotateZ(${smooth.rotY * 3}deg)`;
+    }
+  }
+  tick();
+}
+
+// ============================================================
+// SPEAK — with waveform-driven mouth
 // ============================================================
 function speakScript() {
   const text = document.getElementById("scriptInput").value.trim();
-  if (!text) {
-    toast("Type something for the avatar to say", "error");
-    return;
-  }
-  if (!("speechSynthesis" in window)) {
-    toast("Your browser doesn't support text-to-speech", "error");
-    return;
-  }
+  if (!text) { toast("Type something first", "error"); return; }
+  if (!("speechSynthesis" in window)) { toast("No TTS support", "error"); return; }
 
   const voiceIdx = parseInt(document.getElementById("voiceSelect").value);
   const voice = voices[voiceIdx] || null;
@@ -671,65 +947,117 @@ function speakScript() {
 
   utter.onstart = () => {
     isSpeaking = true;
+    document.getElementById("aura").classList.add("speaking");
     document.getElementById("mouthOverlay").classList.add("speaking");
     document.getElementById("stopBtn").disabled = false;
+    startMouthAnimation();
   };
   utter.onend = () => {
     isSpeaking = false;
+    document.getElementById("aura").classList.remove("speaking");
     document.getElementById("mouthOverlay").classList.remove("speaking");
     document.getElementById("stopBtn").disabled = true;
+    stopMouthAnimation();
 
-    // Loop if enabled
     if (document.getElementById("loopMode").checked) {
-      loopInterval = setTimeout(() => {
+      loopTimeout = setTimeout(() => {
         if (document.getElementById("loopMode").checked) speakScript();
-      }, 1500);
+      }, 1200);
     }
   };
-  utter.onerror = (err) => {
-    console.error("TTS error:", err);
+  utter.onerror = () => {
     isSpeaking = false;
+    document.getElementById("aura").classList.remove("speaking");
     document.getElementById("mouthOverlay").classList.remove("speaking");
+    stopMouthAnimation();
   };
 
-  // Cancel any ongoing speech first
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(utter);
-
   toast("Avatar is speaking 🔊");
 }
 
 function stopSpeaking() {
   window.speechSynthesis.cancel();
-  if (loopInterval) { clearTimeout(loopInterval); loopInterval = null; }
+  if (loopTimeout) { clearTimeout(loopTimeout); loopTimeout = null; }
   isSpeaking = false;
+  document.getElementById("aura").classList.remove("speaking");
   document.getElementById("mouthOverlay").classList.remove("speaking");
   document.getElementById("stopBtn").disabled = true;
   document.getElementById("loopMode").checked = false;
+  stopMouthAnimation();
   toast("Stopped");
 }
 
 // ============================================================
-// GO LIVE — capture avatar frame as video + play TTS audio
+// MOUTH ANIMATION (waveform or mic)
+// ============================================================
+let mouthTimer = null;
+function startMouthAnimation() {
+  if (mouthTimer) clearInterval(mouthTimer);
+  const mouth = document.getElementById("mouthOverlay");
+  mouthTimer = setInterval(() => {
+    let amp = 0.5;
+
+    if (micAnalyser && micDataArray && document.getElementById("micMode").checked) {
+      micAnalyser.getByteFrequencyData(micDataArray);
+      let sum = 0;
+      for (let i = 0; i < micDataArray.length; i++) sum += micDataArray[i];
+      amp = Math.min(1, (sum / micDataArray.length) / 100);
+    } else {
+      amp = 0.3 + Math.random() * 0.7;
+    }
+
+    const h = 6 + amp * 50;
+    const w = 40 + (1 - amp) * 40;
+    mouth.style.height = h + "px";
+    mouth.style.width = w + "px";
+  }, 60);
+}
+function stopMouthAnimation() {
+  if (mouthTimer) { clearInterval(mouthTimer); mouthTimer = null; }
+  const mouth = document.getElementById("mouthOverlay");
+  mouth.style.height = "6px";
+  mouth.style.width = "70px";
+}
+
+// ============================================================
+// MIC CAPTURE (for streaming audio + Mic mode)
+// ============================================================
+async function initMic() {
+  try {
+    micStream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
+    });
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioContext.createMediaStreamSource(micStream);
+    micAnalyser = audioContext.createAnalyser();
+    micAnalyser.fftSize = 512;
+    micDataArray = new Uint8Array(micAnalyser.frequencyBinCount);
+    source.connect(micAnalyser);
+    console.log("✓ Mic initialized");
+  } catch (err) {
+    console.warn("Mic unavailable:", err.message);
+  }
+}
+
+// ============================================================
+// GO LIVE — capture the animated frame as a canvas stream
 // ============================================================
 async function goLive() {
-  if (!pictureUrl) {
-    toast("Upload a picture first", "error");
-    return;
-  }
-
+  if (!pictureUrl) { toast("Upload a picture first", "error"); return; }
   const script = document.getElementById("scriptInput").value.trim();
-  if (!script) {
-    toast("Type a script first", "error");
+  if (!script && !document.getElementById("micMode").checked) {
+    toast("Add a script or enable Mic mode", "error");
     return;
   }
 
   const btn = document.getElementById("goLiveBtn");
-  btn.disabled = true;
-  btn.textContent = "Starting…";
+  btn.disabled = true; btn.textContent = "Starting…";
 
   try {
-    // 1. Get a host token from our server
+    await initMic();
+
     const tokenRes = await fetch("/api/token", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -740,140 +1068,134 @@ async function goLive() {
         role: "host",
       }),
     });
-
     const tokenData = await tokenRes.json();
-    if (!tokenRes.ok || !tokenData.token) {
-      throw new Error(tokenData.error || "Token failed");
-    }
+    if (!tokenRes.ok || !tokenData.token) throw new Error(tokenData.error || "Token failed");
 
-    // 2. Connect to LiveKit
-    room = new LivekitClient.Room({
-      adaptiveStream: true,
-      dynacast: true,
-    });
-
-    room.on(LivekitClient.RoomEvent.ParticipantConnected, () => {
-      renderViewers();
-    });
-    room.on(LivekitClient.RoomEvent.ParticipantDisconnected, () => {
-      renderViewers();
-    });
-    room.on(LivekitClient.RoomEvent.Disconnected, () => {
-      toast("Disconnected", "error");
-    });
+    room = new LivekitClient.Room({ adaptiveStream: true, dynacast: true });
+    room.on(LivekitClient.RoomEvent.ParticipantConnected, () => renderViewers());
+    room.on(LivekitClient.RoomEvent.ParticipantDisconnected, () => renderViewers());
+    room.on(LivekitClient.RoomEvent.Disconnected, () => toast("Disconnected", "error"));
 
     await room.connect(tokenData.url, tokenData.token);
-    console.log("✓ Connected to LiveKit as host");
+    console.log("✓ Connected to LiveKit");
 
-    // 3. Build a canvas that mirrors the avatar stage
+    // Set up canvas for streaming
     const canvas = document.getElementById("streamCanvas");
     const ctx = canvas.getContext("2d");
     const W = 720, H = 720;
-    canvas.width = W;
-    canvas.height = H;
+    canvas.width = W; canvas.height = H;
 
-    // Start rendering loop
-    renderAvatarToCanvas(ctx, W, H);
+    startCanvasRender(ctx, W, H);
 
-    // 4. Capture canvas at 30fps → video track
+    // Capture canvas as video track
     const canvasStream = canvas.captureStream(30);
     const videoTrack = canvasStream.getVideoTracks()[0];
+    await room.localParticipant.publishTrack(new LivekitClient.LocalVideoTrack(videoTrack));
 
-    // 5. Create a synthetic audio stream from mic input (users speak or play TTS through speakers)
-    try {
-      micStream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
-      });
-      const audioTracks = micStream.getAudioTracks();
-
-      // 6. Publish both tracks
-      await room.localParticipant.publishTrack(
-        new LivekitClient.LocalVideoTrack(videoTrack)
-      );
-      for (const at of audioTracks) {
-        await room.localParticipant.publishTrack(new LivekitClient.LocalAudioTrack(at));
+    // Publish mic audio
+    if (micStream) {
+      const audioTrack = micStream.getAudioTracks()[0];
+      if (audioTrack) {
+        await room.localParticipant.publishTrack(new LivekitClient.LocalAudioTrack(audioTrack));
       }
-    } catch (micErr) {
-      console.warn("No mic access — publishing video only:", micErr);
-      await room.localParticipant.publishTrack(
-        new LivekitClient.LocalVideoTrack(videoTrack)
-      );
-      toast("Streaming video only (no mic)", "error");
     }
 
-    // 7. Update UI
+    // UI updates
     document.getElementById("liveBadge").style.display = "inline-flex";
     document.getElementById("viewerPill").style.display = "inline-flex";
     document.getElementById("stageBottom").style.display = "flex";
     document.getElementById("shareBox").style.display = "block";
 
-    // 8. Generate share link
     const shareUrl = window.location.origin + "/watch.html?room=" + roomName;
     document.getElementById("shareUrl").value = shareUrl;
 
-    // 9. Start speaking automatically
-    speakScript();
-    if (document.getElementById("loopMode").checked === false) {
-      document.getElementById("loopMode").checked = true;
-      speakScript();
-    }
+    // Start speaking automatically
+    setTimeout(() => speakScript(), 800);
 
     btn.textContent = "🔴 LIVE";
     toast("You're live! 🔴");
   } catch (err) {
     console.error("Go live error:", err);
-    btn.disabled = false;
-    btn.textContent = "🔴 Go Live";
+    btn.disabled = false; btn.textContent = "🔴 Go Live";
     toast(err.message || "Could not go live", "error");
   }
 }
 
 // ============================================================
-// CANVAS RENDER LOOP
+// CANVAS RENDER — the actual stream content
 // ============================================================
-function renderAvatarToCanvas(ctx, W, H) {
+function startCanvasRender(ctx, W, H) {
   const img = document.getElementById("avatarImg");
+  const t0 = Date.now();
 
   function draw() {
     animFrameId = requestAnimationFrame(draw);
+    const t = (Date.now() - t0) / 1000;
 
-    // Background gradient
-    const t = Date.now() / 1000;
+    // Gradient background
     const grad = ctx.createLinearGradient(0, 0, W, H);
-    grad.addColorStop(0, `hsl(${330 + Math.sin(t)*10}, 90%, 55%)`);
-    grad.addColorStop(0.5, `hsl(${260 + Math.cos(t)*10}, 70%, 40%)`);
-    grad.addColorStop(1, `hsl(${180 + Math.sin(t*0.7)*10}, 90%, 55%)`);
+    grad.addColorStop(0, `hsl(${330 + Math.sin(t) * 15}, 85%, 50%)`);
+    grad.addColorStop(0.5, `hsl(${260 + Math.cos(t * 0.8) * 15}, 70%, 35%)`);
+    grad.addColorStop(1, `hsl(${180 + Math.sin(t * 0.6) * 15}, 85%, 50%)`);
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, W, H);
 
-    // Draw the avatar image centered
+    // Radial glow
+    const cx = W / 2, cy = H / 2;
+    const rglow = ctx.createRadialGradient(cx, cy, 0, cx, cy, W * 0.7);
+    rglow.addColorStop(0, "rgba(255,255,255,0.15)");
+    rglow.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = rglow;
+    ctx.fillRect(0, 0, W, H);
+
     if (img && img.complete && img.naturalWidth > 0) {
-      const scale = Math.min(W / img.naturalWidth, H / img.naturalHeight) * 0.85;
+      const scale = Math.min(W / img.naturalWidth, H / img.naturalHeight) * 0.82;
       const dw = img.naturalWidth * scale;
       const dh = img.naturalHeight * scale;
-      const dx = (W - dw) / 2;
-      const dy = (H - dh) / 2;
+      const dx = (W - dw) / 2 + smooth.posX * 1.5;
+      const dy = (H - dh) / 2 + smooth.posY * 1.5;
 
-      // Bob offset
-      const bobY = Math.sin(t * 1.2) * 12;
+      const bobY = Math.sin(t * 1.2) * 10 + Math.sin(t * 2.3) * 3;
+      const swayX = Math.sin(t * 0.7) * 6;
 
       ctx.save();
-      ctx.shadowColor = "rgba(0,0,0,0.6)";
-      ctx.shadowBlur = 40;
-      ctx.drawImage(img, dx, dy + bobY, dw, dh);
+      ctx.translate(W / 2, H / 2);
+      ctx.rotate(smooth.rotY * 0.15);
+      ctx.translate(-W / 2, -H / 2);
+
+      ctx.shadowColor = "rgba(254,44,85,0.5)";
+      ctx.shadowBlur = isSpeaking ? 80 : 40;
+      ctx.drawImage(img, dx + swayX, dy + bobY, dw, dh);
       ctx.restore();
 
-      // Draw mouth when speaking
-      if (isSpeaking) {
-        const cx = W / 2;
-        const cy = dy + dh * 0.72 + bobY;
-        const mouthHeight = 20 + Math.abs(Math.sin(t * 12)) * 30;
-        const mouthWidth = 60;
+      // Mouth overlay
+      if (isSpeaking || (micAnalyser && document.getElementById("micMode").checked)) {
+        const mouthCx = dx + dw / 2 + swayX;
+        const mouthCy = dy + dh * 0.72 + bobY;
+
+        let amp = 0.5;
+        if (micAnalyser && micDataArray && document.getElementById("micMode").checked) {
+          micAnalyser.getByteFrequencyData(micDataArray);
+          let sum = 0;
+          for (let i = 0; i < micDataArray.length; i++) sum += micDataArray[i];
+          amp = Math.min(1, (sum / micDataArray.length) / 100);
+        } else {
+          amp = 0.35 + Math.abs(Math.sin(t * 12)) * 0.65;
+        }
+
+        const mouthW = 70 + (1 - amp) * 40;
+        const mouthH = 8 + amp * 45;
 
         ctx.save();
-        ctx.fillStyle = "rgba(0,0,0,0.65)";
+        ctx.fillStyle = "rgba(0,0,0,0.75)";
         ctx.beginPath();
-        ctx.ellipse(cx, cy, mouthWidth / 2, mouthHeight / 2, 0, 0, Math.PI * 2);
+        ctx.ellipse(mouthCx, mouthCy, mouthW / 2, mouthH / 2, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Inner highlight
+        ctx.fillStyle = "rgba(255,255,255,0.15)";
+        ctx.beginPath();
+        ctx.ellipse(mouthCx, mouthCy - mouthH / 4, mouthW / 3, mouthH / 6, 0, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
       }
@@ -896,14 +1218,17 @@ function renderViewers() {
 // ============================================================
 async function endStream() {
   if (!confirm("End the live stream?")) return;
-
   if (animFrameId) { cancelAnimationFrame(animFrameId); animFrameId = null; }
-  if (loopInterval) { clearTimeout(loopInterval); loopInterval = null; }
+  if (loopTimeout) { clearTimeout(loopTimeout); loopTimeout = null; }
+  if (sparkleInterval) { clearInterval(sparkleInterval); sparkleInterval = null; }
+  if (blinkInterval) { clearTimeout(blinkInterval); blinkInterval = null; }
+  stopMouthAnimation();
   window.speechSynthesis.cancel();
 
   try {
     if (room) await room.disconnect();
     if (micStream) micStream.getTracks().forEach(t => t.stop());
+    if (trackingCamera) trackingCamera.stop();
   } catch (e) { console.error(e); }
 
   toast("Stream ended");
@@ -919,13 +1244,9 @@ function copyLink() {
   input.setSelectionRange(0, 99999);
   navigator.clipboard.writeText(input.value).then(() => {
     const btn = document.getElementById("copyBtn");
-    btn.textContent = "✓ Copied";
-    btn.classList.add("copied");
-    toast("Link copied — share it!");
-    setTimeout(() => {
-      btn.textContent = "Copy";
-      btn.classList.remove("copied");
-    }, 2000);
+    btn.textContent = "✓ Copied"; btn.classList.add("copied");
+    toast("Link copied!");
+    setTimeout(() => { btn.textContent = "Copy"; btn.classList.remove("copied"); }, 2000);
   }).catch(() => toast("Copy failed", "error"));
 }
 
@@ -943,8 +1264,7 @@ function toggleSidebar(force) {
 // ============================================================
 window.addEventListener("beforeunload", (e) => {
   if (room && room.state === "connected") {
-    e.preventDefault();
-    e.returnValue = "";
+    e.preventDefault(); e.returnValue = "";
   }
 });
 
@@ -955,6 +1275,9 @@ async function boot() {
   const ok = await checkAdmin();
   if (!ok) return;
   loadVoices();
+  startRenderLoop();
+  // Start webcam tracking on load (fails silently if no camera)
+  setTimeout(() => startFaceTracking(), 500);
 }
 
 boot();
