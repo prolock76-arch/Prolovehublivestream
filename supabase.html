@@ -3,1132 +3,402 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Supabase Setup · ProLoveHub</title>
-<meta name="description" content="Connect ProLoveHub to Supabase." />
-
+<title>Log In · ProLoveHub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-
 <style>
-/* ============================================================
-   RESET
-============================================================ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-body {
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
-  background: #0A0A0F;
-  color: #fff;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  min-height: 100vh;
-}
-a { color: inherit; text-decoration: none; }
-button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
-input, textarea { font-family: inherit; }
-ul, ol { list-style: none; }
-
-/* ============================================================
-   VARIABLES
-============================================================ */
-:root {
-  --pink: #FE2C55;
-  --cyan: #25F4EE;
-  --dark: #0A0A0F;
-  --card: #14141C;
-  --border: #1F1F2A;
-  --muted: #9CA3AF;
-  --dim: #6B7280;
-  --green: #22C55E;
-  --amber: #F59E0B;
-  --radius: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-  --container: 920px;
-}
-
-/* ============================================================
-   UTILITIES
-============================================================ */
-.container {
-  width: 100%;
-  max-width: var(--container);
-  margin: 0 auto;
-  padding: 0 24px;
-}
-.grad-text {
-  background: linear-gradient(90deg, var(--pink), var(--cyan));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-}
-.pulse { animation: pulseLive 1.5s ease-in-out infinite; }
-@keyframes pulseLive {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%      { opacity: 0.5; transform: scale(1.3); }
-}
-.dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; }
-.dot-white { background: #fff; }
-.dot-cyan { background: var(--cyan); }
-
-/* ============================================================
-   TOP NAV
-============================================================ */
-.topnav {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: rgba(10,10,15,0.95);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-  padding: 14px 0;
-}
-.topnav-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-.logo { display: flex; align-items: center; gap: 10px; }
-.logo-mark {
-  position: relative;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--pink), var(--cyan));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  font-size: 14px;
-  color: #0A0A0F;
-}
-.logo-dot {
-  position: absolute;
-  top: -2px; right: -2px;
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  background: var(--pink);
-  animation: pulseLive 1.5s ease-in-out infinite;
-}
-.logo-text { font-size: 15px; font-weight: 800; letter-spacing: -0.02em; }
-.topnav-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--card);
-  font-size: 13px;
-  font-weight: 600;
-  transition: all 0.15s;
-}
-.topnav-back:hover { background: #1A1A24; }
-
-/* ============================================================
-   HERO
-============================================================ */
-.hero {
-  padding: 48px 0 24px;
-  text-align: center;
-}
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 14px;
-  border-radius: 999px;
-  background: rgba(37, 244, 238, 0.08);
-  border: 1px solid rgba(37, 244, 238, 0.3);
-  color: var(--cyan);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  margin-bottom: 20px;
-}
-.hero-title {
-  font-size: clamp(30px, 5vw, 44px);
-  font-weight: 900;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-  margin-bottom: 16px;
-}
-.hero-sub {
-  font-size: 16px;
-  color: var(--muted);
-  max-width: 640px;
-  margin: 0 auto;
-  line-height: 1.6;
-}
-
-/* ============================================================
-   STEP CARDS
-============================================================ */
-.steps {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 24px 0 40px;
-}
-.step-card {
-  position: relative;
-  padding: 24px;
-  border-radius: var(--radius-xl);
-  background: var(--card);
-  border: 1px solid var(--border);
-  overflow: hidden;
-}
-.step-card::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0;
-  width: 4px;
-  height: 100%;
-  background: linear-gradient(180deg, var(--pink), var(--cyan));
-}
-.step-head {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 16px;
-}
-.step-num {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--pink), var(--cyan));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  font-size: 15px;
-  color: #0A0A0F;
-  flex-shrink: 0;
-}
-.step-title {
-  font-size: 17px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-}
-.step-sub {
-  font-size: 12px;
-  color: var(--dim);
-  margin-top: 2px;
-}
-.step-body {
-  font-size: 14px;
-  color: #D1D5DB;
-  line-height: 1.7;
-}
-.step-body p { margin-bottom: 10px; }
-.step-body p:last-child { margin-bottom: 0; }
-.step-body code {
-  background: rgba(255,255,255,0.06);
-  padding: 2px 7px;
-  border-radius: 5px;
-  font-family: ui-monospace, "SF Mono", monospace;
-  font-size: 13px;
-  color: var(--cyan);
-}
-.step-body a {
-  color: var(--cyan);
-  text-decoration: underline;
-}
-
-/* Code block */
-.code-block {
-  position: relative;
-  margin-top: 12px;
-  border-radius: var(--radius);
-  background: #05050A;
-  border: 1px solid var(--border);
-  overflow: hidden;
-}
-.code-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 14px;
-  background: rgba(255,255,255,0.03);
-  border-bottom: 1px solid var(--border);
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--dim);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-.code-copy {
-  padding: 4px 10px;
-  border-radius: 6px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--muted);
-  transition: all 0.15s;
-}
-.code-copy:hover { background: #1A1A24; color: #fff; }
-.code-copy.copied { background: rgba(34,197,94,0.15); color: var(--green); border-color: rgba(34,197,94,0.4); }
-.code-body {
-  padding: 14px;
-  font-family: ui-monospace, "SF Mono", monospace;
-  font-size: 12px;
-  line-height: 1.65;
-  color: #E5E7EB;
-  overflow-x: auto;
-  white-space: pre;
-  max-height: 320px;
-  overflow-y: auto;
-}
-.code-body::-webkit-scrollbar { width: 6px; height: 6px; }
-.code-body::-webkit-scrollbar-thumb { background: #22222C; border-radius: 6px; }
-
-/* Inline list */
-.inline-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 10px;
-}
-.inline-list li {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  font-size: 13.5px;
-  color: #D1D5DB;
-  line-height: 1.55;
-}
-.inline-list li::before {
-  content: "▸";
-  color: var(--cyan);
-  font-weight: 900;
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-
-/* ============================================================
-   CONNECT PANEL
-============================================================ */
-.connect-panel {
-  padding: 28px;
-  border-radius: var(--radius-xl);
-  background: linear-gradient(135deg, var(--card), var(--dark), var(--card));
-  border: 1px solid var(--border);
-  position: relative;
-  overflow: hidden;
-  margin-bottom: 24px;
-}
-.connect-panel::before {
-  content: "";
-  position: absolute;
-  top: -120px; left: -120px;
-  width: 320px; height: 320px;
-  border-radius: 50%;
-  background: rgba(254,44,85,0.15);
-  filter: blur(100px);
-  pointer-events: none;
-}
-.connect-panel::after {
-  content: "";
-  position: absolute;
-  bottom: -120px; right: -120px;
-  width: 320px; height: 320px;
-  border-radius: 50%;
-  background: rgba(37,244,238,0.15);
-  filter: blur(100px);
-  pointer-events: none;
-}
-.connect-inner { position: relative; z-index: 1; }
-.connect-head {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 20px;
-}
-.connect-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--pink), var(--cyan));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  flex-shrink: 0;
-}
-.connect-title {
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-}
-.connect-sub {
-  font-size: 13px;
-  color: var(--muted);
-  margin-top: 2px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 16px;
-}
-.form-label {
-  font-size: 12px;
-  font-weight: 700;
-  color: #D1D5DB;
-  letter-spacing: 0.02em;
-}
-.form-label .req { color: var(--pink); }
-.form-input {
-  width: 100%;
-  padding: 12px 14px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: #0A0A0F;
-  color: #fff;
-  font-size: 13px;
-  font-family: ui-monospace, "SF Mono", monospace;
-  outline: none;
-  transition: all 0.15s;
-}
-.form-input:focus {
-  border-color: var(--cyan);
-  box-shadow: 0 0 0 3px rgba(37,244,238,0.12);
-}
-.form-input::placeholder { color: var(--dim); }
-
-.form-hint {
-  font-size: 11px;
-  color: var(--dim);
-  margin-top: 3px;
-  line-height: 1.5;
-}
-
-/* Action buttons */
-.actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 8px;
-}
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px 20px;
-  border-radius: var(--radius);
-  font-weight: 700;
-  font-size: 13px;
-  transition: all 0.15s;
-  white-space: nowrap;
-}
-.btn-primary {
-  background: linear-gradient(90deg, var(--pink), var(--cyan));
-  color: #fff;
-}
-.btn-primary:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
-.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-.btn-ghost {
-  border: 1px solid var(--border);
-  background: rgba(20, 20, 28, 0.6);
-  color: #fff;
-}
-.btn-ghost:hover { background: var(--card); }
-
-/* Status box */
-.status-box {
-  margin-top: 16px;
-  padding: 14px 16px;
-  border-radius: var(--radius);
-  font-size: 13px;
-  display: none;
-  align-items: flex-start;
-  gap: 10px;
-  line-height: 1.55;
-}
-.status-box.show { display: flex; }
-.status-box.success {
-  background: rgba(34,197,94,0.08);
-  border: 1px solid rgba(34,197,94,0.35);
-  color: #86EFAC;
-}
-.status-box.error {
-  background: rgba(254,44,85,0.08);
-  border: 1px solid rgba(254,44,85,0.35);
-  color: #FF8099;
-}
-.status-box.info {
-  background: rgba(37,244,238,0.08);
-  border: 1px solid rgba(37,244,238,0.35);
-  color: var(--cyan);
-}
-.status-icon { font-size: 16px; flex-shrink: 0; line-height: 1.3; }
-.status-text { min-width: 0; word-break: break-word; }
-.status-text strong { color: #fff; }
-
-/* Connection result details */
-.conn-details {
-  margin-top: 12px;
-  padding: 14px;
-  border-radius: var(--radius);
-  background: rgba(0,0,0,0.3);
-  border: 1px solid var(--border);
-  font-family: ui-monospace, "SF Mono", monospace;
-  font-size: 12px;
-  line-height: 1.7;
-  color: #D1D5DB;
-  white-space: pre-wrap;
-  word-break: break-word;
-  display: none;
-}
-.conn-details.show { display: block; }
-
-/* Badge */
-.badge-ok {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 10px;
-  border-radius: 999px;
-  background: rgba(34,197,94,0.15);
-  border: 1px solid rgba(34,197,94,0.4);
-  color: var(--green);
-  font-size: 11px;
-  font-weight: 700;
-}
-
-/* ============================================================
-   NEXT STEPS
-============================================================ */
-.next-section {
-  padding: 24px 0 60px;
-}
-.next-title {
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  margin-bottom: 8px;
-}
-.next-sub {
-  font-size: 14px;
-  color: var(--muted);
-  margin-bottom: 20px;
-}
-.next-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
-@media (min-width: 640px) {
-  .next-grid { grid-template-columns: repeat(2, 1fr); }
-}
-.next-card {
-  padding: 18px;
-  border-radius: var(--radius-lg);
-  background: var(--card);
-  border: 1px solid var(--border);
-  transition: all 0.2s;
-  display: block;
-}
-.next-card:hover {
-  border-color: rgba(37,244,238,0.4);
-  transform: translateY(-2px);
-}
-.next-icon {
-  font-size: 22px;
-  margin-bottom: 10px;
-}
-.next-name {
-  font-size: 14px;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-.next-desc {
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.55;
-}
-
-/* ============================================================
-   TOAST
-============================================================ */
-.toast {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%) translateY(120%);
-  padding: 12px 20px;
-  border-radius: var(--radius);
-  background: var(--card);
-  border: 1px solid var(--border);
-  font-size: 13px;
-  font-weight: 600;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-  transition: transform 0.3s ease;
-  z-index: 500;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
-  max-width: calc(100vw - 32px);
-}
-.toast.show { transform: translateX(-50%) translateY(0); }
-.toast.success { border-color: rgba(34,197,94,0.5); color: #86EFAC; }
-.toast.error   { border-color: rgba(254,44,85,0.5); color: #FF8099; }
-
-/* Footer */
-.footer {
-  border-top: 1px solid var(--border);
-  padding: 24px 0;
-  text-align: center;
-  font-size: 12px;
-  color: var(--dim);
-}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:"Inter",system-ui,sans-serif;background:#0A0A0F;color:#fff;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input{font-family:inherit}
+:root{--pink:#FE2C55;--cyan:#25F4EE;--card:#14141C;--border:#1F1F2A;--muted:#9CA3AF;--dim:#6B7280;--radius:12px}
+.grad-text{background:linear-gradient(90deg,var(--pink),var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.pulse{animation:pulseLive 1.5s ease-in-out infinite}
+@keyframes pulseLive{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+.auth{display:grid;grid-template-columns:1fr;min-height:100vh}
+@media (min-width:1024px){.auth{grid-template-columns:1fr 1fr}}
+.auth-brand{position:relative;display:none;overflow:hidden;padding:64px;background:linear-gradient(rgba(254,44,85,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(37,244,238,.06) 1px,transparent 1px),#0A0A0F;background-size:48px 48px,48px 48px,auto}
+@media (min-width:1024px){.auth-brand{display:flex;flex-direction:column;justify-content:space-between}}
+.brand-blob{position:absolute;width:500px;height:500px;border-radius:50%;filter:blur(120px);pointer-events:none}
+.brand-blob-pink{top:-160px;left:-160px;background:rgba(254,44,85,.25)}
+.brand-blob-cyan{bottom:-160px;right:-160px;background:rgba(37,244,238,.25)}
+.brand-content{position:relative;z-index:1;max-width:460px}
+.brand-logo{display:flex;align-items:center;gap:10px;margin-bottom:64px}
+.brand-mark{position:relative;width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--pink),var(--cyan));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#0A0A0F}
+.brand-dot{position:absolute;top:-2px;right:-2px;width:10px;height:10px;border-radius:50%;background:var(--pink);animation:pulseLive 1.5s ease-in-out infinite}
+.brand-wordmark{font-size:20px;font-weight:800;letter-spacing:-.02em}
+.brand-headline{font-size:44px;font-weight:900;line-height:1.1;letter-spacing:-.03em;margin-bottom:20px}
+.brand-sub{font-size:16px;color:var(--muted);line-height:1.65;margin-bottom:40px}
+.brand-perks{display:flex;flex-direction:column;gap:14px}
+.brand-perk{display:flex;align-items:center;gap:14px;font-size:14px;color:#D1D5DB}
+.brand-perk-icon{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.brand-foot{position:relative;z-index:1;font-size:12px;color:var(--dim)}
+.auth-form-wrap{display:flex;align-items:center;justify-content:center;padding:40px 24px;background:#0A0A0F}
+.auth-form-box{width:100%;max-width:420px}
+.mobile-logo{display:flex;align-items:center;gap:10px;margin-bottom:32px;justify-content:center}
+@media (min-width:1024px){.mobile-logo{display:none}}
+.auth-title{font-size:30px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
+.auth-sub{font-size:14px;color:var(--muted);margin-bottom:32px}
+.auth-tabs{display:flex;padding:4px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:28px}
+.auth-tab{flex:1;padding:10px 16px;border-radius:9px;font-size:14px;font-weight:600;color:var(--muted);transition:all .2s}
+.auth-tab.active{background:linear-gradient(90deg,var(--pink),var(--cyan));color:#fff}
+.auth-tab:not(.active):hover{color:#fff}
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.form-label{font-size:13px;font-weight:500;color:#D1D5DB}
+.form-label .req{color:var(--pink)}
+.form-input{width:100%;padding:12px 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--card);color:#fff;font-size:14px;transition:all .2s;outline:none}
+.form-input::placeholder{color:var(--dim)}
+.form-input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(37,244,238,.12)}
+.form-input.invalid{border-color:var(--pink);box-shadow:0 0 0 3px rgba(254,44,85,.12)}
+.form-error{font-size:12px;color:var(--pink);margin-top:2px;min-height:14px}
+.form-pass-wrap{position:relative}
+.form-pass-wrap .form-input{padding-right:44px}
+.pass-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--dim);font-size:14px;padding:4px;border-radius:6px}
+.pass-toggle:hover{color:#fff}
+.form-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;font-size:13px;flex-wrap:wrap;gap:8px}
+.checkbox{display:flex;align-items:center;gap:8px;color:var(--muted);cursor:pointer}
+.checkbox input{appearance:none;-webkit-appearance:none;width:16px;height:16px;border-radius:4px;border:1px solid var(--border);background:var(--card);cursor:pointer;position:relative;transition:all .2s}
+.checkbox input:checked{background:linear-gradient(135deg,var(--pink),var(--cyan));border-color:transparent}
+.checkbox input:checked::after{content:"";position:absolute;left:4px;top:1px;width:5px;height:9px;border:solid #0A0A0F;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.form-forgot{color:var(--cyan);font-size:13px}
+.form-forgot:hover{color:#fff}
+.btn-submit{width:100%;padding:14px;border-radius:var(--radius);font-weight:700;font-size:15px;color:#fff;background:linear-gradient(90deg,var(--pink),var(--cyan));transition:all .2s;position:relative}
+.btn-submit:hover:not(:disabled){opacity:.92;transform:translateY(-1px)}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed}
+.btn-spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.alert{padding:12px 14px;border-radius:var(--radius);font-size:13px;margin-bottom:16px;display:none;line-height:1.5}
+.alert.show{display:block}
+.alert-error{background:rgba(254,44,85,.1);border:1px solid rgba(254,44,85,.3);color:#FF8099}
+.alert-success{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#86EFAC}
+.back-home{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--dim);margin-bottom:24px;transition:color .2s}
+.back-home:hover{color:#fff}
+.auth-foot{text-align:center;margin-top:28px;font-size:13px;color:var(--muted)}
+.auth-foot a{color:var(--cyan);font-weight:600}
+.auth-foot a:hover{color:#fff}
+.legal{font-size:12px;color:var(--dim);margin-top:20px;text-align:center;line-height:1.6}
+.signed-in{display:none;text-align:center}
+.signed-in.show{display:block}
+.signed-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:#0A0A0F;margin:0 auto 16px}
+.signed-name{font-size:22px;font-weight:800;margin-bottom:4px}
+.signed-email{font-size:13px;color:var(--muted);margin-bottom:24px}
+.signed-actions{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.signed-btn{padding:14px;border-radius:var(--radius);font-weight:700;font-size:14px;transition:all .15s}
+.signed-btn.primary{background:linear-gradient(90deg,var(--pink),var(--cyan));color:#fff}
+.signed-btn.primary:hover{opacity:.9;transform:translateY(-1px)}
+.signed-btn.ghost{border:1px solid var(--border);background:var(--card);color:#fff}
+.signed-btn.ghost:hover{background:#1A1A24}
 </style>
 </head>
-
 <body>
 
-<!-- ============================================================
-     TOP NAV
-============================================================ -->
-<header class="topnav">
-  <div class="container topnav-inner">
-    <a href="index.html" class="logo">
-      <div class="logo-mark">P<span class="logo-dot"></span></div>
-      <span class="logo-text">Pro<span class="grad-text">LoveHub</span></span>
-    </a>
-    <a href="index.html" class="topnav-back">← Back to home</a>
-  </div>
-</header>
-
-<!-- ============================================================
-     HERO
-============================================================ -->
-<section class="hero">
-  <div class="container">
-    <div class="hero-badge">
-      <span class="dot dot-cyan pulse"></span>
-      SUPABASE SETUP
-    </div>
-    <h1 class="hero-title">
-      Connect <span class="grad-text">ProLoveHub</span><br />
-      to a real database.
-    </h1>
-    <p class="hero-sub">
-      Follow the steps below to spin up your Supabase project, run the schema,
-      and connect every page to real data — free, in about 10 minutes.
-    </p>
-  </div>
-</section>
-
-<!-- ============================================================
-     STEPS
-============================================================ -->
-<div class="container">
-  <div class="steps">
-
-    <!-- STEP 1 -->
-    <div class="step-card">
-      <div class="step-head">
-        <div class="step-num">1</div>
-        <div>
-          <div class="step-title">Create a Supabase project</div>
-          <div class="step-sub">Free tier is more than enough to start</div>
-        </div>
-      </div>
-      <div class="step-body">
-        <ul class="inline-list">
-          <li>Go to <a href="https://supabase.com" target="_blank">supabase.com</a> and sign in (GitHub login works).</li>
-          <li>Click <strong>New project</strong>.</li>
-          <li>Pick a name — e.g. <code>prolovehub</code>.</li>
-          <li>Set a database password — <strong>save it somewhere safe</strong>.</li>
-          <li>Choose a region close to you (Nairobi → pick <code>Europe (Frankfurt)</code> or <code>South Africa</code>).</li>
-          <li>Click <strong>Create new project</strong>. Wait ~2 minutes for it to spin up.</li>
-        </ul>
+<div class="auth">
+  <aside class="auth-brand">
+    <div class="brand-blob brand-blob-pink"></div>
+    <div class="brand-blob brand-blob-cyan"></div>
+    <div class="brand-content">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-mark">P<span class="brand-dot"></span></div>
+        <span class="brand-wordmark">Pro<span class="grad-text">LoveHub</span></span>
+      </a>
+      <h1 class="brand-headline">Go live as your<br /><span class="grad-text">3D avatar.</span><br />Build your world.</h1>
+      <p class="brand-sub">Join free, stream as your animated character, and build a real community.</p>
+      <div class="brand-perks">
+        <div class="brand-perk"><div class="brand-perk-icon">🎭</div><span>Full-body 3D avatar streaming</span></div>
+        <div class="brand-perk"><div class="brand-perk-icon">🏅</div><span>Member badges &amp; custom emotes</span></div>
+        <div class="brand-perk"><div class="brand-perk-icon">💬</div><span>Members-only chat &amp; private live</span></div>
+        <div class="brand-perk"><div class="brand-perk-icon">✨</div><span>Free forever — no card needed</span></div>
       </div>
     </div>
+    <div class="brand-foot">© 2025 ProLoveHub. Live. Connect. Belong.</div>
+  </aside>
 
-    <!-- STEP 2 -->
-    <div class="step-card">
-      <div class="step-head">
-        <div class="step-num">2</div>
-        <div>
-          <div class="step-title">Run the schema SQL</div>
-          <div class="step-sub">Creates the tables ProLoveHub needs</div>
+  <main class="auth-form-wrap">
+    <div class="auth-form-box">
+      <a href="index.html" class="back-home">← Back to home</a>
+      <div class="mobile-logo">
+        <div class="brand-mark">P<span class="brand-dot"></span></div>
+        <span class="brand-wordmark">Pro<span class="grad-text">LoveHub</span></span>
+      </div>
+
+      <div class="signed-in" id="signedIn">
+        <div class="signed-avatar" id="siAvatar">?</div>
+        <div class="signed-name" id="siName">User</div>
+        <div class="signed-email" id="siEmail">user@example.com</div>
+        <div class="alert alert-success show" style="text-align:left;">✓ You're logged in.</div>
+        <div class="signed-actions">
+          <a href="index.html" class="signed-btn primary">🏠 Go to homepage</a>
+          <a href="creator.html?handle=lunaflows" class="signed-btn ghost">🎭 Browse creators</a>
+          <a href="studio.html" class="signed-btn ghost">🎬 Open Avatar Studio</a>
+          <button class="signed-btn ghost" onclick="handleLogout()">🚪 Log out</button>
         </div>
       </div>
-      <div class="step-body">
-        <p>In your Supabase project, open the <strong>SQL Editor</strong> (left sidebar) → <strong>New query</strong>. Paste this and click <strong>Run</strong>:</p>
 
-        <div class="code-block">
-          <div class="code-head">
-            <span>schema.sql</span>
-            <button class="code-copy" onclick="copyCode(this, 'schemaSql')">Copy</button>
+      <div id="authFormWrap">
+        <h2 class="auth-title" id="authTitle">Welcome back</h2>
+        <p class="auth-sub" id="authSub">Log in to continue to your world.</p>
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-mode="login" type="button">Log In</button>
+          <button class="auth-tab" data-mode="signup" type="button">Sign Up</button>
+        </div>
+        <div class="alert alert-error" id="alertError"></div>
+        <div class="alert alert-success" id="alertSuccess"></div>
+
+        <form id="authForm" novalidate>
+          <div class="form-group" id="groupUsername" style="display:none;">
+            <label class="form-label" for="username">Username <span class="req">*</span></label>
+            <input type="text" id="username" class="form-input" placeholder="lunaflows" autocomplete="username" />
+            <div class="form-error" id="errUsername"></div>
           </div>
-          <div class="code-body" id="schemaSql">-- ============================================================
--- ProLoveHub — Supabase Schema
--- ============================================================
-
--- Creators
-create table if not exists creators (
-  id uuid primary key default gen_random_uuid(),
-  handle text unique not null,
-  name text not null,
-  initials text,
-  gradient text,
-  tags text[] default '{}',
-  bio text default '',
-  is_live boolean default false,
-  is_members_only boolean default true,
-  viewers int default 0,
-  streams int default 0,
-  created_at timestamptz default now()
-);
-
--- Memberships (users joining creators — no payments)
-create table if not exists memberships (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid references auth.users(id) on delete cascade,
-  creator_id uuid references creators(id) on delete cascade,
-  status text not null default 'active',
-  created_at timestamptz default now(),
-  unique(user_id, creator_id)
-);
-
--- Live rooms
-create table if not exists rooms (
-  id uuid primary key default gen_random_uuid(),
-  creator_id uuid references creators(id) on delete cascade,
-  title text not null,
-  is_live boolean default false,
-  is_members_only boolean default true,
-  viewers int default 0,
-  started_at timestamptz,
-  ended_at timestamptz,
-  created_at timestamptz default now()
-);
-
--- Activity log
-create table if not exists activity (
-  id uuid primary key default gen_random_uuid(),
-  icon text,
-  text text not null,
-  created_at timestamptz default now()
-);
-
--- ============================================================
--- ROW LEVEL SECURITY
--- ============================================================
-
-alter table creators    enable row level security;
-alter table memberships enable row level security;
-alter table rooms       enable row level security;
-alter table activity    enable row level security;
-
--- Anyone can read creators, rooms, activity
-drop policy if exists "read_creators" on creators;
-create policy "read_creators" on creators for select using (true);
-
-drop policy if exists "read_rooms" on rooms;
-create policy "read_rooms" on rooms for select using (true);
-
-drop policy if exists "read_activity" on activity;
-create policy "read_activity" on activity for select using (true);
-
--- Logged-in users can create their own membership
-drop policy if exists "insert_own_membership" on memberships;
-create policy "insert_own_membership" on memberships
-  for insert with check (auth.uid() = user_id);
-
--- Users can read their own memberships
-drop policy if exists "read_own_membership" on memberships;
-create policy "read_own_membership" on memberships
-  for select using (auth.uid() = user_id);
-
--- Users can delete their own membership
-drop policy if exists "delete_own_membership" on memberships;
-create policy "delete_own_membership" on memberships
-  for delete using (auth.uid() = user_id);
-
--- ============================================================
--- SEED DATA
--- ============================================================
-
-insert into creators (handle, name, initials, gradient, tags, bio, is_live, is_members_only, viewers, streams)
-values
-  ('lunaflows',    'Luna Rivers',    'LR', 'linear-gradient(135deg, #FE2C55, #A855F7)', ARRAY['Music','Lo-fi'],    'Sunset sessions and lo-fi sets.',      true,  false, 12840, 182),
-  ('kaijudances',  'Kai Nakamura',   'KN', 'linear-gradient(135deg, #25F4EE, #3B82F6)', ARRAY['Dance','Choreo'],   'Choreographer and dancer.',            true,  true,  8230,  126),
-  ('pixelwithpia', 'Pia Solberg',    'PS', 'linear-gradient(135deg, #A855F7, #FE2C55)', ARRAY['Gaming','Art'],     'Cozy game nights & art streams.',      false, true,  0,     304),
-  ('chefmateo',    'Mateo Alvarez',  'MA', 'linear-gradient(135deg, #F97316, #FE2C55)', ARRAY['Food','Late-night'],'Late-night cooking streams.',          true,  false, 4210,  89)
-on conflict (handle) do nothing;
-</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- STEP 3 -->
-    <div class="step-card">
-      <div class="step-head">
-        <div class="step-num">3</div>
-        <div>
-          <div class="step-title">Copy your API credentials</div>
-          <div class="step-sub">From Project Settings → API</div>
-        </div>
-      </div>
-      <div class="step-body">
-        <ul class="inline-list">
-          <li>In Supabase, click <strong>Project Settings</strong> (gear icon) → <strong>API</strong>.</li>
-          <li>Copy the <strong>Project URL</strong> — looks like <code>https://xxxxx.supabase.co</code>.</li>
-          <li>Copy the <strong>anon public</strong> key — a long string starting with <code>eyJ...</code>.</li>
-          <li>Paste both into the form below.</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- STEP 4 — CONNECT -->
-    <div class="step-card">
-      <div class="step-head">
-        <div class="step-num">4</div>
-        <div>
-          <div class="step-title">Connect & test</div>
-          <div class="step-sub">Live connection test — click to verify</div>
-        </div>
-      </div>
-      <div class="step-body">
-
-        <div class="connect-panel">
-          <div class="connect-inner">
-
-            <div class="connect-head">
-              <div class="connect-icon">🔌</div>
-              <div>
-                <div class="connect-title">Supabase connection</div>
-                <div class="connect-sub">Credentials save to localStorage — used by all ProLoveHub pages</div>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="supaUrl">Project URL <span class="req">*</span></label>
-              <input
-                type="text"
-                class="form-input"
-                id="supaUrl"
-                placeholder="https://xxxxxxxxxxxx.supabase.co"
-                autocomplete="off"
-                spellcheck="false"
-              />
-              <div class="form-hint">Found in Project Settings → API</div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="supaKey">Anon public key <span class="req">*</span></label>
-              <input
-                type="text"
-                class="form-input"
-                id="supaKey"
-                placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                autocomplete="off"
-                spellcheck="false"
-              />
-              <div class="form-hint">Safe to expose in client-side code</div>
-            </div>
-
-            <div class="actions">
-              <button class="btn btn-primary" id="testBtn" onclick="testConnection()">
-                🔍 Test connection
-              </button>
-              <button class="btn btn-ghost" onclick="saveOnly()">
-                💾 Save without testing
-              </button>
-              <button class="btn btn-ghost" onclick="clearCreds()">
-                🗑️ Clear
-              </button>
-            </div>
-
-            <div class="status-box" id="statusBox">
-              <span class="status-icon" id="statusIcon">•</span>
-              <div class="status-text" id="statusText"></div>
-            </div>
-
-            <div class="conn-details" id="connDetails"></div>
-
+          <div class="form-group">
+            <label class="form-label" for="email">Email <span class="req">*</span></label>
+            <input type="email" id="email" class="form-input" placeholder="you@prolovehub.com" autocomplete="email" />
+            <div class="form-error" id="errEmail"></div>
           </div>
-        </div>
+          <div class="form-group">
+            <label class="form-label" for="password">Password <span class="req">*</span></label>
+            <div class="form-pass-wrap">
+              <input type="password" id="password" class="form-input" placeholder="At least 8 characters" autocomplete="current-password" />
+              <button type="button" class="pass-toggle" id="passToggle">👁</button>
+            </div>
+            <div class="form-error" id="errPassword"></div>
+          </div>
+          <div class="form-group" id="groupConfirm" style="display:none;">
+            <label class="form-label" for="confirm">Confirm password <span class="req">*</span></label>
+            <input type="password" id="confirm" class="form-input" placeholder="Repeat your password" autocomplete="new-password" />
+            <div class="form-error" id="errConfirm"></div>
+          </div>
+          <div class="form-row">
+            <label class="checkbox"><input type="checkbox" id="remember" checked /><span>Remember me</span></label>
+            <a href="#" class="form-forgot" onclick="handleForgot(event)">Forgot password?</a>
+          </div>
+          <button type="submit" class="btn-submit" id="submitBtn"><span id="submitText">Log In</span></button>
+        </form>
 
+        <p class="auth-foot" id="authFoot">Don't have an account? <a href="#" id="footToggle">Sign up free</a></p>
+        <p class="legal">By continuing you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
       </div>
     </div>
-
-  </div>
-
-  <!-- ============================================================
-       NEXT STEPS
-  ============================================================ -->
-  <section class="next-section" id="nextSection" style="display:none;">
-    <h2 class="next-title">🎉 You're connected!</h2>
-    <p class="next-sub">Your credentials are saved. Open any page — they'll all use Supabase now.</p>
-
-    <div class="next-grid">
-      <a class="next-card" href="login.html">
-        <div class="next-icon">🔑</div>
-        <div class="next-name">Test login</div>
-        <div class="next-desc">Create a real account and sign in via Supabase auth.</div>
-      </a>
-      <a class="next-card" href="admin.html">
-        <div class="next-icon">🛠️</div>
-        <div class="next-name">Admin dashboard</div>
-        <div class="next-desc">Creators are loaded from Supabase instead of localStorage.</div>
-      </a>
-      <a class="next-card" href="creator.html?handle=lunaflows">
-        <div class="next-icon">🎭</div>
-        <div class="next-name">Creator profile</div>
-        <div class="next-desc">Real memberships saved to Supabase.</div>
-      </a>
-      <a class="next-card" href="live.html?handle=kaijudances">
-        <div class="next-icon">🔴</div>
-        <div class="next-name">Live room</div>
-        <div class="next-desc">Access checks verify membership from Supabase.</div>
-      </a>
-    </div>
-  </section>
-
+  </main>
 </div>
 
-<!-- Footer -->
-<footer class="footer">
-  <div class="container">
-    © 2025 ProLoveHub · Free forever · No payments
-  </div>
-</footer>
+<div class="toast" id="toast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120%);padding:12px 20px;border-radius:12px;background:#14141C;border:1px solid #1F1F2A;font-size:13px;font-weight:600;box-shadow:0 12px 40px rgba(0,0,0,.5);transition:transform .3s;z-index:500;max-width:calc(100vw - 32px);"></div>
 
-<!-- Toast -->
-<div class="toast" id="toast"></div>
-
-<!-- Supabase JS SDK -->
+<script src="js/config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
 <script>
-/* ============================================================
-   ProLoveHub — Supabase Setup
-============================================================ */
+const CFG = window.PLH_CONFIG || {};
+const SUPA_URL = CFG.supabase?.url || "";
+const SUPA_KEY = CFG.supabase?.key || "";
 
-const STORAGE_KEY = "plh_supabase";
+const signedInBox = document.getElementById("signedIn");
+const authFormWrap = document.getElementById("authFormWrap");
+const siAvatar = document.getElementById("siAvatar");
+const siName = document.getElementById("siName");
+const siEmail = document.getElementById("siEmail");
+const tabs = document.querySelectorAll(".auth-tab");
+const authForm = document.getElementById("authForm");
+const authTitle = document.getElementById("authTitle");
+const authSub = document.getElementById("authSub");
+const authFoot = document.getElementById("authFoot");
+const submitBtn = document.getElementById("submitBtn");
+const submitText = document.getElementById("submitText");
+const groupUsername = document.getElementById("groupUsername");
+const groupConfirm = document.getElementById("groupConfirm");
+const inputUsername = document.getElementById("username");
+const inputEmail = document.getElementById("email");
+const inputPassword = document.getElementById("password");
+const inputConfirm = document.getElementById("confirm");
+const errUsername = document.getElementById("errUsername");
+const errEmail = document.getElementById("errEmail");
+const errPassword = document.getElementById("errPassword");
+const errConfirm = document.getElementById("errConfirm");
+const alertError = document.getElementById("alertError");
+const alertSuccess = document.getElementById("alertSuccess");
+const passToggle = document.getElementById("passToggle");
 
-// ---- Elements ----
-const supaUrl   = document.getElementById("supaUrl");
-const supaKey   = document.getElementById("supaKey");
-const testBtn   = document.getElementById("testBtn");
-const statusBox = document.getElementById("statusBox");
-const statusIcon= document.getElementById("statusIcon");
-const statusText= document.getElementById("statusText");
-const connDetails = document.getElementById("connDetails");
-const nextSection = document.getElementById("nextSection");
+let mode = "login";
+let supabaseClient = null;
 
-// ---- Toast ----
-let toastTimer;
-function toast(msg, type = "success") {
-  const el = document.getElementById("toast");
-  el.textContent = (type === "success" ? "✓ " : "⚠ ") + msg;
-  el.className = "toast show " + type;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove("show"), 2400);
-}
-
-// ---- Copy code ----
-function copyCode(btn, id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  navigator.clipboard.writeText(el.textContent).then(() => {
-    btn.textContent = "✓ Copied";
-    btn.classList.add("copied");
-    setTimeout(() => {
-      btn.textContent = "Copy";
-      btn.classList.remove("copied");
-    }, 1800);
-  }).catch(() => toast("Copy failed — select manually", "error"));
-}
-
-// ---- Load saved creds ----
-function loadSaved() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
-    const { url, key } = JSON.parse(raw);
-    if (url) supaUrl.value = url;
-    if (key) supaKey.value = key;
-    showStatus("info", "💾", "Previously saved credentials loaded. Click <strong>Test connection</strong> to verify.");
-  } catch (_) {}
-}
-
-// ---- Save creds ----
-function saveCreds(url, key) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({
-    url, key,
-    savedAt: new Date().toISOString(),
-  }));
-
-  // Also expose globally so other pages can read
-  window.PLH_SUPABASE = { url, key };
-}
-
-// ---- Status ----
-function showStatus(type, icon, html) {
-  statusBox.className = "status-box show " + type;
-  statusIcon.textContent = icon;
-  statusText.innerHTML = html;
-}
-function hideStatus() {
-  statusBox.className = "status-box";
-}
-
-function showDetails(text) {
-  connDetails.textContent = text;
-  connDetails.classList.add("show");
-}
-function hideDetails() {
-  connDetails.classList.remove("show");
-}
-
-// ---- Validate ----
-function validateInputs() {
-  const url = supaUrl.value.trim();
-  const key = supaKey.value.trim();
-
-  if (!url) { toast("Project URL is required", "error"); return null; }
-  if (!/^https:\/\/[a-z0-9]+\.supabase\.co\/?$/i.test(url)) {
-    toast("URL looks wrong — should be https://xxx.supabase.co", "error");
-    return null;
-  }
-  if (!key) { toast("Anon key is required", "error"); return null; }
-  if (key.length < 100) {
-    toast("Anon key looks too short", "error");
-    return null;
-  }
-
-  return { url: url.replace(/\/$/, ""), key };
-}
-
-// ---- Save only ----
-function saveOnly() {
-  const creds = validateInputs();
-  if (!creds) return;
-
-  saveCreds(creds.url, creds.key);
-  showStatus("success", "✓", "Credentials saved. Other ProLoveHub pages will now use these.");
-  toast("Credentials saved");
-  nextSection.style.display = "block";
-}
-
-// ---- Test connection ----
-async function testConnection() {
-  const creds = validateInputs();
-  if (!creds) return;
-
-  hideDetails();
-  showStatus("info", "⏳", "Testing connection to Supabase…");
-  testBtn.disabled = true;
-  testBtn.textContent = "Testing…";
-
-  const t0 = performance.now();
-
-  try {
-    if (typeof supabase === "undefined") {
-      throw new Error("Supabase SDK failed to load. Check your internet connection.");
-    }
-
-    const client = supabase.createClient(creds.url, creds.key);
-
-    // Test 1: ping auth
-    const { error: authErr } = await client.auth.getSession();
-    if (authErr) throw new Error("Auth check failed: " + authErr.message);
-
-    // Test 2: read from creators table
-    const { data, error: dbErr, count } = await client
-      .from("creators")
-      .select("*", { count: "exact" })
-      .limit(10);
-
-    if (dbErr) {
-      if (dbErr.message.includes("does not exist") || dbErr.code === "42P01") {
-        throw new Error(
-          "Table 'creators' not found. Did you run the schema SQL in Step 2?"
-        );
-      }
-      if (dbErr.message.toLowerCase().includes("row-level security")) {
-        throw new Error(
-          "RLS policy blocking reads. Re-run the policy section of the schema SQL."
-        );
-      }
-      throw new Error("Database error: " + dbErr.message);
-    }
-
-    const elapsed = Math.round(performance.now() - t0);
-
-    // Save on success
-    saveCreds(creds.url, creds.key);
-
-    // Show success
-    showStatus(
-      "success",
-      "✓",
-      `<strong>Connection successful!</strong> Found <strong>${count || data.length}</strong> creators in your database. Round trip: ${elapsed}ms.`
-    );
-
-    // Show details
-    let details = "─── CONNECTION DETAILS ───\n";
-    details += `URL        ${creds.url}\n`;
-    details += `Project    ${creds.url.replace("https://", "").replace(".supabase.co", "")}\n`;
-    details += `Latency    ${elapsed}ms\n`;
-    details += `Creators   ${count || data.length}\n\n`;
-    details += "─── CREATORS ───\n";
-    (data || []).slice(0, 10).forEach(c => {
-      details += `• @${c.handle}  —  ${c.name}  ${c.is_live ? "[LIVE]" : ""}\n`;
+function initSupabase(){
+  if(!SUPA_URL || !SUPA_KEY) return false;
+  try{
+    supabaseClient = supabase.createClient(SUPA_URL, SUPA_KEY, {
+      auth:{persistSession:true, autoRefreshToken:true, detectSessionInUrl:true}
     });
-    showDetails(details);
+    return true;
+  }catch(e){ console.error(e); return false; }
+}
 
-    // Reveal next steps
-    nextSection.style.display = "block";
+async function checkSession(){
+  if(!supabaseClient) return;
+  const { data:{ session } } = await supabaseClient.auth.getSession();
+  if(session && session.user) showSignedIn(session.user);
+  else showAuthForm();
+}
 
-    toast("Connected successfully!");
+function showSignedIn(user){
+  const email = user.email || "";
+  const username = user.user_metadata?.username || email.split("@")[0] || "user";
+  siAvatar.textContent = (username[0] || "?").toUpperCase();
+  siName.textContent = "@" + username;
+  siEmail.textContent = email;
+  signedInBox.classList.add("show");
+  authFormWrap.style.display = "none";
+  localStorage.setItem("plh_user", JSON.stringify({
+    id: user.id, username, email, loggedInAt: new Date().toISOString()
+  }));
+}
+function showAuthForm(){
+  signedInBox.classList.remove("show");
+  authFormWrap.style.display = "block";
+}
 
-  } catch (err) {
-    console.error(err);
-    showStatus("error", "✕", "Connection failed: " + escapeHtml(err.message));
-    toast("Connection failed", "error");
-  } finally {
-    testBtn.disabled = false;
-    testBtn.textContent = "🔍 Test connection";
+function setMode(newMode){
+  mode = newMode;
+  tabs.forEach(t=>t.classList.toggle("active", t.dataset.mode === mode));
+  groupUsername.style.display = mode === "signup" ? "flex" : "none";
+  groupConfirm.style.display = mode === "signup" ? "flex" : "none";
+  if(mode === "signup"){
+    authTitle.textContent = "Create your account";
+    authSub.textContent = "Join free. No card. No limits.";
+    submitText.textContent = "Create account";
+    inputPassword.setAttribute("autocomplete","new-password");
+    authFoot.innerHTML = `Already have an account? <a href="#" id="footToggle">Log in</a>`;
+  } else {
+    authTitle.textContent = "Welcome back";
+    authSub.textContent = "Log in to continue to your world.";
+    submitText.textContent = "Log In";
+    inputPassword.setAttribute("autocomplete","current-password");
+    authFoot.innerHTML = `Don't have an account? <a href="#" id="footToggle">Sign up free</a>`;
   }
+  bindFootToggle(); clearErrors(); hideAlerts();
+}
+tabs.forEach(t=>t.addEventListener("click",()=>setMode(t.dataset.mode)));
+
+function bindFootToggle(){
+  const t = document.getElementById("footToggle");
+  if(!t) return;
+  t.addEventListener("click",e=>{
+    e.preventDefault();
+    setMode(mode==="login"?"signup":"login");
+  });
 }
 
-// ---- Clear ----
-function clearCreds() {
-  if (!confirm("Remove saved Supabase credentials?")) return;
-  localStorage.removeItem(STORAGE_KEY);
-  supaUrl.value = "";
-  supaKey.value = "";
-  hideStatus();
-  hideDetails();
-  nextSection.style.display = "none";
-  toast("Credentials cleared");
+function setError(i,e,m){ i.classList.add("invalid"); e.textContent = m; }
+function clearError(i,e){ i.classList.remove("invalid"); e.textContent = ""; }
+function clearErrors(){
+  [[inputUsername,errUsername],[inputEmail,errEmail],[inputPassword,errPassword],[inputConfirm,errConfirm]]
+    .forEach(([i,e])=>clearError(i,e));
+}
+function hideAlerts(){ alertError.classList.remove("show"); alertSuccess.classList.remove("show"); }
+function showAlert(type,msg){
+  const el = type==="error"?alertError:alertSuccess;
+  el.textContent = msg; el.classList.add("show");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function validateEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+function validateUsername(u){ return /^[a-zA-Z0-9_]{3,20}$/.test(u); }
+
+passToggle.addEventListener("click",()=>{
+  const isPass = inputPassword.type === "password";
+  inputPassword.type = isPass ? "text" : "password";
+  passToggle.textContent = isPass ? "🙈" : "👁";
+});
+
+async function handleForgot(e){
+  e.preventDefault();
+  const email = inputEmail.value.trim();
+  if(!email || !validateEmail(email)){ showAlert("error","Enter your email above first."); return; }
+  if(!supabaseClient){ showAlert("error","Supabase not configured."); return; }
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
+  if(error) showAlert("error", error.message);
+  else showAlert("success","Password reset email sent! Check your inbox.");
 }
 
-// ---- Escape ----
-function escapeHtml(s) {
-  return String(s)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+authForm.addEventListener("submit", async e => {
+  e.preventDefault(); clearErrors(); hideAlerts();
+  const username = inputUsername.value.trim();
+  const email = inputEmail.value.trim();
+  const password = inputPassword.value;
+  const confirm = inputConfirm.value;
+  let hasError = false;
+  if(mode === "signup"){
+    if(!username){ setError(inputUsername,errUsername,"Username is required."); hasError = true; }
+    else if(!validateUsername(username)){ setError(inputUsername,errUsername,"3–20 chars, letters/numbers/underscore."); hasError = true; }
+  }
+  if(!email){ setError(inputEmail,errEmail,"Email is required."); hasError = true; }
+  else if(!validateEmail(email)){ setError(inputEmail,errEmail,"Enter a valid email."); hasError = true; }
+  if(!password){ setError(inputPassword,errPassword,"Password is required."); hasError = true; }
+  else if(mode === "signup" && password.length < 8){ setError(inputPassword,errPassword,"At least 8 characters."); hasError = true; }
+  if(mode === "signup"){
+    if(!confirm){ setError(inputConfirm,errConfirm,"Please confirm your password."); hasError = true; }
+    else if(confirm !== password){ setError(inputConfirm,errConfirm,"Passwords do not match."); hasError = true; }
+  }
+  if(hasError) return;
+  if(!supabaseClient){ showAlert("error","Supabase not configured."); return; }
+
+  submitBtn.disabled = true;
+  const origText = submitText.textContent;
+  submitText.innerHTML = `<span class="btn-spinner"></span>${mode==="signup"?"Creating account…":"Logging in…"}`;
+
+  try{
+    if(mode === "signup"){
+      const { data, error } = await supabaseClient.auth.signUp({
+        email, password,
+        options:{ data:{ username } }
+      });
+      if(error) throw error;
+      if(!data.session){
+        showAlert("success","✓ Account created! Check your email to confirm, then log in.");
+        submitText.textContent = origText; submitBtn.disabled = false;
+        return;
+      }
+      showAlert("success","Account created! Redirecting…");
+      setTimeout(()=>{ window.location.href = "index.html"; }, 800);
+    } else {
+      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      if(error) throw error;
+      showAlert("success","Logged in! Redirecting…");
+      setTimeout(()=>{ window.location.href = "index.html"; }, 700);
+    }
+  }catch(err){
+    console.error(err);
+    let msg = err.message || "Something went wrong.";
+    if(msg.toLowerCase().includes("invalid login")) msg = "Incorrect email or password.";
+    else if(msg.toLowerCase().includes("user already registered")) msg = "That email is already registered.";
+    else if(msg.toLowerCase().includes("email not confirmed")) msg = "Please confirm your email first.";
+    showAlert("error", msg);
+  } finally {
+    submitText.textContent = origText;
+    submitBtn.disabled = false;
+  }
+});
+
+async function handleLogout(){
+  if(supabaseClient) await supabaseClient.auth.signOut();
+  localStorage.removeItem("plh_user");
+  localStorage.removeItem("plh_memberships");
+  showAuthForm(); setMode("login");
+  showAlert("success","Logged out.");
 }
 
-// ---- Boot ----
-loadSaved();
+// Boot
+if(initSupabase()){
+  checkSession();
+  supabaseClient.auth.onAuthStateChange((event, session)=>{
+    if(event === "SIGNED_IN" && session) showSignedIn(session.user);
+    if(event === "SIGNED_OUT") showAuthForm();
+  });
+  setMode("login");
+} else {
+  document.querySelector(".auth-form-box").innerHTML =
+    '<div style="padding:24px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.35);border-radius:12px;color:#FCD34D;font-size:14px;line-height:1.6;">⚠️ <strong>Supabase not configured.</strong><br>Check that <code>js/config.js</code> exists and has your URL + key.</div>';
+}
 </script>
-
 </body>
 </html>
