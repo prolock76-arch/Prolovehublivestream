@@ -31,7 +31,6 @@ input{font-family:inherit}
 .pulse{animation:pulseLive 1.5s ease-in-out infinite}
 @keyframes pulseLive{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
 
-/* Top nav */
 .topnav{
   position:fixed;top:0;left:0;right:0;height:var(--nav-h);
   background:rgba(10,10,15,.95);backdrop-filter:blur(16px);
@@ -56,17 +55,13 @@ input{font-family:inherit}
 .user-pill .dot{background:var(--cyan)}
 @media (min-width:640px){.user-pill{display:inline-flex}}
 
-/* Layout */
 .layout{
   display:grid;grid-template-columns:1fr;
   height:calc(100vh - var(--nav-h));
   margin-top:var(--nav-h);
 }
-@media (min-width:1024px){
-  .layout{grid-template-columns:1fr 340px}
-}
+@media (min-width:1024px){.layout{grid-template-columns:1fr 340px}}
 
-/* Stage */
 .stage{
   position:relative;background:#000;
   display:flex;align-items:center;justify-content:center;overflow:hidden;
@@ -76,7 +71,6 @@ input{font-family:inherit}
 }
 .stage video.hidden{display:none}
 
-/* Overlay top */
 .stage-top{
   position:absolute;top:16px;left:16px;right:16px;z-index:5;
   display:flex;align-items:center;justify-content:space-between;gap:12px;
@@ -101,7 +95,6 @@ input{font-family:inherit}
   font-size:12px;font-weight:600;
 }
 
-/* Overlay states */
 .overlay{
   position:absolute;inset:0;
   background:rgba(10,10,15,.95);backdrop-filter:blur(10px);
@@ -110,10 +103,48 @@ input{font-family:inherit}
   transition:opacity .3s;
 }
 .overlay.hide{opacity:0;pointer-events:none;display:none}
-.overlay-inner{max-width:440px}
+.overlay-inner{max-width:460px}
 .overlay-icon{font-size:56px;margin-bottom:16px}
 .overlay-title{font-size:22px;font-weight:800;margin-bottom:10px;letter-spacing:-.02em}
 .overlay-sub{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.6}
+
+/* Lock preview — blurred fake video behind the lock */
+.lock-preview{
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(254,44,85,.3),rgba(88,28,135,.5),rgba(37,244,238,.3));
+  background-size:200% 200%;
+  animation:lockBg 8s ease-in-out infinite;
+  filter:blur(12px);
+  z-index:0;
+}
+@keyframes lockBg{
+  0%,100%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+}
+.lock-overlay{
+  position:absolute;inset:0;z-index:11;
+  background:rgba(10,10,15,.88);
+  backdrop-filter:blur(14px);
+  display:none;align-items:center;justify-content:center;
+  text-align:center;padding:40px 24px;
+}
+.lock-overlay.show{display:flex}
+.lock-icon{font-size:64px;margin-bottom:16px;filter:drop-shadow(0 0 30px rgba(254,44,85,.6))}
+.lock-title{font-size:24px;font-weight:800;margin-bottom:10px;letter-spacing:-.02em}
+.lock-sub{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.6;max-width:400px}
+.lock-creator{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:10px 16px;border-radius:999px;
+  background:var(--card);border:1px solid var(--border);
+  margin-bottom:20px;font-size:13px;
+}
+.lock-creator-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pink),var(--cyan));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:12px;color:#0A0A0F;
+}
+.lock-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
@@ -126,7 +157,6 @@ input{font-family:inherit}
 .btn-ghost{border:1px solid var(--border);background:rgba(20,20,28,.6);color:#fff}
 .btn-ghost:hover{background:var(--card)}
 
-/* Sidebar */
 .sidebar{
   background:#0F0F15;border-left:1px solid var(--border);
   display:flex;flex-direction:column;height:100%;overflow:hidden;
@@ -151,7 +181,6 @@ input{font-family:inherit}
 }
 @media (max-width:1023px){.sidebar-close{display:flex}}
 
-/* Chat */
 .chat-scroll{
   flex:1;overflow-y:auto;padding:12px 16px;
   display:flex;flex-direction:column;gap:10px;
@@ -185,7 +214,6 @@ input{font-family:inherit}
 .msg-user.normal{color:#E5E7EB}
 .msg-text{color:#D1D5DB;word-wrap:break-word}
 
-/* Chat input */
 .chat-input-wrap{
   padding:12px 16px;border-top:1px solid var(--border);background:#0A0A0F;
 }
@@ -222,7 +250,6 @@ input{font-family:inherit}
 }
 .chat-locked-note.show{display:block}
 
-/* Toast */
 .toast{
   position:fixed;bottom:24px;left:50%;
   transform:translateX(-50%) translateY(120%);
@@ -259,7 +286,6 @@ input{font-family:inherit}
 
 <body>
 
-<!-- TOPNAV -->
 <header class="topnav">
   <a href="index.html" class="back-btn">← Exit</a>
   <div class="topnav-title" id="navTitle">🔴 Live</div>
@@ -270,12 +296,13 @@ input{font-family:inherit}
   </div>
 </header>
 
-<!-- LAYOUT -->
 <div class="layout">
 
-  <!-- STAGE -->
   <div class="stage" id="stage">
-    <video id="remoteVideo" autoplay playsinline></video>
+    <video id="remoteVideo" class="hidden" autoplay playsinline></video>
+
+    <!-- Blurred preview behind the lock -->
+    <div class="lock-preview" id="lockPreview" style="display:none;"></div>
 
     <div class="stage-top">
       <span class="live-badge" id="liveBadge" style="display:none;">
@@ -286,7 +313,30 @@ input{font-family:inherit}
       </span>
     </div>
 
-    <!-- Connecting overlay -->
+    <!-- MEMBERS-ONLY LOCK -->
+    <div class="lock-overlay" id="lockOverlay">
+      <div>
+        <div class="lock-icon">🔒</div>
+        <div class="lock-title">Members only</div>
+        <p class="lock-sub" id="lockSub">
+          This stream is for members of this creator.
+        </p>
+        <div class="lock-creator" id="lockCreator" style="display:none;">
+          <div class="lock-creator-avatar" id="lockCreatorAvatar">?</div>
+          <div>
+            <div style="font-weight:700;" id="lockCreatorName">—</div>
+            <div style="font-size:11px;color:var(--muted);" id="lockCreatorHandle">@—</div>
+          </div>
+        </div>
+        <div class="lock-actions" id="lockActions">
+          <button class="btn btn-primary" id="lockActionBtn" onclick="handleLockAction()">
+            ⭐ Join Free
+          </button>
+          <a href="index.html" class="btn btn-ghost">← Back to home</a>
+        </div>
+      </div>
+    </div>
+
     <div class="overlay" id="connectingOverlay">
       <div class="overlay-inner">
         <div class="spinner" style="width:40px;height:40px;border-width:3px;margin-bottom:16px;"></div>
@@ -295,7 +345,6 @@ input{font-family:inherit}
       </div>
     </div>
 
-    <!-- Waiting overlay -->
     <div class="overlay hide" id="waitingOverlay">
       <div class="overlay-inner">
         <div class="overlay-icon">⏳</div>
@@ -304,7 +353,6 @@ input{font-family:inherit}
       </div>
     </div>
 
-    <!-- Stream ended -->
     <div class="overlay hide" id="endedOverlay">
       <div class="overlay-inner">
         <div class="overlay-icon">👋</div>
@@ -317,7 +365,6 @@ input{font-family:inherit}
       </div>
     </div>
 
-    <!-- Error -->
     <div class="overlay hide" id="errorOverlay">
       <div class="overlay-inner">
         <div class="overlay-icon">⚠️</div>
@@ -327,7 +374,6 @@ input{font-family:inherit}
       </div>
     </div>
 
-    <!-- Missing room param -->
     <div class="overlay hide" id="noRoomOverlay">
       <div class="overlay-inner">
         <div class="overlay-icon">🔗</div>
@@ -342,7 +388,6 @@ input{font-family:inherit}
 
   </div>
 
-  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <div>
@@ -370,13 +415,12 @@ input{font-family:inherit}
 <button class="mobile-chat-toggle" onclick="toggleSidebar()" aria-label="Toggle chat">💬</button>
 <div class="toast" id="toast"></div>
 
-<!-- SDKs -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/livekit-client@2.5.6/dist/livekit-client.umd.min.js"></script>
 
 <script>
 /* ============================================================
-   ProLoveHub — Watch Live
+   ProLoveHub — Watch Live (with members-only gating)
 ============================================================ */
 
 const SUPABASE_URL = "https://apwyqkxyglfcmooqedsk.supabase.co";
@@ -389,6 +433,10 @@ let viewerName = "guest-" + Math.floor(Math.random()*10000);
 let roomName = "";
 let room = null;
 let remoteVideoTrack = null;
+let creatorInfo = null;      // { id, handle, name, initials, gradient, is_members_only }
+let isMember = false;
+let lockReason = null;       // "login" | "member"
+let hasConnected = false;
 
 // ---- Helpers ----
 let toastTimer;
@@ -417,6 +465,13 @@ function getRoomFromUrl() {
   return params.get("room") || "";
 }
 
+// Get creator handle from room name (e.g. "luna-a7f3k2" → "luna")
+function getCreatorHandleFromRoom(roomId) {
+  if (!roomId) return "";
+  const parts = roomId.split("-");
+  return parts[0] || "";
+}
+
 // ============================================================
 // AUTH
 // ============================================================
@@ -436,9 +491,205 @@ async function loadUser() {
 }
 
 // ============================================================
+// LOOK UP CREATOR + CHECK MEMBERSHIP
+// ============================================================
+async function loadCreatorInfo() {
+  const handle = getCreatorHandleFromRoom(roomName);
+  if (!handle) return null;
+
+  const { data, error } = await sb
+    .from("creators")
+    .select("id, handle, name, initials, gradient, is_members_only")
+    .eq("handle", handle)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Creator lookup failed:", error);
+    return null;
+  }
+  return data;
+}
+
+async function checkIsMember() {
+  if (!currentUser || !creatorInfo) return false;
+
+  const { data, error } = await sb
+    .from("memberships")
+    .select("id")
+    .eq("user_id", currentUser.id)
+    .eq("creator_id", creatorInfo.id)
+    .eq("status", "active")
+    .maybeSingle();
+
+  if (error) {
+    console.error("Membership check failed:", error);
+    return false;
+  }
+  return !!data;
+}
+
+// ============================================================
+// MEMBERSHIP GATE — returns true if we can proceed to stream
+// ============================================================
+async function checkMembershipGate() {
+  creatorInfo = await loadCreatorInfo();
+
+  if (!creatorInfo) {
+    // We don't know the creator — allow it (open room, or a room that's not in DB)
+    return true;
+  }
+
+  // Open room → everyone welcome
+  if (!creatorInfo.is_members_only) {
+    return true;
+  }
+
+  // Members-only room
+  if (!currentUser) {
+    showLockScreen("login");
+    return false;
+  }
+
+  isMember = await checkIsMember();
+  if (isMember) {
+    return true;
+  }
+
+  showLockScreen("member");
+  return false;
+}
+
+function showLockScreen(reason) {
+  lockReason = reason;
+
+  // Hide other overlays
+  ["connectingOverlay","waitingOverlay","endedOverlay","errorOverlay","noRoomOverlay"]
+    .forEach(x => document.getElementById(x).classList.add("hide"));
+
+  // Show blurred preview behind the lock
+  document.getElementById("lockPreview").style.display = "block";
+  document.getElementById("lockPreview").style.background =
+    creatorInfo?.gradient || "linear-gradient(135deg, #FE2C55, #A855F7)";
+
+  // Fill in creator info
+  const creatorBox = document.getElementById("lockCreator");
+  if (creatorInfo) {
+    creatorBox.style.display = "inline-flex";
+    document.getElementById("lockCreatorAvatar").textContent =
+      creatorInfo.initials || creatorInfo.name.slice(0,2).toUpperCase();
+    document.getElementById("lockCreatorAvatar").style.background =
+      creatorInfo.gradient || "linear-gradient(135deg, #FE2C55, #A855F7)";
+    document.getElementById("lockCreatorName").textContent = creatorInfo.name;
+    document.getElementById("lockCreatorHandle").textContent = "@" + creatorInfo.handle;
+  } else {
+    creatorBox.style.display = "none";
+  }
+
+  const sub = document.getElementById("lockSub");
+  const btn = document.getElementById("lockActionBtn");
+  const actions = document.getElementById("lockActions");
+
+  if (reason === "login") {
+    sub.textContent = "Log in to unlock this members-only stream.";
+    btn.textContent = "🔑 Log in / Sign up";
+  } else if (reason === "member") {
+    sub.textContent = `Join @${creatorInfo.handle} free to watch this members-only stream.`;
+    btn.textContent = "⭐ Join Free";
+  }
+
+  // Show "check again" button if logged in
+  const existingCheck = document.getElementById("recheckBtn");
+  if (existingCheck) existingCheck.remove();
+  if (currentUser && reason === "member") {
+    const checkBtn = document.createElement("button");
+    checkBtn.id = "recheckBtn";
+    checkBtn.className = "btn btn-ghost";
+    checkBtn.textContent = "🔄 Check again";
+    checkBtn.onclick = recheckMembership;
+    actions.appendChild(checkBtn);
+  }
+
+  document.getElementById("lockOverlay").classList.add("show");
+  document.getElementById("chatLockedNote").classList.add("show");
+  document.getElementById("chatLockedNote").textContent =
+    reason === "login" ? "🔒 Log in to chat" : "🔒 Members only";
+
+  // Lock chat input
+  document.getElementById("chatInput").disabled = true;
+  document.getElementById("chatSend").disabled = true;
+}
+
+async function handleLockAction() {
+  if (lockReason === "login") {
+    // Save this room in localStorage so after login we can come back
+    localStorage.setItem("plh_return_to", window.location.href);
+    window.location.href = "login.html";
+    return;
+  }
+
+  if (lockReason === "member" && currentUser && creatorInfo) {
+    // Join the creator
+    const btn = document.getElementById("lockActionBtn");
+    btn.disabled = true;
+    btn.textContent = "Joining…";
+
+    try {
+      const { error } = await sb.from("memberships").insert({
+        user_id: currentUser.id,
+        creator_id: creatorInfo.id,
+        status: "active",
+      });
+
+      if (error && error.code !== "23505") throw error;
+
+      toast(`Joined ${creatorInfo.name}! 🎉`);
+      isMember = true;
+      document.getElementById("lockOverlay").classList.remove("show");
+      document.getElementById("lockPreview").style.display = "none";
+      document.getElementById("chatInput").disabled = false;
+      document.getElementById("chatSend").disabled = false;
+      document.getElementById("chatLockedNote").classList.remove("show");
+
+      // Log activity (best-effort)
+      sb.from("activity").insert({
+        icon: "🏅",
+        text: `<strong>${escapeHtml(viewerName)}</strong> joined <strong>${escapeHtml(creatorInfo.handle)}</strong>`,
+      }).then(() => {}).catch(() => {});
+
+      // Now connect to LiveKit
+      await connectToRoom();
+    } catch (err) {
+      console.error(err);
+      toast("Could not join: " + (err.message || "unknown"), "error");
+      btn.disabled = false;
+      btn.textContent = "⭐ Join Free";
+    }
+  }
+}
+
+async function recheckMembership() {
+  const wasMember = await checkIsMember();
+  if (wasMember) {
+    isMember = true;
+    document.getElementById("lockOverlay").classList.remove("show");
+    document.getElementById("lockPreview").style.display = "none";
+    document.getElementById("chatInput").disabled = false;
+    document.getElementById("chatSend").disabled = false;
+    document.getElementById("chatLockedNote").classList.remove("show");
+    toast("You're a member now! Joining…");
+    await connectToRoom();
+  } else {
+    toast("Still not a member. Try joining first.", "error");
+  }
+}
+
+// ============================================================
 // CONNECT TO LIVEKIT
 // ============================================================
 async function connectToRoom() {
+  if (hasConnected) return;   // avoid double-connect
+  hasConnected = true;
+
   roomName = getRoomFromUrl();
   if (!roomName) {
     showOverlay("noRoomOverlay");
@@ -449,7 +700,6 @@ async function connectToRoom() {
   showOverlay("connectingOverlay");
 
   try {
-    // Get viewer token
     const tokenRes = await fetch("/api/token", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -466,14 +716,12 @@ async function connectToRoom() {
       throw new Error(tokenData.error || "Token request failed");
     }
 
-    // Create LiveKit room client
     room = new LivekitClient.Room({
       adaptiveStream: true,
       dynacast: true,
     });
 
-    // When a host publishes video
-    room.on(LivekitClient.RoomEvent.TrackSubscribed, (track, pub, participant) => {
+    room.on(LivekitClient.RoomEvent.TrackSubscribed, (track) => {
       if (track.kind === LivekitClient.Track.Kind.Video) {
         remoteVideoTrack = track;
         track.attach(document.getElementById("remoteVideo"));
@@ -490,7 +738,6 @@ async function connectToRoom() {
       document.getElementById("liveBadge").style.display = "none";
     });
 
-    // Participants
     room.on(LivekitClient.RoomEvent.ParticipantConnected, () => {
       renderViewers();
       toast("Someone joined", "success");
@@ -500,8 +747,7 @@ async function connectToRoom() {
       checkIfHostLeft();
     });
 
-    // Data channel — chat messages
-    room.on(LivekitClient.RoomEvent.DataReceived, (payload, participant) => {
+    room.on(LivekitClient.RoomEvent.DataReceived, (payload) => {
       try {
         const decoder = new TextDecoder();
         const msg = JSON.parse(decoder.decode(payload));
@@ -514,27 +760,19 @@ async function connectToRoom() {
             host: msg.host || false,
           });
         }
-      } catch (e) {
-        console.warn("Bad message:", e);
-      }
+      } catch (e) { /* ignore */ }
     });
 
-    // Disconnected
     room.on(LivekitClient.RoomEvent.Disconnected, () => {
       showOverlay("endedOverlay");
     });
 
-    // Connect
     await room.connect(tokenData.url, tokenData.token);
     console.log("✓ Joined room:", roomName);
 
-    // Check state — is a host already there?
     const remoteParticipants = Array.from(room.remoteParticipants.values());
-    const hasHost = remoteParticipants.some(p => p.permissions?.canPublish);
-
-    if (hasHost || remoteParticipants.length > 0) {
+    if (remoteParticipants.length > 0) {
       renderViewers();
-      // Look for existing video tracks
       remoteParticipants.forEach(p => {
         p.trackPublications.forEach(pub => {
           if (pub.kind === LivekitClient.Track.Kind.Video && pub.track) {
@@ -561,20 +799,16 @@ async function connectToRoom() {
 function checkIfHostLeft() {
   if (!room) return;
   const remaining = Array.from(room.remoteParticipants.values());
-  // If no one is left, assume stream ended
   if (remaining.length === 0) {
     showOverlay("endedOverlay");
     document.getElementById("liveBadge").style.display = "none";
   }
 }
 
-// ============================================================
-// VIEWER LIST
-// ============================================================
 function renderViewers() {
   if (!room) return;
   const others = Array.from(room.remoteParticipants.values());
-  const count = others.length + 1; // include self
+  const count = others.length + 1;
   document.getElementById("viewerCount").textContent = count;
 }
 
@@ -604,9 +838,6 @@ function addChatMessage({ user, text, style="normal", badge="pink", host=false, 
   scroll.scrollTop = scroll.scrollHeight;
 }
 
-// ============================================================
-// SEND CHAT
-// ============================================================
 document.getElementById("chatForm").addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -639,14 +870,7 @@ document.getElementById("chatForm").addEventListener("submit", (e) => {
       reliable: true,
     });
 
-    // Show locally
-    addChatMessage({
-      user: viewerName,
-      text,
-      style: "cyan",
-      badge: "pink",
-    });
-
+    addChatMessage({ user: viewerName, text, style: "cyan", badge: "pink" });
     input.value = "";
   } catch (err) {
     console.error("Chat send error:", err);
@@ -663,9 +887,6 @@ function toggleSidebar(force) {
   s.classList.toggle("open", open);
 }
 
-// ============================================================
-// SYSTEM CHAT MESSAGE
-// ============================================================
 function systemMsg(text) {
   addChatMessage({ text, system: true });
 }
@@ -674,15 +895,45 @@ function systemMsg(text) {
 // BOOT
 // ============================================================
 async function boot() {
+  roomName = getRoomFromUrl();
+  if (!roomName) {
+    showOverlay("noRoomOverlay");
+    return;
+  }
+
   await loadUser();
-  systemMsg("Welcome to the stream 👋");
-  await connectToRoom();
+  systemMsg("Welcome 👋");
 
   if (currentUser) {
     systemMsg(`You're chatting as @${viewerName}`);
   } else {
     systemMsg("Log in to join the conversation");
   }
+
+  // Run the membership gate BEFORE connecting
+  const granted = await checkMembershipGate();
+  if (!granted) {
+    document.getElementById("navTitle").textContent = "🔒 Members only · " + roomName;
+    return;
+  }
+
+  // Access granted — connect to LiveKit
+  await connectToRoom();
+
+  // Watch for auth changes (in case user logs in from another tab)
+  sb.auth.onAuthStateChange(async () => {
+    await loadUser();
+    const wasMember = await checkIsMember();
+    if (wasMember && !isMember) {
+      isMember = true;
+      document.getElementById("lockOverlay").classList.remove("show");
+      document.getElementById("lockPreview").style.display = "none";
+      document.getElementById("chatInput").disabled = false;
+      document.getElementById("chatSend").disabled = false;
+      document.getElementById("chatLockedNote").classList.remove("show");
+      if (!hasConnected) await connectToRoom();
+    }
+  });
 }
 
 boot();
