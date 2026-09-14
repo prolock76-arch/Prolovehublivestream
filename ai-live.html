@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Avatar Live · ProLoveHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:"Inter",system-ui,-apple-system,sans-serif;
+  background:#0A0A0F;color:#fff;line-height:1.5;
+  -webkit-font-smoothing:antialiased;overflow:hidden;
+}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font-family:inherit}
+
+:root{
+  --pink:#FE2C55;--cyan:#25F4EE;--card:#14141C;
+  --border:#1F1F2A;--muted:#9CA3AF;--dim:#6B7280;--green:#22C55E;
+  --radius:12px;--radius-lg:16px;--nav-h:60px;
+}
+.grad-text{background:linear-gradient(90deg,var(--pink),var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%}
+.dot-white{background:#fff}
+.dot-cyan{background:var(--cyan)}
+.pulse{animation:pulseLive 1.5s ease-in-out infinite}
+@keyframes pulseLive{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+
+/* Top nav */
+.topnav{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);
+  background:rgba(10,10,15,.95);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);z-index:50;
+  display:flex;align-items:center;padding:0 20px;gap:16px;
+}
+.back-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 14px;border-radius:10px;
+  border:1px solid var(--border);background:var(--card);
+  font-size:13px;font-weight:600;transition:all .2s;
+}
+.back-btn:hover{background:#1A1A24}
+.topnav-title{font-size:14px;font-weight:700;display:flex;align-items:center;gap:10px}
+.topnav-spacer{flex:1}
+.user-pill{
+  display:none;align-items:center;gap:8px;
+  padding:6px 12px;border-radius:999px;
+  border:1px solid var(--border);background:var(--card);font-size:12px;
+}
+.user-pill .dot{background:var(--cyan)}
+@media (min-width:640px){.user-pill{display:inline-flex}}
+
+/* Layout */
+.layout{
+  display:grid;grid-template-columns:1fr;
+  height:calc(100vh - var(--nav-h));
+  margin-top:var(--nav-h);
+}
+@media (min-width:1024px){.layout{grid-template-columns:1fr 380px}}
+
+/* Stage */
+.stage{
+  position:relative;background:#000;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+
+/* Avatar stage */
+.avatar-stage{
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+  width:100%;height:100%;
+  perspective:1000px;
+}
+.avatar-frame{
+  position:relative;
+  width:min(80%,520px);
+  aspect-ratio:1;
+  border-radius:24px;
+  overflow:hidden;
+  background:linear-gradient(135deg,#FE2C55,#A855F7);
+  box-shadow:0 24px 80px rgba(0,0,0,.6);
+  animation:bob 4s ease-in-out infinite;
+}
+@keyframes bob{
+  0%,100%{transform:translateY(0) rotate(-0.3deg)}
+  50%{transform:translateY(-10px) rotate(0.3deg)}
+}
+.avatar-img{
+  width:100%;height:100%;object-fit:cover;
+  display:block;
+  transition:filter .3s;
+}
+.avatar-img.hidden{display:none}
+
+/* Placeholder when no picture */
+.avatar-placeholder{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:rgba(255,255,255,.7);
+  font-size:14px;
+  text-align:center;
+  padding:24px;
+}
+.avatar-placeholder-icon{
+  font-size:80px;margin-bottom:16px;
+  filter:drop-shadow(0 0 30px rgba(254,44,85,.6));
+}
+
+/* Mouth overlay (for lip sync) */
+.mouth-overlay{
+  position:absolute;
+  top:62%;left:50%;
+  transform:translate(-50%,-50%);
+  width:60px;height:60px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(0,0,0,.55),transparent 70%);
+  opacity:0;
+  transition:opacity .1s;
+  pointer-events:none;
+  mix-blend-mode:multiply;
+}
+.mouth-overlay.speaking{opacity:1;animation:mouthTalk .25s steps(2) infinite}
+@keyframes mouthTalk{
+  0%,100%{transform:translate(-50%,-50%) scaleY(.7)}
+  50%{transform:translate(-50%,-50%) scaleY(1.4)}
+}
+
+/* Overlay top */
+.stage-top{
+  position:absolute;top:16px;left:16px;right:16px;z-index:5;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  pointer-events:none;
+}
+.live-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 12px;border-radius:999px;
+  background:var(--pink);color:#fff;
+  font-size:11px;font-weight:800;letter-spacing:.1em;
+  animation:pulseLiveBg 1.5s ease-in-out infinite;
+}
+@keyframes pulseLiveBg{
+  0%,100%{box-shadow:0 0 0 0 rgba(254,44,85,.6)}
+  50%{box-shadow:0 0 0 12px rgba(254,44,85,0)}
+}
+.viewer-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 12px;border-radius:999px;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.08);
+  font-size:12px;font-weight:600;
+}
+
+/* Stage bottom controls */
+.stage-bottom{
+  position:absolute;bottom:16px;left:16px;right:16px;z-index:5;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  flex-wrap:wrap;
+}
+.end-btn{
+  padding:14px 28px;border-radius:999px;
+  background:linear-gradient(90deg,var(--pink),#EF4444);
+  color:#fff;font-weight:700;font-size:14px;
+  transition:all .2s;
+}
+.end-btn:hover{opacity:.9;transform:translateY(-1px)}
+
+/* Sidebar */
+.sidebar{
+  background:#0F0F15;border-left:1px solid var(--border);
+  display:flex;flex-direction:column;height:100%;overflow:hidden;
+}
+@media (max-width:1023px){
+  .sidebar{
+    position:fixed;bottom:0;left:0;right:0;
+    height:70vh;border-left:none;border-top:1px solid var(--border);
+    transform:translateY(100%);transition:transform .3s ease;
+    z-index:20;border-top-left-radius:20px;border-top-right-radius:20px;
+  }
+  .sidebar.open{transform:translateY(0)}
+}
+.sidebar-header{
+  padding:16px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.sidebar-title{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+.sidebar-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.sidebar-close{display:none;padding:6px;border-radius:8px;background:var(--card);font-size:14px}
+@media (max-width:1023px){.sidebar-close{display:flex}}
+
+.sidebar-body{
+  flex:1;overflow-y:auto;padding:16px 20px;
+  display:flex;flex-direction:column;gap:20px;
+}
+.sidebar-body::-webkit-scrollbar{width:6px}
+.sidebar-body::-webkit-scrollbar-thumb{background:#22222C;border-radius:6px}
+
+.field-group{display:flex;flex-direction:column;gap:8px}
+.field-label{
+  font-size:11px;font-weight:700;letter-spacing:.08em;
+  color:var(--dim);text-transform:uppercase;
+}
+.field-input,.field-textarea,.field-select{
+  width:100%;padding:11px 13px;border-radius:10px;
+  border:1px solid var(--border);background:#0A0A0F;color:#fff;
+  font-size:13px;outline:none;transition:all .15s;
+}
+.field-input:focus,.field-textarea:focus,.field-select:focus{
+  border-color:var(--cyan);
+  box-shadow:0 0 0 3px rgba(37,244,238,.1);
+}
+.field-textarea{resize:vertical;min-height:90px}
+.field-hint{font-size:11px;color:var(--dim);line-height:1.5}
+
+.file-drop{
+  border:2px dashed var(--border);
+  border-radius:12px;padding:20px;
+  text-align:center;cursor:pointer;
+  transition:all .2s;
+  font-size:13px;color:var(--muted);
+}
+.file-drop:hover{border-color:var(--cyan);background:rgba(37,244,238,.04)}
+.file-drop.has-file{border-style:solid;border-color:rgba(34,197,94,.5);background:rgba(34,197,94,.05);color:#86EFAC}
+.file-drop-icon{font-size:28px;margin-bottom:8px}
+.file-drop input{display:none}
+.file-name{font-size:11px;color:var(--dim);margin-top:4px}
+
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 18px;border-radius:10px;
+  font-weight:700;font-size:13px;transition:all .15s;
+  white-space:nowrap;line-height:1;
+}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:linear-gradient(90deg,var(--pink),var(--cyan));color:#fff}
+.btn-primary:hover:not(:disabled){opacity:.9;transform:translateY(-1px)}
+.btn-ghost{border:1px solid var(--border);background:rgba(20,20,28,.6);color:#fff}
+.btn-ghost:hover:not(:disabled){background:var(--card)}
+.btn-sm{padding:9px 14px;font-size:12px}
+
+/* Voice picker */
+.voice-select{
+  display:flex;flex-direction:column;gap:6px;
+}
+
+/* Share link */
+.share-box{
+  padding:12px 14px;border-radius:10px;
+  background:var(--card);border:1px solid var(--border);
+}
+.share-label{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--dim);text-transform:uppercase;margin-bottom:6px}
+.share-input-wrap{display:flex;gap:6px}
+.share-input{
+  flex:1;padding:9px 11px;border-radius:8px;
+  border:1px solid var(--border);background:#0A0A0F;color:#fff;
+  font-size:11px;font-family:ui-monospace,monospace;outline:none;
+}
+.copy-btn{
+  padding:9px 12px;border-radius:8px;
+  background:linear-gradient(90deg,var(--pink),var(--cyan));
+  color:#fff;font-weight:700;font-size:11px;
+}
+.copy-btn.copied{background:var(--green)}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:24px;left:50%;
+  transform:translateX(-50%) translateY(120%);
+  padding:12px 20px;border-radius:var(--radius);
+  background:var(--card);border:1px solid var(--border);
+  font-size:13px;font-weight:600;
+  box-shadow:0 12px 40px rgba(0,0,0,.5);
+  transition:transform .3s ease;z-index:200;
+  max-width:calc(100vw - 32px);
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:rgba(34,197,94,.5);color:#86EFAC}
+.toast.error{border-color:rgba(254,44,85,.5);color:#FF8099}
+
+.mobile-menu-btn{
+  display:flex;position:fixed;bottom:20px;right:20px;z-index:30;
+  width:56px;height:56px;border-radius:50%;
+  background:linear-gradient(135deg,var(--pink),var(--cyan));
+  align-items:center;justify-content:center;
+  font-size:22px;box-shadow:0 8px 24px rgba(254,44,85,.4);
+}
+@media (min-width:1024px){.mobile-menu-btn{display:none}}
+
+/* Overlays */
+.overlay{
+  position:absolute;inset:0;
+  background:rgba(10,10,15,.95);backdrop-filter:blur(10px);
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:40px 24px;z-index:10;
+  transition:opacity .3s;
+}
+.overlay.hide{opacity:0;pointer-events:none;display:none}
+.overlay-inner{max-width:460px}
+.overlay-icon{font-size:56px;margin-bottom:16px}
+.overlay-title{font-size:22px;font-weight:800;margin-bottom:10px;letter-spacing:-.02em}
+.overlay-sub{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.6}
+</style>
+</head>
+
+<body>
+
+<!-- TOPNAV -->
+<header class="topnav">
+  <a href="index.html" class="back-btn">← Exit</a>
+  <div class="topnav-title">🎭 AI Avatar Live</div>
+  <div class="topnav-spacer"></div>
+  <div class="user-pill" id="userPill" style="display:none;">
+    <span class="dot"></span>
+    <span id="userPillName">—</span>
+  </div>
+</header>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- STAGE -->
+  <div class="stage" id="stage">
+    <div class="avatar-stage">
+      <div class="avatar-frame" id="avatarFrame">
+        <img id="avatarImg" class="avatar-img hidden" alt="avatar" />
+        <div class="avatar-placeholder" id="avatarPlaceholder">
+          <div class="avatar-placeholder-icon">🎭</div>
+          <div>Upload a picture to see your avatar</div>
+        </div>
+        <div class="mouth-overlay" id="mouthOverlay"></div>
+      </div>
+    </div>
+
+    <div class="stage-top">
+      <span class="live-badge" id="liveBadge" style="display:none;">
+        <span class="dot dot-white pulse"></span> LIVE
+      </span>
+      <span class="viewer-pill" id="viewerPill" style="display:none;">
+        👁 <span id="viewerCount">0</span> watching
+      </span>
+    </div>
+
+    <div class="stage-bottom" id="stageBottom" style="display:none;">
+      <button class="end-btn" onclick="endStream()">🛑 End Stream</button>
+    </div>
+
+    <!-- Login overlay -->
+    <div class="overlay hide" id="loginOverlay">
+      <div class="overlay-inner">
+        <div class="overlay-icon">🔐</div>
+        <h2 class="overlay-title">Admin only</h2>
+        <p class="overlay-sub">
+          You need an admin account to use the AI avatar studio.
+        </p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <a href="login.html" class="btn btn-primary">🔑 Log in</a>
+          <a href="index.html" class="btn btn-ghost">← Back</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Access denied -->
+    <div class="overlay hide" id="deniedOverlay">
+      <div class="overlay-inner">
+        <div class="overlay-icon">🚫</div>
+        <h2 class="overlay-title">Access denied</h2>
+        <p class="overlay-sub">
+          This studio is only available to admins.
+        </p>
+        <a href="index.html" class="btn btn-primary">← Back to home</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div>
+        <div class="sidebar-title">⚙️ Avatar setup</div>
+        <div class="sidebar-sub" id="sidebarSub">Configure your AI avatar</div>
+      </div>
+      <button class="sidebar-close" onclick="toggleSidebar(false)">✕</button>
+    </div>
+
+    <div class="sidebar-body">
+
+      <!-- Picture upload -->
+      <div class="field-group">
+        <div class="field-label">1. Picture</div>
+        <label class="file-drop" id="pictureDrop">
+          <input type="file" id="pictureInput" accept="image/*" />
+          <div class="file-drop-icon">🖼️</div>
+          <div>Click to upload a picture</div>
+          <div class="file-name" id="pictureName">PNG, JPG, or WEBP</div>
+        </label>
+      </div>
+
+      <!-- Voice selection -->
+      <div class="field-group">
+        <div class="field-label">2. Voice</div>
+        <select class="field-select" id="voiceSelect">
+          <option value="">Loading voices…</option>
+        </select>
+        <div class="field-hint">Uses your browser's built-in voices. Free, works offline.</div>
+      </div>
+
+      <!-- Rate / pitch -->
+      <div class="field-group">
+        <div class="field-label">3. Voice tune</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span style="font-size:11px;color:var(--muted);">Rate</span>
+          <input type="range" id="voiceRate" min="0.5" max="1.5" step="0.1" value="1" style="flex:1;" />
+          <span id="voiceRateVal" style="font-size:11px;color:var(--cyan);width:32px;">1.0</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span style="font-size:11px;color:var(--muted);">Pitch</span>
+          <input type="range" id="voicePitch" min="0.5" max="1.5" step="0.1" value="1" style="flex:1;" />
+          <span id="voicePitchVal" style="font-size:11px;color:var(--cyan);width:32px;">1.0</span>
+        </div>
+      </div>
+
+      <!-- Script input -->
+      <div class="field-group">
+        <div class="field-label">4. Script</div>
+        <textarea class="field-textarea" id="scriptInput" placeholder="Type what your avatar should say…&#10;&#10;Example: Hello everyone, welcome to my live. Today we're talking about…"></textarea>
+        <div class="field-hint">The avatar will speak this text out loud. Viewers hear it through your mic.</div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="btn-row">
+        <button class="btn btn-primary btn-sm" id="speakBtn" onclick="speakScript()" disabled>
+          🔊 Speak now
+        </button>
+        <button class="btn btn-ghost btn-sm" id="stopBtn" onclick="stopSpeaking()" disabled>
+          ⏹ Stop
+        </button>
+      </div>
+
+      <!-- Loop mode -->
+      <div class="field-group">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;">
+          <input type="checkbox" id="loopMode" style="accent-color:#FE2C55;" />
+          <span>Loop script continuously</span>
+        </label>
+      </div>
+
+      <!-- Share link -->
+      <div class="share-box" id="shareBox" style="display:none;">
+        <div class="share-label">Share link</div>
+        <div class="share-input-wrap">
+          <input class="share-input" id="shareUrl" readonly />
+          <button class="copy-btn" id="copyBtn" onclick="copyLink()">Copy</button>
+        </div>
+      </div>
+
+      <!-- Start live -->
+      <div class="btn-row" style="margin-top:8px;">
+        <button class="btn btn-primary" id="goLiveBtn" onclick="goLive()" style="flex:1;">
+          🔴 Go Live
+        </button>
+      </div>
+
+      <div class="field-hint" style="text-align:center;">
+        ⚠️ Keep this tab open while live. Closing ends the stream.
+      </div>
+
+    </div>
+  </aside>
+
+</div>
+
+<button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Toggle menu">⚙️</button>
+<div class="toast" id="toast"></div>
+
+<!-- Optional hidden webcam for streaming the canvas -->
+<canvas id="streamCanvas" style="display:none;"></canvas>
+<video id="hiddenWebcam" style="display:none;" autoplay playsinline muted></video>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/livekit-client@2.5.6/dist/livekit-client.umd.min.js"></script>
+
+<script>
+/* ============================================================
+   ProLoveHub — AI Avatar Live
+   - Admin uploads a picture
+   - Picks a voice (browser TTS)
+   - Types a script
+   - Avatar speaks → mouth overlay animates
+   - Streams to viewers via LiveKit (audio + canvas video)
+============================================================ */
+
+const SUPABASE_URL = "https://apwyqkxyglfcmooqedsk.supabase.co";
+const SUPABASE_KEY = "sb_publishable_YuAnouzmvWgxJLhmazjiIg_K8utDLRz";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ---- State ----
+let currentUser = null;
+let isAdmin = false;
+let roomName = "";
+let room = null;
+let voices = [];
+let pictureUrl = null;
+let isSpeaking = false;
+let loopInterval = null;
+let streamTrack = null;
+let audioCaptureStream = null;
+let animFrameId = null;
+let mouthAmplitude = 0;
+let audioContext = null;
+let analyser = null;
+let micStream = null;
+
+// ---- Helpers ----
+let toastTimer;
+function toast(msg, type="success") {
+  const el = document.getElementById("toast");
+  el.textContent = (type==="success" ? "✓ " : "⚠ ") + msg;
+  el.className = "toast show " + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 2400);
+}
+function escapeHtml(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+function showOverlay(id) {
+  ["loginOverlay","deniedOverlay"]
+    .forEach(x => document.getElementById(x).classList.add("hide"));
+  if (id) document.getElementById(id).classList.remove("hide");
+}
+function randomRoomId() {
+  const chars = "abcdefghijkmnpqrstuvwxyz23456789";
+  let s = "";
+  for (let i = 0; i < 10; i++) s += chars[Math.floor(Math.random()*chars.length)];
+  return s;
+}
+
+// ============================================================
+// AUTH CHECK — must be admin
+// ============================================================
+async function checkAdmin() {
+  const { data: { session } } = await sb.auth.getSession();
+  currentUser = session ? session.user : null;
+
+  if (!currentUser) {
+    showOverlay("loginOverlay");
+    return false;
+  }
+
+  const { data: admin } = await sb
+    .from("admin_users")
+    .select("email, is_active")
+    .eq("user_id", currentUser.id)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  if (!admin) {
+    showOverlay("deniedOverlay");
+    return false;
+  }
+
+  const username = currentUser.user_metadata?.username
+    || currentUser.email?.split("@")[0]
+    || "admin";
+
+  document.getElementById("userPill").style.display = "inline-flex";
+  document.getElementById("userPillName").textContent = "@" + username;
+
+  roomName = "ai-" + username + "-" + randomRoomId().slice(0, 6);
+
+  return true;
+}
+
+// ============================================================
+// LOAD VOICES (Web Speech API)
+// ============================================================
+function loadVoices() {
+  if (!("speechSynthesis" in window)) {
+    document.getElementById("voiceSelect").innerHTML =
+      `<option value="">Browser doesn't support TTS</option>`;
+    return;
+  }
+
+  const populate = () => {
+    voices = window.speechSynthesis.getVoices();
+    const select = document.getElementById("voiceSelect");
+    if (voices.length === 0) return;
+
+    select.innerHTML = voices.map((v, i) =>
+      `<option value="${i}">${escapeHtml(v.name)} (${v.lang})</option>`
+    ).join("");
+
+    // Prefer English voices
+    const englishIdx = voices.findIndex(v => v.lang.startsWith("en"));
+    if (englishIdx >= 0) select.value = englishIdx;
+  };
+
+  populate();
+  window.speechSynthesis.onvoiceschanged = populate;
+}
+
+// ============================================================
+// PICTURE UPLOAD
+// ============================================================
+document.getElementById("pictureInput").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  if (!file.type.startsWith("image/")) {
+    toast("Please upload an image file", "error");
+    return;
+  }
+
+  if (pictureUrl) URL.revokeObjectURL(pictureUrl);
+  pictureUrl = URL.createObjectURL(file);
+
+  const img = document.getElementById("avatarImg");
+  img.src = pictureUrl;
+  img.classList.remove("hidden");
+  document.getElementById("avatarPlaceholder").style.display = "none";
+
+  const drop = document.getElementById("pictureDrop");
+  drop.classList.add("has-file");
+  document.getElementById("pictureDrop").querySelector(".file-name").textContent = file.name;
+
+  // Enable speak button
+  document.getElementById("speakBtn").disabled = false;
+
+  toast("Picture loaded ✓");
+});
+
+// ============================================================
+// VOICE TUNE SLIDERS
+// ============================================================
+document.getElementById("voiceRate").addEventListener("input", (e) => {
+  document.getElementById("voiceRateVal").textContent = parseFloat(e.target.value).toFixed(1);
+});
+document.getElementById("voicePitch").addEventListener("input", (e) => {
+  document.getElementById("voicePitchVal").textContent = parseFloat(e.target.value).toFixed(1);
+});
+
+// ============================================================
+// SPEAK SCRIPT (Web Speech API)
+// ============================================================
+function speakScript() {
+  const text = document.getElementById("scriptInput").value.trim();
+  if (!text) {
+    toast("Type something for the avatar to say", "error");
+    return;
+  }
+  if (!("speechSynthesis" in window)) {
+    toast("Your browser doesn't support text-to-speech", "error");
+    return;
+  }
+
+  const voiceIdx = parseInt(document.getElementById("voiceSelect").value);
+  const voice = voices[voiceIdx] || null;
+  const rate = parseFloat(document.getElementById("voiceRate").value);
+  const pitch = parseFloat(document.getElementById("voicePitch").value);
+
+  const utter = new SpeechSynthesisUtterance(text);
+  if (voice) utter.voice = voice;
+  utter.rate = rate;
+  utter.pitch = pitch;
+  utter.volume = 1.0;
+
+  utter.onstart = () => {
+    isSpeaking = true;
+    document.getElementById("mouthOverlay").classList.add("speaking");
+    document.getElementById("stopBtn").disabled = false;
+  };
+  utter.onend = () => {
+    isSpeaking = false;
+    document.getElementById("mouthOverlay").classList.remove("speaking");
+    document.getElementById("stopBtn").disabled = true;
+
+    // Loop if enabled
+    if (document.getElementById("loopMode").checked) {
+      loopInterval = setTimeout(() => {
+        if (document.getElementById("loopMode").checked) speakScript();
+      }, 1500);
+    }
+  };
+  utter.onerror = (err) => {
+    console.error("TTS error:", err);
+    isSpeaking = false;
+    document.getElementById("mouthOverlay").classList.remove("speaking");
+  };
+
+  // Cancel any ongoing speech first
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utter);
+
+  toast("Avatar is speaking 🔊");
+}
+
+function stopSpeaking() {
+  window.speechSynthesis.cancel();
+  if (loopInterval) { clearTimeout(loopInterval); loopInterval = null; }
+  isSpeaking = false;
+  document.getElementById("mouthOverlay").classList.remove("speaking");
+  document.getElementById("stopBtn").disabled = true;
+  document.getElementById("loopMode").checked = false;
+  toast("Stopped");
+}
+
+// ============================================================
+// GO LIVE — capture avatar frame as video + play TTS audio
+// ============================================================
+async function goLive() {
+  if (!pictureUrl) {
+    toast("Upload a picture first", "error");
+    return;
+  }
+
+  const script = document.getElementById("scriptInput").value.trim();
+  if (!script) {
+    toast("Type a script first", "error");
+    return;
+  }
+
+  const btn = document.getElementById("goLiveBtn");
+  btn.disabled = true;
+  btn.textContent = "Starting…";
+
+  try {
+    // 1. Get a host token from our server
+    const tokenRes = await fetch("/api/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        room: roomName,
+        identity: currentUser.id,
+        name: currentUser.user_metadata?.username || currentUser.email,
+        role: "host",
+      }),
+    });
+
+    const tokenData = await tokenRes.json();
+    if (!tokenRes.ok || !tokenData.token) {
+      throw new Error(tokenData.error || "Token failed");
+    }
+
+    // 2. Connect to LiveKit
+    room = new LivekitClient.Room({
+      adaptiveStream: true,
+      dynacast: true,
+    });
+
+    room.on(LivekitClient.RoomEvent.ParticipantConnected, () => {
+      renderViewers();
+    });
+    room.on(LivekitClient.RoomEvent.ParticipantDisconnected, () => {
+      renderViewers();
+    });
+    room.on(LivekitClient.RoomEvent.Disconnected, () => {
+      toast("Disconnected", "error");
+    });
+
+    await room.connect(tokenData.url, tokenData.token);
+    console.log("✓ Connected to LiveKit as host");
+
+    // 3. Build a canvas that mirrors the avatar stage
+    const canvas = document.getElementById("streamCanvas");
+    const ctx = canvas.getContext("2d");
+    const W = 720, H = 720;
+    canvas.width = W;
+    canvas.height = H;
+
+    // Start rendering loop
+    renderAvatarToCanvas(ctx, W, H);
+
+    // 4. Capture canvas at 30fps → video track
+    const canvasStream = canvas.captureStream(30);
+    const videoTrack = canvasStream.getVideoTracks()[0];
+
+    // 5. Create a synthetic audio stream from mic input (users speak or play TTS through speakers)
+    try {
+      micStream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
+      });
+      const audioTracks = micStream.getAudioTracks();
+
+      // 6. Publish both tracks
+      await room.localParticipant.publishTrack(
+        new LivekitClient.LocalVideoTrack(videoTrack)
+      );
+      for (const at of audioTracks) {
+        await room.localParticipant.publishTrack(new LivekitClient.LocalAudioTrack(at));
+      }
+    } catch (micErr) {
+      console.warn("No mic access — publishing video only:", micErr);
+      await room.localParticipant.publishTrack(
+        new LivekitClient.LocalVideoTrack(videoTrack)
+      );
+      toast("Streaming video only (no mic)", "error");
+    }
+
+    // 7. Update UI
+    document.getElementById("liveBadge").style.display = "inline-flex";
+    document.getElementById("viewerPill").style.display = "inline-flex";
+    document.getElementById("stageBottom").style.display = "flex";
+    document.getElementById("shareBox").style.display = "block";
+
+    // 8. Generate share link
+    const shareUrl = window.location.origin + "/watch.html?room=" + roomName;
+    document.getElementById("shareUrl").value = shareUrl;
+
+    // 9. Start speaking automatically
+    speakScript();
+    if (document.getElementById("loopMode").checked === false) {
+      document.getElementById("loopMode").checked = true;
+      speakScript();
+    }
+
+    btn.textContent = "🔴 LIVE";
+    toast("You're live! 🔴");
+  } catch (err) {
+    console.error("Go live error:", err);
+    btn.disabled = false;
+    btn.textContent = "🔴 Go Live";
+    toast(err.message || "Could not go live", "error");
+  }
+}
+
+// ============================================================
+// CANVAS RENDER LOOP
+// ============================================================
+function renderAvatarToCanvas(ctx, W, H) {
+  const img = document.getElementById("avatarImg");
+
+  function draw() {
+    animFrameId = requestAnimationFrame(draw);
+
+    // Background gradient
+    const t = Date.now() / 1000;
+    const grad = ctx.createLinearGradient(0, 0, W, H);
+    grad.addColorStop(0, `hsl(${330 + Math.sin(t)*10}, 90%, 55%)`);
+    grad.addColorStop(0.5, `hsl(${260 + Math.cos(t)*10}, 70%, 40%)`);
+    grad.addColorStop(1, `hsl(${180 + Math.sin(t*0.7)*10}, 90%, 55%)`);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    // Draw the avatar image centered
+    if (img && img.complete && img.naturalWidth > 0) {
+      const scale = Math.min(W / img.naturalWidth, H / img.naturalHeight) * 0.85;
+      const dw = img.naturalWidth * scale;
+      const dh = img.naturalHeight * scale;
+      const dx = (W - dw) / 2;
+      const dy = (H - dh) / 2;
+
+      // Bob offset
+      const bobY = Math.sin(t * 1.2) * 12;
+
+      ctx.save();
+      ctx.shadowColor = "rgba(0,0,0,0.6)";
+      ctx.shadowBlur = 40;
+      ctx.drawImage(img, dx, dy + bobY, dw, dh);
+      ctx.restore();
+
+      // Draw mouth when speaking
+      if (isSpeaking) {
+        const cx = W / 2;
+        const cy = dy + dh * 0.72 + bobY;
+        const mouthHeight = 20 + Math.abs(Math.sin(t * 12)) * 30;
+        const mouthWidth = 60;
+
+        ctx.save();
+        ctx.fillStyle = "rgba(0,0,0,0.65)";
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, mouthWidth / 2, mouthHeight / 2, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+  }
+  draw();
+}
+
+// ============================================================
+// VIEWERS
+// ============================================================
+function renderViewers() {
+  if (!room) return;
+  const others = Array.from(room.remoteParticipants.values());
+  document.getElementById("viewerCount").textContent = others.length;
+}
+
+// ============================================================
+// END STREAM
+// ============================================================
+async function endStream() {
+  if (!confirm("End the live stream?")) return;
+
+  if (animFrameId) { cancelAnimationFrame(animFrameId); animFrameId = null; }
+  if (loopInterval) { clearTimeout(loopInterval); loopInterval = null; }
+  window.speechSynthesis.cancel();
+
+  try {
+    if (room) await room.disconnect();
+    if (micStream) micStream.getTracks().forEach(t => t.stop());
+  } catch (e) { console.error(e); }
+
+  toast("Stream ended");
+  setTimeout(() => { window.location.href = "admin.html"; }, 800);
+}
+
+// ============================================================
+// COPY LINK
+// ============================================================
+function copyLink() {
+  const input = document.getElementById("shareUrl");
+  input.select();
+  input.setSelectionRange(0, 99999);
+  navigator.clipboard.writeText(input.value).then(() => {
+    const btn = document.getElementById("copyBtn");
+    btn.textContent = "✓ Copied";
+    btn.classList.add("copied");
+    toast("Link copied — share it!");
+    setTimeout(() => {
+      btn.textContent = "Copy";
+      btn.classList.remove("copied");
+    }, 2000);
+  }).catch(() => toast("Copy failed", "error"));
+}
+
+// ============================================================
+// MOBILE
+// ============================================================
+function toggleSidebar(force) {
+  const s = document.getElementById("sidebar");
+  const open = typeof force === "boolean" ? force : !s.classList.contains("open");
+  s.classList.toggle("open", open);
+}
+
+// ============================================================
+// BEFORE UNLOAD
+// ============================================================
+window.addEventListener("beforeunload", (e) => {
+  if (room && room.state === "connected") {
+    e.preventDefault();
+    e.returnValue = "";
+  }
+});
+
+// ============================================================
+// BOOT
+// ============================================================
+async function boot() {
+  const ok = await checkAdmin();
+  if (!ok) return;
+  loadVoices();
+}
+
+boot();
+</script>
+
+</body>
+</html>
