@@ -4,7 +4,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Admin · ProLoveHub</title>
-<meta name="description" content="ProLoveHub admin dashboard." />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,830 +13,434 @@
 /* ============================================================
    RESET
 ============================================================ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-body {
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
-  background: #0A0A0F;
-  color: #ffffff;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  min-height: 100vh;
-  overflow-x: hidden;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:"Inter",system-ui,-apple-system,sans-serif;
+  background:#0A0A0F;color:#fff;line-height:1.5;
+  -webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden;
 }
-a { color: inherit; text-decoration: none; }
-button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
-input, select, textarea { font-family: inherit; }
-ul { list-style: none; }
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font-family:inherit}
+ul{list-style:none}
 
-/* ============================================================
-   VARIABLES
-============================================================ */
-:root {
-  --pink: #FE2C55;
-  --cyan: #25F4EE;
-  --dark: #0A0A0F;
-  --card: #14141C;
-  --border: #1F1F2A;
-  --muted: #9CA3AF;
-  --dim: #6B7280;
-  --green: #22C55E;
-  --amber: #F59E0B;
-  --red: #EF4444;
-  --radius: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-  --sidebar: 240px;
+:root{
+  --pink:#FE2C55;--cyan:#25F4EE;--dark:#0A0A0F;--card:#14141C;
+  --border:#1F1F2A;--muted:#9CA3AF;--dim:#6B7280;
+  --green:#22C55E;--amber:#F59E0B;--red:#EF4444;
+  --radius:12px;--radius-lg:16px;--radius-xl:24px;--sidebar:240px;
 }
 
-/* ============================================================
-   UTILITIES
-============================================================ */
-.grad-text {
-  background: linear-gradient(90deg, var(--pink), var(--cyan));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+.grad-text{
+  background:linear-gradient(90deg,var(--pink),var(--cyan));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
 }
-.dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-}
-.dot-white { background: #fff; }
-.dot-cyan  { background: var(--cyan); }
-.dot-pink  { background: var(--pink); }
-.pulse { animation: pulseLive 1.5s ease-in-out infinite; }
-@keyframes pulseLive {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%      { opacity: 0.5; transform: scale(1.3); }
-}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%}
+.dot-white{background:#fff}
+.dot-cyan{background:var(--cyan)}
+.dot-green{background:var(--green)}
+.pulse{animation:pulseLive 1.5s ease-in-out infinite}
+@keyframes pulseLive{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
 
 /* ============================================================
-   LOGIN GATE
+   GATE
 ============================================================ */
-.gate {
-  position: fixed;
-  inset: 0;
-  background: #0A0A0F;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  z-index: 500;
-  transition: opacity 0.3s;
+.gate{
+  position:fixed;inset:0;background:#0A0A0F;
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;z-index:500;transition:opacity .3s;
 }
-.gate.hide { opacity: 0; pointer-events: none; }
-.gate-card {
-  width: 100%;
-  max-width: 400px;
-  padding: 40px 32px;
-  border-radius: var(--radius-xl);
-  background: var(--card);
-  border: 1px solid var(--border);
-  text-align: center;
-  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
-  position: relative;
-  overflow: hidden;
+.gate.hide{opacity:0;pointer-events:none}
+.gate-card{
+  width:100%;max-width:400px;padding:40px 32px;
+  border-radius:var(--radius-xl);background:var(--card);
+  border:1px solid var(--border);text-align:center;
+  box-shadow:0 24px 60px rgba(0,0,0,.5);
+  position:relative;overflow:hidden;
 }
-.gate-blob {
-  position: absolute;
-  width: 240px;
-  height: 240px;
-  border-radius: 50%;
-  filter: blur(90px);
-  pointer-events: none;
+.gate-blob{position:absolute;width:240px;height:240px;border-radius:50%;filter:blur(90px);pointer-events:none}
+.gate-blob-pink{top:-80px;left:-80px;background:rgba(254,44,85,.35)}
+.gate-blob-cyan{bottom:-80px;right:-80px;background:rgba(37,244,238,.35)}
+.gate-inner{position:relative;z-index:1}
+.gate-icon{font-size:42px;margin-bottom:16px}
+.gate-title{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
+.gate-sub{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.6}
+.gate-form{display:flex;flex-direction:column;gap:12px}
+.gate-input{
+  width:100%;padding:12px 14px;border-radius:var(--radius);
+  border:1px solid var(--border);background:#0A0A0F;color:#fff;
+  font-size:14px;outline:none;text-align:center;
+  letter-spacing:.15em;transition:all .2s;
 }
-.gate-blob-pink { top: -80px; left: -80px; background: rgba(254, 44, 85, 0.35); }
-.gate-blob-cyan { bottom: -80px; right: -80px; background: rgba(37, 244, 238, 0.35); }
-.gate-inner { position: relative; z-index: 1; }
-.gate-icon { font-size: 42px; margin-bottom: 16px; }
-.gate-title {
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  margin-bottom: 8px;
-}
-.gate-sub {
-  font-size: 13px;
-  color: var(--muted);
-  margin-bottom: 24px;
-  line-height: 1.6;
-}
-.gate-form { display: flex; flex-direction: column; gap: 12px; }
-.gate-input {
-  width: 100%;
-  padding: 12px 14px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: #0A0A0F;
-  color: #fff;
-  font-size: 14px;
-  outline: none;
-  text-align: center;
-  letter-spacing: 0.15em;
-  transition: all 0.2s;
-}
-.gate-input:focus {
-  border-color: var(--cyan);
-  box-shadow: 0 0 0 3px rgba(37,244,238,0.12);
-}
-.gate-error {
-  font-size: 12px;
-  color: var(--pink);
-  min-height: 16px;
-}
-.gate-hint {
-  font-size: 11px;
-  color: var(--dim);
-  margin-top: 16px;
-}
-.gate-hint code {
-  background: rgba(255,255,255,0.06);
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: ui-monospace, monospace;
-}
+.gate-input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(37,244,238,.12)}
+.gate-error{font-size:12px;color:var(--pink);min-height:16px}
+.gate-hint{font-size:11px;color:var(--dim);margin-top:16px}
+.gate-hint code{background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-family:ui-monospace,monospace}
 
 /* ============================================================
    LAYOUT
 ============================================================ */
-.app {
-  display: grid;
-  grid-template-columns: 1fr;
-  min-height: 100vh;
-}
-@media (min-width: 900px) {
-  .app { grid-template-columns: var(--sidebar) 1fr; }
-}
+.app{display:grid;grid-template-columns:1fr;min-height:100vh}
+@media (min-width:900px){.app{grid-template-columns:var(--sidebar) 1fr}}
 
 /* ============================================================
    SIDEBAR
 ============================================================ */
-.sidebar {
-  background: #0F0F15;
-  border-right: 1px solid var(--border);
-  padding: 20px 14px;
-  display: none;
-  flex-direction: column;
-  gap: 20px;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow-y: auto;
+.sidebar{
+  background:#0F0F15;border-right:1px solid var(--border);
+  padding:20px 14px;display:none;flex-direction:column;gap:20px;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
 }
-@media (min-width: 900px) {
-  .sidebar { display: flex; }
+@media (min-width:900px){.sidebar{display:flex}}
+
+.brand{
+  display:flex;align-items:center;gap:10px;
+  padding:4px 8px 16px;border-bottom:1px solid var(--border);
+}
+.brand-mark{
+  position:relative;width:32px;height:32px;border-radius:8px;
+  background:linear-gradient(135deg,var(--pink),var(--cyan));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:14px;color:#0A0A0F;
+}
+.brand-dot{
+  position:absolute;top:-2px;right:-2px;width:10px;height:10px;
+  border-radius:50%;background:var(--pink);
+  animation:pulseLive 1.5s ease-in-out infinite;
+}
+.brand-text{font-size:15px;font-weight:800;letter-spacing:-.02em}
+.brand-sub{
+  font-size:10px;color:var(--dim);letter-spacing:.1em;
+  text-transform:uppercase;font-weight:700;margin-top:2px;
 }
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 4px 8px 16px;
-  border-bottom: 1px solid var(--border);
+.nav-section{display:flex;flex-direction:column;gap:4px}
+.nav-label{
+  font-size:10px;color:var(--dim);letter-spacing:.1em;
+  text-transform:uppercase;font-weight:700;padding:12px 8px 6px;
 }
-.brand-mark {
-  position: relative;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--pink), var(--cyan));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  font-size: 14px;
-  color: #0A0A0F;
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:10px;
+  font-size:13px;font-weight:600;color:var(--muted);
+  transition:all .15s;cursor:pointer;
 }
-.brand-dot {
-  position: absolute;
-  top: -2px; right: -2px;
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  background: var(--pink);
-  animation: pulseLive 1.5s ease-in-out infinite;
+.nav-item:hover{background:var(--card);color:#fff}
+.nav-item.active{
+  background:linear-gradient(90deg,rgba(254,44,85,.15),rgba(37,244,238,.15));
+  color:#fff;border:1px solid var(--border);
 }
-.brand-text { font-size: 15px; font-weight: 800; letter-spacing: -0.02em; }
-.brand-sub {
-  font-size: 10px;
-  color: var(--dim);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  font-weight: 700;
-  margin-top: 2px;
+.nav-item .icon{font-size:15px}
+.nav-item .count{
+  margin-left:auto;font-size:10px;padding:2px 7px;
+  border-radius:999px;background:rgba(255,255,255,.06);
 }
 
-.nav-section {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.sidebar-foot{
+  margin-top:auto;padding-top:16px;border-top:1px solid var(--border);
+  display:flex;flex-direction:column;gap:6px;
 }
-.nav-label {
-  font-size: 10px;
-  color: var(--dim);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  font-weight: 700;
-  padding: 12px 8px 6px;
+.sidebar-link{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;border-radius:8px;font-size:12px;
+  color:var(--dim);cursor:pointer;transition:all .15s;
 }
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--muted);
-  transition: all 0.15s;
-  cursor: pointer;
-}
-.nav-item:hover {
-  background: var(--card);
-  color: #fff;
-}
-.nav-item.active {
-  background: linear-gradient(90deg, rgba(254,44,85,0.15), rgba(37,244,238,0.15));
-  color: #fff;
-  border: 1px solid var(--border);
-}
-.nav-item .icon { font-size: 15px; }
-.nav-item .count {
-  margin-left: auto;
-  font-size: 10px;
-  padding: 2px 7px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.06);
-}
-
-.sidebar-foot {
-  margin-top: auto;
-  padding-top: 16px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.sidebar-link {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 12px;
-  color: var(--dim);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.sidebar-link:hover { background: var(--card); color: #fff; }
+.sidebar-link:hover{background:var(--card);color:#fff}
 
 /* ============================================================
    MAIN
 ============================================================ */
-.main {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
+.main{display:flex;flex-direction:column;min-width:0}
 
-/* Topbar */
-.topbar {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background: rgba(10,10,15,0.95);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-  padding: 14px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
+.topbar{
+  position:sticky;top:0;z-index:20;
+  background:rgba(10,10,15,.95);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:14px 24px;display:flex;align-items:center;
+  justify-content:space-between;gap:16px;flex-wrap:wrap;
 }
-.topbar-title {
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.topbar-title{
+  font-size:18px;font-weight:800;letter-spacing:-.02em;
+  display:flex;align-items:center;gap:10px;
 }
-.topbar-sub {
-  font-size: 12px;
-  color: var(--dim);
-  margin-top: 2px;
-  font-weight: 500;
-}
-.topbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
+.topbar-sub{font-size:12px;color:var(--dim);margin-top:2px;font-weight:500}
+.topbar-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 
-.mobile-menu-btn {
-  display: flex;
-  padding: 8px 12px;
-  border-radius: 10px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  font-size: 14px;
+.mobile-menu-btn{
+  display:flex;padding:8px 12px;border-radius:10px;
+  background:var(--card);border:1px solid var(--border);font-size:14px;
 }
-@media (min-width: 900px) {
-  .mobile-menu-btn { display: none; }
-}
+@media (min-width:900px){.mobile-menu-btn{display:none}}
 
-/* Content area */
-.content {
-  padding: 24px;
-  flex: 1;
-}
+.content{padding:24px;flex:1}
 
-/* Views */
-.view { display: none; }
-.view.active { display: block; animation: fadeIn 0.2s ease; }
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+.view{display:none}
+.view.active{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
-/* Section head */
-.section-head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  gap: 16px;
-  flex-wrap: wrap;
+.section-head{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  margin-bottom:20px;gap:16px;flex-wrap:wrap;
 }
-.section-head h2 {
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-}
-.section-head p {
-  font-size: 13px;
-  color: var(--muted);
-  margin-top: 3px;
-}
+.section-head h2{font-size:20px;font-weight:800;letter-spacing:-.01em}
+.section-head p{font-size:13px;color:var(--muted);margin-top:3px}
 
 /* ============================================================
-   CARDS
+   CARDS / STATS
 ============================================================ */
-.card {
-  padding: 20px;
-  border-radius: var(--radius-lg);
-  background: var(--card);
-  border: 1px solid var(--border);
+.card{
+  padding:20px;border-radius:var(--radius-lg);
+  background:var(--card);border:1px solid var(--border);
 }
 
-/* Stats grid */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-bottom: 24px;
+.stats{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:12px;margin-bottom:24px;
 }
-@media (min-width: 700px) {
-  .stats { grid-template-columns: repeat(4, 1fr); }
+@media (min-width:700px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{
+  padding:18px;border-radius:var(--radius-lg);
+  background:var(--card);border:1px solid var(--border);
+  position:relative;overflow:hidden;
 }
-.stat {
-  padding: 18px;
-  border-radius: var(--radius-lg);
-  background: var(--card);
-  border: 1px solid var(--border);
-  position: relative;
-  overflow: hidden;
+.stat::after{
+  content:"";position:absolute;top:0;right:0;
+  width:80px;height:80px;border-radius:50%;
+  filter:blur(40px);opacity:.25;
 }
-.stat::after {
-  content: "";
-  position: absolute;
-  top: 0; right: 0;
-  width: 80px; height: 80px;
-  border-radius: 50%;
-  filter: blur(40px);
-  opacity: 0.25;
-}
-.stat.s-pink::after { background: var(--pink); }
-.stat.s-cyan::after { background: var(--cyan); }
-.stat.s-amber::after { background: var(--amber); }
-.stat.s-green::after { background: var(--green); }
-.stat-icon {
-  font-size: 20px;
-  margin-bottom: 10px;
-}
-.stat-value {
-  font-size: 26px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1;
-}
-.stat-label {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 6px;
-}
-.stat-trend {
-  font-size: 11px;
-  font-weight: 700;
-  margin-top: 8px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-.stat-trend.up { color: var(--green); }
-.stat-trend.flat { color: var(--dim); }
+.stat.s-pink::after{background:var(--pink)}
+.stat.s-cyan::after{background:var(--cyan)}
+.stat.s-amber::after{background:var(--amber)}
+.stat.s-green::after{background:var(--green)}
+.stat-icon{font-size:20px;margin-bottom:10px}
+.stat-value{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1}
+.stat-label{font-size:12px;color:var(--muted);margin-top:6px}
+.stat-trend{font-size:11px;font-weight:700;margin-top:8px;display:inline-flex;align-items:center;gap:4px}
+.stat-trend.up{color:var(--green)}
+.stat-trend.flat{color:var(--dim)}
 
 /* ============================================================
    BUTTONS
 ============================================================ */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 18px;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 13px;
-  transition: all 0.15s;
-  white-space: nowrap;
-  line-height: 1;
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:10px 18px;border-radius:10px;
+  font-weight:600;font-size:13px;transition:all .15s;
+  white-space:nowrap;line-height:1;
 }
-.btn-primary {
-  background: linear-gradient(90deg, var(--pink), var(--cyan));
-  color: #fff;
-  font-weight: 700;
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.btn-primary{background:linear-gradient(90deg,var(--pink),var(--cyan));color:#fff;font-weight:700}
+.btn-primary:hover:not(:disabled){opacity:.9;transform:translateY(-1px)}
+.btn-ghost{border:1px solid var(--border);background:rgba(20,20,28,.6);color:#fff}
+.btn-ghost:hover{background:var(--card)}
+.btn-danger{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);color:#FF8099}
+.btn-danger:hover{background:rgba(239,68,68,.25)}
+.btn-sm{padding:7px 12px;font-size:12px}
+.btn-icon{
+  width:34px;height:34px;padding:0;border-radius:8px;
+  background:var(--card);border:1px solid var(--border);
+  display:inline-flex;align-items:center;justify-content:center;font-size:14px;
 }
-.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-.btn-ghost {
-  border: 1px solid var(--border);
-  background: rgba(20, 20, 28, 0.6);
-  color: #fff;
-}
-.btn-ghost:hover { background: var(--card); }
-.btn-danger {
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  color: #FF8099;
-}
-.btn-danger:hover { background: rgba(239, 68, 68, 0.25); }
-.btn-sm { padding: 7px 12px; font-size: 12px; }
-.btn-icon {
-  width: 34px;
-  height: 34px;
-  padding: 0;
-  border-radius: 8px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-}
-.btn-icon:hover { background: #1A1A24; }
+.btn-icon:hover{background:#1A1A24}
+.btn-icon:disabled{opacity:.4;cursor:not-allowed}
 
 /* ============================================================
    TABLE
 ============================================================ */
-.table-wrap {
-  border-radius: var(--radius-lg);
-  background: var(--card);
-  border: 1px solid var(--border);
-  overflow: hidden;
+.table-wrap{
+  border-radius:var(--radius-lg);background:var(--card);
+  border:1px solid var(--border);overflow:hidden;
 }
-.table-scroll {
-  overflow-x: auto;
+.table-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:640px}
+thead{background:rgba(255,255,255,.02);border-bottom:1px solid var(--border)}
+th{
+  text-align:left;padding:12px 16px;
+  font-size:11px;font-weight:700;color:var(--dim);
+  letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;
 }
-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 640px;
-}
-thead {
-  background: rgba(255,255,255,0.02);
-  border-bottom: 1px solid var(--border);
-}
-th {
-  text-align: left;
-  padding: 12px 16px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--dim);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-td {
-  padding: 14px 16px;
-  font-size: 13px;
-  border-bottom: 1px solid var(--border);
-  vertical-align: middle;
-}
-tbody tr:last-child td { border-bottom: none; }
-tbody tr:hover { background: rgba(255,255,255,0.02); }
+td{padding:14px 16px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:rgba(255,255,255,.02)}
 
-.td-creator {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.td-creator{display:flex;align-items:center;gap:10px}
+.td-avatar{
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:11px;color:#fff;flex-shrink:0;
 }
-.td-avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  font-size: 11px;
-  color: #fff;
-  flex-shrink: 0;
-}
-.td-name { font-weight: 600; font-size: 13px; }
-.td-handle { font-size: 11px; color: var(--dim); }
+.td-name{font-weight:600;font-size:13px}
+.td-handle{font-size:11px;color:var(--dim)}
 
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 9px;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.03em;
+.badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 9px;border-radius:999px;
+  font-size:10px;font-weight:700;letter-spacing:.03em;
 }
-.badge-live    { background: rgba(254,44,85,0.15); color: var(--pink); border: 1px solid rgba(254,44,85,0.4); }
-.badge-offline { background: rgba(255,255,255,0.05); color: var(--dim); border: 1px solid var(--border); }
-.badge-members { background: rgba(37,244,238,0.12); color: var(--cyan); border: 1px solid rgba(37,244,238,0.4); }
-.badge-open    { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.4); }
+.badge-live{background:rgba(254,44,85,.15);color:var(--pink);border:1px solid rgba(254,44,85,.4)}
+.badge-offline{background:rgba(255,255,255,.05);color:var(--dim);border:1px solid var(--border)}
+.badge-members{background:rgba(37,244,238,.12);color:var(--cyan);border:1px solid rgba(37,244,238,.4)}
+.badge-open{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.4)}
 
-.row-actions {
-  display: flex;
-  gap: 6px;
-  justify-content: flex-end;
-}
+.row-actions{display:flex;gap:6px;justify-content:flex-end}
 
 /* ============================================================
-   EMPTY STATE
+   EMPTY / LOADING
 ============================================================ */
-.empty {
-  padding: 60px 24px;
-  text-align: center;
+.empty{padding:60px 24px;text-align:center}
+.empty-icon{font-size:42px;margin-bottom:12px}
+.empty-title{font-size:16px;font-weight:700;margin-bottom:6px}
+.empty-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+
+.loading-row{
+  padding:40px;text-align:center;color:var(--muted);font-size:13px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
 }
-.empty-icon { font-size: 42px; margin-bottom: 12px; }
-.empty-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-.empty-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+.spinner-sm{
+  width:14px;height:14px;
+  border:2px solid rgba(255,255,255,.15);
+  border-top-color:var(--cyan);border-radius:50%;
+  animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 /* ============================================================
    MODAL
 ============================================================ */
-.modal-bg {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(4px);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  z-index: 300;
-  transition: opacity 0.2s;
+.modal-bg{
+  position:fixed;inset:0;background:rgba(0,0,0,.7);
+  backdrop-filter:blur(4px);
+  display:none;align-items:center;justify-content:center;
+  padding:24px;z-index:300;transition:opacity .2s;
 }
-.modal-bg.show { display: flex; }
-.modal {
-  width: 100%;
-  max-width: 480px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  padding: 28px;
-  max-height: 90vh;
-  overflow-y: auto;
-  animation: modalIn 0.2s ease;
+.modal-bg.show{display:flex}
+.modal{
+  width:100%;max-width:480px;background:var(--card);
+  border:1px solid var(--border);border-radius:var(--radius-xl);
+  padding:28px;max-height:90vh;overflow-y:auto;
+  animation:modalIn .2s ease;
 }
-@keyframes modalIn {
-  from { opacity: 0; transform: scale(0.96) translateY(10px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
+@keyframes modalIn{
+  from{opacity:0;transform:scale(.96) translateY(10px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
 }
-.modal-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
+.modal-head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:20px;
 }
-.modal-title {
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
+.modal-title{font-size:18px;font-weight:800;letter-spacing:-.01em}
+.modal-close{
+  width:32px;height:32px;border-radius:8px;
+  background:rgba(255,255,255,.05);
+  display:flex;align-items:center;justify-content:center;font-size:14px;
 }
-.modal-close {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: rgba(255,255,255,0.05);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-}
-.modal-close:hover { background: rgba(255,255,255,0.1); }
+.modal-close:hover{background:rgba(255,255,255,.1)}
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 14px;
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.form-label{font-size:12px;font-weight:600;color:#D1D5DB}
+.form-label .req{color:var(--pink)}
+.form-input,.form-select,.form-textarea{
+  width:100%;padding:11px 13px;border-radius:10px;
+  border:1px solid var(--border);background:#0A0A0F;color:#fff;
+  font-size:13px;outline:none;transition:all .15s;
 }
-.form-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #D1D5DB;
+.form-input:focus,.form-select:focus,.form-textarea:focus{
+  border-color:var(--cyan);
+  box-shadow:0 0 0 3px rgba(37,244,238,.1);
 }
-.form-label .req { color: var(--pink); }
+.form-textarea{resize:vertical;min-height:80px}
+.form-row-inline{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 13px;border-radius:10px;
+  background:#0A0A0F;border:1px solid var(--border);
+  margin-bottom:14px;font-size:13px;
+}
+.form-hint{font-size:11px;color:var(--dim);margin-top:4px}
+.form-error{font-size:12px;color:var(--pink);min-height:14px;margin-top:4px}
 
-.form-input,
-.form-select,
-.form-textarea {
-  width: 100%;
-  padding: 11px 13px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: #0A0A0F;
-  color: #fff;
-  font-size: 13px;
-  outline: none;
-  transition: all 0.15s;
-}
-.form-input:focus,
-.form-select:focus,
-.form-textarea:focus {
-  border-color: var(--cyan);
-  box-shadow: 0 0 0 3px rgba(37,244,238,0.1);
-}
-.form-textarea { resize: vertical; min-height: 80px; font-family: inherit; }
-.form-row-inline {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 11px 13px;
-  border-radius: 10px;
-  background: #0A0A0F;
-  border: 1px solid var(--border);
-  margin-bottom: 14px;
-  font-size: 13px;
-}
-.form-hint { font-size: 11px; color: var(--dim); margin-top: 4px; }
-
-.modal-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
+.modal-actions{
+  display:flex;gap:10px;justify-content:flex-end;
+  margin-top:20px;padding-top:20px;border-top:1px solid var(--border);
 }
 
-/* Toggle switch */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 40px;
-  height: 22px;
-  flex-shrink: 0;
+.switch{position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0}
+.switch .slider{
+  position:absolute;cursor:pointer;inset:0;
+  background:#2A2A38;border-radius:22px;transition:.2s;
 }
-.switch input { opacity: 0; width: 0; height: 0; }
-.switch .slider {
-  position: absolute;
-  cursor: pointer;
-  inset: 0;
-  background: #2A2A38;
-  border-radius: 22px;
-  transition: 0.2s;
+.switch .slider::before{
+  content:"";position:absolute;height:16px;width:16px;
+  left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;
 }
-.switch .slider::before {
-  content: "";
-  position: absolute;
-  height: 16px;
-  width: 16px;
-  left: 3px;
-  top: 3px;
-  background: #fff;
-  border-radius: 50%;
-  transition: 0.2s;
-}
-.switch input:checked + .slider {
-  background: linear-gradient(135deg, var(--pink), var(--cyan));
-}
-.switch input:checked + .slider::before {
-  transform: translateX(18px);
-}
+.switch input:checked + .slider{background:linear-gradient(135deg,var(--pink),var(--cyan))}
+.switch input:checked + .slider::before{transform:translateX(18px)}
 
 /* ============================================================
-   MOBILE SIDEBAR
+   MOBILE
 ============================================================ */
-.mobile-sidebar {
-  position: fixed;
-  top: 0; bottom: 0;
-  left: 0;
-  width: 260px;
-  background: #0F0F15;
-  border-right: 1px solid var(--border);
-  padding: 20px 14px;
-  z-index: 400;
-  transform: translateX(-100%);
-  transition: transform 0.3s ease;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.mobile-sidebar{
+  position:fixed;top:0;bottom:0;left:0;width:260px;
+  background:#0F0F15;border-right:1px solid var(--border);
+  padding:20px 14px;z-index:400;
+  transform:translateX(-100%);transition:transform .3s ease;
+  overflow-y:auto;display:flex;flex-direction:column;gap:20px;
 }
-.mobile-sidebar.open { transform: translateX(0); }
-@media (min-width: 900px) { .mobile-sidebar { display: none; } }
+.mobile-sidebar.open{transform:translateX(0)}
+@media (min-width:900px){.mobile-sidebar{display:none}}
 
-.mobile-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  z-index: 350;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
+.mobile-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);
+  z-index:350;opacity:0;pointer-events:none;transition:opacity .3s;
 }
-.mobile-overlay.show { opacity: 1; pointer-events: auto; }
-@media (min-width: 900px) { .mobile-overlay { display: none; } }
+.mobile-overlay.show{opacity:1;pointer-events:auto}
+@media (min-width:900px){.mobile-overlay{display:none}}
 
 /* ============================================================
-   ACTIVITY FEED
+   ACTIVITY
 ============================================================ */
-.activity-list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.activity-list{display:flex;flex-direction:column;gap:2px}
+.activity-item{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px 16px;border-radius:10px;font-size:13px;
+  transition:background .15s;
 }
-.activity-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px 16px;
-  border-radius: 10px;
-  font-size: 13px;
-  transition: background 0.15s;
+.activity-item:hover{background:rgba(255,255,255,.03)}
+.activity-icon{
+  width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;background:rgba(255,255,255,.05);
 }
-.activity-item:hover { background: rgba(255,255,255,0.03); }
-.activity-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  flex-shrink: 0;
-  background: rgba(255,255,255,0.05);
-}
-.activity-body { flex: 1; min-width: 0; }
-.activity-text { color: #D1D5DB; line-height: 1.5; }
-.activity-text strong { color: #fff; font-weight: 700; }
-.activity-time { font-size: 11px; color: var(--dim); margin-top: 3px; }
+.activity-body{flex:1;min-width:0}
+.activity-text{color:#D1D5DB;line-height:1.5}
+.activity-text strong{color:#fff;font-weight:700}
+.activity-time{font-size:11px;color:var(--dim);margin-top:3px}
 
 /* ============================================================
    TOAST
 ============================================================ */
-.toast {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%) translateY(120%);
-  padding: 12px 20px;
-  border-radius: var(--radius);
-  background: var(--card);
-  border: 1px solid var(--border);
-  font-size: 13px;
-  font-weight: 600;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-  transition: transform 0.3s ease;
-  z-index: 500;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
-  max-width: calc(100vw - 32px);
+.toast{
+  position:fixed;bottom:24px;left:50%;
+  transform:translateX(-50%) translateY(120%);
+  padding:12px 20px;border-radius:var(--radius);
+  background:var(--card);border:1px solid var(--border);
+  font-size:13px;font-weight:600;
+  box-shadow:0 12px 40px rgba(0,0,0,.5);
+  transition:transform .3s ease;z-index:500;
+  max-width:calc(100vw - 32px);
 }
-.toast.show { transform: translateX(-50%) translateY(0); }
-.toast.success { border-color: rgba(37,244,238,0.5); color: var(--cyan); }
-.toast.error   { border-color: rgba(254,44,85,0.5); color: var(--pink); }
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:rgba(34,197,94,.5);color:#86EFAC}
+.toast.error{border-color:rgba(254,44,85,.5);color:#FF8099}
 </style>
 </head>
 
 <body>
 
 <!-- ============================================================
-     LOGIN GATE
+     GATE
 ============================================================ -->
 <div class="gate" id="gate">
   <div class="gate-card">
@@ -846,20 +449,11 @@ tbody tr:hover { background: rgba(255,255,255,0.02); }
     <div class="gate-inner">
       <div class="gate-icon">🔐</div>
       <h1 class="gate-title">Admin access</h1>
-      <p class="gate-sub">Enter the admin passcode to continue to the ProLoveHub dashboard.</p>
+      <p class="gate-sub">Enter the admin passcode to continue.</p>
       <form class="gate-form" id="gateForm">
-        <input
-          type="password"
-          class="gate-input"
-          id="gateInput"
-          placeholder="••••••"
-          autocomplete="off"
-          autofocus
-        />
+        <input type="password" class="gate-input" id="gateInput" placeholder="••••••" autocomplete="off" />
         <div class="gate-error" id="gateError"></div>
-        <button type="submit" class="btn btn-primary" style="width:100%; padding:13px;">
-          Unlock Dashboard
-        </button>
+        <button type="submit" class="btn btn-primary" style="width:100%;padding:13px;">Unlock Dashboard</button>
       </form>
       <p class="gate-hint">Demo passcode: <code>prolovehub</code></p>
     </div>
@@ -867,13 +461,9 @@ tbody tr:hover { background: rgba(255,255,255,0.02); }
 </div>
 
 <!-- ============================================================
-     MOBILE SIDEBAR OVERLAY
-============================================================ -->
-<div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileSidebar(false)"></div>
-
-<!-- ============================================================
      MOBILE SIDEBAR
 ============================================================ -->
+<div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileSidebar(false)"></div>
 <aside class="mobile-sidebar" id="mobileSidebar">
   <div class="brand">
     <div class="brand-mark">P<span class="brand-dot"></span></div>
@@ -882,26 +472,13 @@ tbody tr:hover { background: rgba(255,255,255,0.02); }
       <div class="brand-sub">Admin</div>
     </div>
   </div>
-
   <nav class="nav-section">
     <div class="nav-label">Main</div>
-    <a class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')">
-      <span class="icon">📊</span> Dashboard
-    </a>
-    <a class="nav-item" data-view="creators" onclick="switchView('creators')">
-      <span class="icon">🎭</span> Creators
-      <span class="count" id="mCountCreators">0</span>
-    </a>
-    <a class="nav-item" data-view="rooms" onclick="switchView('rooms')">
-      <span class="icon">🔴</span> Live Rooms
-      <span class="count" id="mCountRooms">0</span>
-    </a>
-    <a class="nav-item" data-view="members" onclick="switchView('members')">
-      <span class="icon">🏅</span> Members
-    </a>
-    <a class="nav-item" data-view="activity" onclick="switchView('activity')">
-      <span class="icon">⚡</span> Activity
-    </a>
+    <a class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')"><span class="icon">📊</span> Dashboard</a>
+    <a class="nav-item" data-view="creators" onclick="switchView('creators')"><span class="icon">🎭</span> Creators <span class="count" id="mCountCreators">0</span></a>
+    <a class="nav-item" data-view="rooms" onclick="switchView('rooms')"><span class="icon">🔴</span> Live Rooms <span class="count" id="mCountRooms">0</span></a>
+    <a class="nav-item" data-view="members" onclick="switchView('members')"><span class="icon">🏅</span> Members</a>
+    <a class="nav-item" data-view="activity" onclick="switchView('activity')"><span class="icon">⚡</span> Activity</a>
   </nav>
 </aside>
 
@@ -910,7 +487,6 @@ tbody tr:hover { background: rgba(255,255,255,0.02); }
 ============================================================ -->
 <div class="app">
 
-  <!-- ---------- SIDEBAR (desktop) ---------- -->
   <aside class="sidebar">
     <div class="brand">
       <div class="brand-mark">P<span class="brand-dot"></span></div>
@@ -922,271 +498,198 @@ tbody tr:hover { background: rgba(255,255,255,0.02); }
 
     <nav class="nav-section">
       <div class="nav-label">Main</div>
-      <a class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')">
-        <span class="icon">📊</span> Dashboard
-      </a>
-      <a class="nav-item" data-view="creators" onclick="switchView('creators')">
-        <span class="icon">🎭</span> Creators
-        <span class="count" id="countCreators">0</span>
-      </a>
-      <a class="nav-item" data-view="rooms" onclick="switchView('rooms')">
-        <span class="icon">🔴</span> Live Rooms
-        <span class="count" id="countRooms">0</span>
-      </a>
-      <a class="nav-item" data-view="members" onclick="switchView('members')">
-        <span class="icon">🏅</span> Members
-      </a>
-      <a class="nav-item" data-view="activity" onclick="switchView('activity')">
-        <span class="icon">⚡</span> Activity
-      </a>
+      <a class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')"><span class="icon">📊</span> Dashboard</a>
+      <a class="nav-item" data-view="creators" onclick="switchView('creators')"><span class="icon">🎭</span> Creators <span class="count" id="countCreators">0</span></a>
+      <a class="nav-item" data-view="rooms" onclick="switchView('rooms')"><span class="icon">🔴</span> Live Rooms <span class="count" id="countRooms">0</span></a>
+      <a class="nav-item" data-view="members" onclick="switchView('members')"><span class="icon">🏅</span> Members</a>
+      <a class="nav-item" data-view="activity" onclick="switchView('activity')"><span class="icon">⚡</span> Activity</a>
     </nav>
 
     <div class="sidebar-foot">
-      <a class="sidebar-link" href="index.html">
-        <span>🏠</span> View public site
-      </a>
-      <a class="sidebar-link" href="studio.html">
-        <span>🎭</span> Avatar Studio
-      </a>
-      <a class="sidebar-link" onclick="logoutAdmin()">
-        <span>🚪</span> Lock dashboard
-      </a>
+      <a class="sidebar-link" href="index.html"><span>🏠</span> View public site</a>
+      <a class="sidebar-link" href="studio.html"><span>🎭</span> Avatar Studio</a>
+      <a class="sidebar-link" onclick="logoutAdmin()"><span>🚪</span> Lock dashboard</a>
     </div>
   </aside>
 
-  <!-- ---------- MAIN ---------- -->
   <main class="main">
-
-    <!-- Topbar -->
     <header class="topbar">
-      <div style="display:flex; align-items:center; gap:12px;">
+      <div style="display:flex;align-items:center;gap:12px;">
         <button class="mobile-menu-btn" onclick="toggleMobileSidebar()">☰</button>
         <div>
           <div class="topbar-title" id="viewTitle">📊 Dashboard</div>
           <div class="topbar-sub" id="viewSub">Platform overview</div>
         </div>
       </div>
-
       <div class="topbar-actions">
-        <span class="badge badge-open" id="sysStatus">
-          <span class="dot dot-cyan pulse"></span> Systems OK
-        </span>
-        <button class="btn btn-ghost btn-sm" onclick="seedDemo()">🌱 Reset demo</button>
+        <span class="badge badge-open" id="sysStatus"><span class="dot dot-cyan pulse"></span> Loading…</span>
+        <button class="btn btn-ghost btn-sm" onclick="reloadData()">🔄 Refresh</button>
         <button class="btn btn-primary btn-sm" onclick="openCreateCreator()">+ New Creator</button>
       </div>
     </header>
 
-    <!-- Content -->
     <div class="content">
 
-      <!-- ============================================================
-           VIEW: DASHBOARD
-      ============================================================ -->
+      <!-- DASHBOARD -->
       <div class="view active" id="view-dashboard">
-
         <div class="stats">
           <div class="stat s-pink">
             <div class="stat-icon">🎭</div>
             <div class="stat-value" id="statCreators">0</div>
             <div class="stat-label">Creators</div>
-            <div class="stat-trend up">↑ active</div>
           </div>
           <div class="stat s-cyan">
             <div class="stat-icon">🏅</div>
             <div class="stat-value" id="statMembers">0</div>
-            <div class="stat-label">Total members</div>
-            <div class="stat-trend up">↑ growing</div>
+            <div class="stat-label">Total memberships</div>
           </div>
           <div class="stat s-amber">
             <div class="stat-icon">🔴</div>
             <div class="stat-value" id="statLive">0</div>
             <div class="stat-label">Live now</div>
-            <div class="stat-trend flat">— right now</div>
           </div>
           <div class="stat s-green">
             <div class="stat-icon">👁</div>
             <div class="stat-value" id="statViewers">0</div>
             <div class="stat-label">Total viewers</div>
-            <div class="stat-trend up">↑ trending</div>
           </div>
         </div>
 
-        <!-- Two-column -->
-        <div style="display:grid; grid-template-columns:1fr; gap:20px;">
+        <div style="display:grid;grid-template-columns:1fr;gap:20px;">
           <div class="card">
             <div class="section-head" style="margin-bottom:12px;">
-              <div>
-                <h2 style="font-size:16px;">⚡ Recent activity</h2>
-                <p>Latest events across the platform</p>
-              </div>
+              <div><h2 style="font-size:16px;">⚡ Recent activity</h2><p>Latest events</p></div>
             </div>
-            <div class="activity-list" id="dashActivity"></div>
+            <div class="activity-list" id="dashActivity">
+              <div class="loading-row"><div class="spinner-sm"></div> Loading…</div>
+            </div>
           </div>
 
           <div class="card">
             <div class="section-head" style="margin-bottom:12px;">
-              <div>
-                <h2 style="font-size:16px;">🔴 Live rooms</h2>
-                <p>Currently broadcasting</p>
-              </div>
+              <div><h2 style="font-size:16px;">🔴 Live rooms</h2><p>Currently broadcasting</p></div>
             </div>
-            <div id="dashLiveRooms"></div>
+            <div id="dashLiveRooms">
+              <div class="loading-row"><div class="spinner-sm"></div> Loading…</div>
+            </div>
           </div>
         </div>
-
       </div>
 
-      <!-- ============================================================
-           VIEW: CREATORS
-      ============================================================ -->
+      <!-- CREATORS -->
       <div class="view" id="view-creators">
         <div class="section-head">
-          <div>
-            <h2>Creators</h2>
-            <p>Manage every creator on ProLoveHub</p>
-          </div>
+          <div><h2>Creators</h2><p>Manage every creator on ProLoveHub</p></div>
           <button class="btn btn-primary btn-sm" onclick="openCreateCreator()">+ New Creator</button>
         </div>
-
         <div class="table-wrap">
           <div class="table-scroll">
             <table>
               <thead>
                 <tr>
-                  <th>Creator</th>
-                  <th>Status</th>
-                  <th>Members</th>
-                  <th>Mode</th>
-                  <th>Streams</th>
+                  <th>Creator</th><th>Status</th><th>Mode</th><th>Viewers</th><th>Streams</th>
                   <th style="text-align:right;">Actions</th>
                 </tr>
               </thead>
-              <tbody id="creatorsBody"></tbody>
+              <tbody id="creatorsBody">
+                <tr><td colspan="6"><div class="loading-row"><div class="spinner-sm"></div> Loading creators…</div></td></tr>
+              </tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <!-- ============================================================
-           VIEW: ROOMS
-      ============================================================ -->
+      <!-- ROOMS -->
       <div class="view" id="view-rooms">
         <div class="section-head">
-          <div>
-            <h2>Live Rooms</h2>
-            <p>Control all active and past streams</p>
-          </div>
+          <div><h2>Live Rooms</h2><p>All currently live creators</p></div>
         </div>
-
         <div class="table-wrap">
           <div class="table-scroll">
             <table>
               <thead>
                 <tr>
-                  <th>Room</th>
-                  <th>Creator</th>
-                  <th>Status</th>
-                  <th>Access</th>
-                  <th>Viewers</th>
+                  <th>Room</th><th>Creator</th><th>Status</th><th>Access</th><th>Viewers</th>
                   <th style="text-align:right;">Actions</th>
                 </tr>
               </thead>
-              <tbody id="roomsBody"></tbody>
+              <tbody id="roomsBody">
+                <tr><td colspan="6"><div class="loading-row"><div class="spinner-sm"></div> Loading rooms…</div></td></tr>
+              </tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <!-- ============================================================
-           VIEW: MEMBERS
-      ============================================================ -->
+      <!-- MEMBERS -->
       <div class="view" id="view-members">
         <div class="section-head">
-          <div>
-            <h2>Members</h2>
-            <p>Every user who has joined a creator's community</p>
-          </div>
+          <div><h2>Members</h2><p>Every membership across ProLoveHub</p></div>
         </div>
-
         <div class="table-wrap">
           <div class="table-scroll">
             <table>
               <thead>
                 <tr>
-                  <th>User</th>
-                  <th>Creator</th>
-                  <th>Joined</th>
-                  <th>Badge</th>
+                  <th>User ID</th><th>Creator</th><th>Status</th><th>Joined</th>
                   <th style="text-align:right;">Actions</th>
                 </tr>
               </thead>
-              <tbody id="membersBody"></tbody>
+              <tbody id="membersBody">
+                <tr><td colspan="5"><div class="loading-row"><div class="spinner-sm"></div> Loading members…</div></td></tr>
+              </tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <!-- ============================================================
-           VIEW: ACTIVITY
-      ============================================================ -->
+      <!-- ACTIVITY -->
       <div class="view" id="view-activity">
         <div class="section-head">
-          <div>
-            <h2>Activity Log</h2>
-            <p>All events across ProLoveHub</p>
-          </div>
+          <div><h2>Activity Log</h2><p>All events across ProLoveHub</p></div>
           <button class="btn btn-ghost btn-sm" onclick="clearActivity()">Clear log</button>
         </div>
-
         <div class="card">
-          <div class="activity-list" id="fullActivity"></div>
+          <div class="activity-list" id="fullActivity">
+            <div class="loading-row"><div class="spinner-sm"></div> Loading…</div>
+          </div>
         </div>
       </div>
 
     </div>
   </main>
-
 </div>
 
-<!-- ============================================================
-     MODAL: CREATE / EDIT CREATOR
-============================================================ -->
+<!-- MODAL: CREATOR -->
 <div class="modal-bg" id="creatorModal">
   <div class="modal">
     <div class="modal-head">
       <div class="modal-title" id="creatorModalTitle">New Creator</div>
       <button class="modal-close" onclick="closeModal('creatorModal')">✕</button>
     </div>
-
     <form id="creatorForm" onsubmit="saveCreator(event)">
-      <input type="hidden" id="editingHandle" />
-
+      <input type="hidden" id="editingId" />
       <div class="form-group">
         <label class="form-label">Display name <span class="req">*</span></label>
         <input type="text" class="form-input" id="fName" placeholder="Luna Rivers" required />
       </div>
-
       <div class="form-group">
         <label class="form-label">Handle <span class="req">*</span></label>
         <input type="text" class="form-input" id="fHandle" placeholder="lunaflows" required />
         <div class="form-hint">3–20 characters, letters/numbers/underscore</div>
       </div>
-
       <div class="form-group">
         <label class="form-label">Initials</label>
         <input type="text" class="form-input" id="fInitials" placeholder="LR" maxlength="2" />
       </div>
-
       <div class="form-group">
         <label class="form-label">Tags (comma-separated)</label>
         <input type="text" class="form-input" id="fTags" placeholder="Music, Lo-fi" />
       </div>
-
       <div class="form-group">
         <label class="form-label">About</label>
         <textarea class="form-textarea" id="fBio" placeholder="Describe this creator…"></textarea>
       </div>
-
       <div class="form-row-inline">
         <span>Members-only by default</span>
         <label class="switch">
@@ -1194,7 +697,7 @@ tbody tr:hover { background: rgba(255,255,255,0.02); }
           <span class="slider"></span>
         </label>
       </div>
-
+      <div class="form-error" id="creatorFormError"></div>
       <div class="modal-actions">
         <button type="button" class="btn btn-ghost" onclick="closeModal('creatorModal')">Cancel</button>
         <button type="submit" class="btn btn-primary" id="creatorSubmitBtn">Create</button>
@@ -1203,18 +706,14 @@ tbody tr:hover { background: rgba(255,255,255,0.02); }
   </div>
 </div>
 
-<!-- ============================================================
-     MODAL: CONFIRM DELETE
-============================================================ -->
+<!-- MODAL: CONFIRM -->
 <div class="modal-bg" id="confirmModal">
   <div class="modal" style="max-width:380px;">
     <div class="modal-head">
       <div class="modal-title">Confirm</div>
       <button class="modal-close" onclick="closeModal('confirmModal')">✕</button>
     </div>
-    <p style="font-size:14px; color:#D1D5DB; line-height:1.6;" id="confirmMsg">
-      Are you sure?
-    </p>
+    <p style="font-size:14px;color:#D1D5DB;line-height:1.6;" id="confirmMsg">Are you sure?</p>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('confirmModal')">Cancel</button>
       <button class="btn btn-danger" id="confirmBtn">Delete</button>
@@ -1222,139 +721,55 @@ tbody tr:hover { background: rgba(255,255,255,0.02); }
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
 <script>
 /* ============================================================
-   ProLoveHub — Admin Dashboard
+   ProLoveHub — Admin Dashboard (Supabase-backed)
 ============================================================ */
 
-// ---- Admin passcode ----
+const SUPABASE_URL = "https://apwyqkxyglfcmooqedsk.supabase.co";
+const SUPABASE_KEY = "sb_publishable_YuAnouzmvWgxJLhmazjiIg_K8utDLRz";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 const ADMIN_PASSCODE = "prolovehub";
 const ADMIN_KEY = "plh_admin_ok";
 
-// ---- Demo seed data ----
-const SEED_CREATORS = [
-  {
-    handle: "lunaflows",
-    name: "Luna Rivers",
-    initials: "LR",
-    gradient: "linear-gradient(135deg, #FE2C55, #A855F7)",
-    tags: ["Music", "Sunset sessions", "Lo-fi"],
-    bio: "Hey! I'm Luna. I stream live sunset sessions and lo-fi sets.",
-    isLive: true,
-    isSubOnly: false,
-    viewers: 12840,
-    members: 12400,
-    streams: 182,
-  },
-  {
-    handle: "kaijudances",
-    name: "Kai Nakamura",
-    initials: "KN",
-    gradient: "linear-gradient(135deg, #25F4EE, #3B82F6)",
-    tags: ["Dance", "Choreo"],
-    bio: "Choreographer and dancer.",
-    isLive: true,
-    isSubOnly: true,
-    viewers: 8230,
-    members: 8100,
-    streams: 126,
-  },
-  {
-    handle: "pixelwithpia",
-    name: "Pia Solberg",
-    initials: "PS",
-    gradient: "linear-gradient(135deg, #A855F7, #FE2C55)",
-    tags: ["Gaming", "Art"],
-    bio: "Cozy game nights & art streams.",
-    isLive: false,
-    isSubOnly: true,
-    viewers: 0,
-    members: 21700,
-    streams: 304,
-  },
-  {
-    handle: "chefmateo",
-    name: "Mateo Alvarez",
-    initials: "MA",
-    gradient: "linear-gradient(135deg, #F97316, #FE2C55)",
-    tags: ["Food", "Late-night"],
-    bio: "Late-night cooking streams.",
-    isLive: true,
-    isSubOnly: false,
-    viewers: 4210,
-    members: 5900,
-    streams: 89,
-  },
-];
+// ---- State ----
+let creators = [];
+let members = [];
+let activity = [];
 
-const SEED_ACTIVITY = [
-  { icon: "🟢", text: "<strong>Luna Rivers</strong> went live", time: "2 min ago" },
-  { icon: "🏅", text: "<strong>mia_22</strong> joined <strong>kaijudances</strong>", time: "5 min ago" },
-  { icon: "🔴", text: "<strong>Chef Mateo</strong> started a members-only stream", time: "12 min ago" },
-  { icon: "🏅", text: "<strong>dvn</strong> joined <strong>lunaflows</strong>", time: "18 min ago" },
-  { icon: "⚡", text: "<strong>Pia Solberg</strong> scheduled a stream for Friday", time: "1 hr ago" },
-  { icon: "🎭", text: "<strong>Kai Nakamura</strong> changed their avatar", time: "2 hr ago" },
-];
-
-const SEED_MEMBERS = [
-  { user: "mia_22", creator: "kaijudances", joined: "2 min ago" },
-  { user: "dvn", creator: "lunaflows", joined: "18 min ago" },
-  { user: "kira_gg", creator: "lunaflows", joined: "1 hr ago" },
-  { user: "sammy", creator: "chefmateo", joined: "3 hr ago" },
-  { user: "nova_x", creator: "pixelwithpia", joined: "5 hr ago" },
-  { user: "rook", creator: "kaijudances", joined: "1 day ago" },
-  { user: "aria_", creator: "lunaflows", joined: "2 days ago" },
-];
-
-// ---- Storage helpers ----
-function getCreators() {
-  try {
-    const raw = localStorage.getItem("plh_admin_creators");
-    if (raw) return JSON.parse(raw);
-  } catch (_) {}
-  return JSON.parse(JSON.stringify(SEED_CREATORS));
-}
-function saveCreators(list) {
-  localStorage.setItem("plh_admin_creators", JSON.stringify(list));
-}
-function getActivity() {
-  try {
-    const raw = localStorage.getItem("plh_admin_activity");
-    if (raw) return JSON.parse(raw);
-  } catch (_) {}
-  return JSON.parse(JSON.stringify(SEED_ACTIVITY));
-}
-function saveActivity(list) {
-  localStorage.setItem("plh_admin_activity", JSON.stringify(list.slice(0, 80)));
-}
-function getMembers() {
-  try {
-    const raw = localStorage.getItem("plh_admin_members");
-    if (raw) return JSON.parse(raw);
-  } catch (_) {}
-  return JSON.parse(JSON.stringify(SEED_MEMBERS));
-}
-function saveMembers(list) {
-  localStorage.setItem("plh_admin_members", JSON.stringify(list));
-}
-
-// ---- Toast ----
+// ---- Helpers ----
 let toastTimer;
-function toast(msg, type = "success") {
+function toast(msg, type="success") {
   const el = document.getElementById("toast");
-  el.textContent = (type === "success" ? "✓ " : "⚠ ") + msg;
+  el.textContent = (type==="success" ? "✓ " : "⚠ ") + msg;
   el.className = "toast show " + type;
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => el.classList.remove("show"), 2400);
 }
 
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+}
+
+function timeAgo(iso) {
+  const t = new Date(iso).getTime();
+  const diff = Math.floor((Date.now() - t) / 1000);
+  if (diff < 60) return diff + "s ago";
+  if (diff < 3600) return Math.floor(diff/60) + "m ago";
+  if (diff < 86400) return Math.floor(diff/3600) + "h ago";
+  return Math.floor(diff/86400) + "d ago";
+}
+
 // ---- Gate ----
 function checkGate() {
-  const ok = localStorage.getItem(ADMIN_KEY) === "1";
-  if (ok) {
+  if (localStorage.getItem(ADMIN_KEY) === "1") {
     document.getElementById("gate").classList.add("hide");
     boot();
   }
@@ -1369,7 +784,7 @@ document.getElementById("gateForm").addEventListener("submit", (e) => {
     document.getElementById("gate").classList.add("hide");
     boot();
   } else {
-    err.textContent = "Incorrect passcode. Try again.";
+    err.textContent = "Incorrect passcode.";
     input.value = "";
     input.focus();
   }
@@ -1380,32 +795,71 @@ function logoutAdmin() {
   location.reload();
 }
 
-// ---- View switching ----
+// ============================================================
+// DATA LOADING
+// ============================================================
+async function loadData() {
+  document.getElementById("sysStatus").innerHTML = '<div class="spinner-sm"></div> Loading…';
+
+  try {
+    // Creators
+    const { data: cData, error: cErr } = await sb
+      .from("creators").select("*").order("name");
+    if (cErr) throw cErr;
+    creators = cData || [];
+
+    // Memberships (with creator join)
+    const { data: mData, error: mErr } = await sb
+      .from("memberships").select("*").order("created_at", { ascending: false });
+    if (mErr) throw mErr;
+    members = mData || [];
+
+    // Activity
+    const { data: aData, error: aErr } = await sb
+      .from("activity").select("*").order("created_at", { ascending: false }).limit(80);
+    if (aErr) throw aErr;
+    activity = aData || [];
+
+    document.getElementById("sysStatus").className = "badge badge-open";
+    document.getElementById("sysStatus").innerHTML =
+      '<span class="dot dot-cyan pulse"></span> Connected';
+  } catch (err) {
+    console.error(err);
+    document.getElementById("sysStatus").className = "badge badge-live";
+    document.getElementById("sysStatus").innerHTML = "⚠ Error";
+    toast("Failed to load: " + (err.message || "unknown"), "error");
+  }
+}
+
+async function reloadData() {
+  await loadData();
+  render();
+  toast("Data refreshed");
+}
+
+// ============================================================
+// VIEW SWITCHING
+// ============================================================
 const VIEWS = {
-  dashboard: { title: "📊 Dashboard", sub: "Platform overview" },
-  creators:  { title: "🎭 Creators",  sub: "Manage every creator" },
-  rooms:     { title: "🔴 Live Rooms", sub: "All active and past streams" },
-  members:   { title: "🏅 Members",   sub: "Users who joined communities" },
-  activity:  { title: "⚡ Activity",   sub: "Events across ProLoveHub" },
+  dashboard: { title:"📊 Dashboard", sub:"Platform overview" },
+  creators:  { title:"🎭 Creators",  sub:"Manage every creator" },
+  rooms:     { title:"🔴 Live Rooms", sub:"Currently live" },
+  members:   { title:"🏅 Members",   sub:"Every membership" },
+  activity:  { title:"⚡ Activity",   sub:"Events across ProLoveHub" },
 };
 
 function switchView(view) {
   document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
   document.getElementById("view-" + view).classList.add("active");
-
   document.querySelectorAll(".nav-item").forEach(n => {
     n.classList.toggle("active", n.dataset.view === view);
   });
-
   const meta = VIEWS[view] || VIEWS.dashboard;
   document.getElementById("viewTitle").textContent = meta.title;
   document.getElementById("viewSub").textContent = meta.sub;
-
-  // Close mobile sidebar
   toggleMobileSidebar(false);
 }
 
-// ---- Mobile sidebar ----
 function toggleMobileSidebar(force) {
   const s = document.getElementById("mobileSidebar");
   const o = document.getElementById("mobileOverlay");
@@ -1414,231 +868,282 @@ function toggleMobileSidebar(force) {
   o.classList.toggle("show", open);
 }
 
-// ---- Modals ----
-function openModal(id) {
-  document.getElementById(id).classList.add("show");
-}
-function closeModal(id) {
-  document.getElementById(id).classList.remove("show");
-}
+// ============================================================
+// MODALS
+// ============================================================
+function openModal(id) { document.getElementById(id).classList.add("show"); }
+function closeModal(id) { document.getElementById(id).classList.remove("show"); }
 
-// ---- Creator CRUD ----
+// ============================================================
+// CREATOR CRUD
+// ============================================================
 function openCreateCreator() {
   document.getElementById("creatorModalTitle").textContent = "New Creator";
-  document.getElementById("editingHandle").value = "";
+  document.getElementById("editingId").value = "";
   document.getElementById("creatorForm").reset();
   document.getElementById("creatorSubmitBtn").textContent = "Create";
+  document.getElementById("creatorFormError").textContent = "";
   openModal("creatorModal");
 }
 
-function openEditCreator(handle) {
-  const c = getCreators().find(x => x.handle === handle);
+function openEditCreator(id) {
+  const c = creators.find(x => x.id === id);
   if (!c) return;
-
   document.getElementById("creatorModalTitle").textContent = "Edit Creator";
-  document.getElementById("editingHandle").value = c.handle;
-  document.getElementById("fName").value = c.name;
-  document.getElementById("fHandle").value = c.handle;
+  document.getElementById("editingId").value = c.id;
+  document.getElementById("fName").value = c.name || "";
+  document.getElementById("fHandle").value = c.handle || "";
   document.getElementById("fInitials").value = c.initials || "";
   document.getElementById("fTags").value = (c.tags || []).join(", ");
   document.getElementById("fBio").value = c.bio || "";
-  document.getElementById("fSubOnly").checked = !!c.isSubOnly;
+  document.getElementById("fSubOnly").checked = !!c.is_members_only;
   document.getElementById("creatorSubmitBtn").textContent = "Save";
+  document.getElementById("creatorFormError").textContent = "";
   openModal("creatorModal");
 }
 
-function saveCreator(e) {
+async function saveCreator(e) {
   e.preventDefault();
 
-  const editing = document.getElementById("editingHandle").value;
-  const name = document.getElementById("fName").value.trim();
-  let handle = document.getElementById("fHandle").value.trim().toLowerCase();
-  const initials = document.getElementById("fInitials").value.trim().toUpperCase();
-  const tags = document.getElementById("fTags").value.split(",").map(s => s.trim()).filter(Boolean);
-  const bio = document.getElementById("fBio").value.trim();
+  const editingId = document.getElementById("editingId").value;
+  const name      = document.getElementById("fName").value.trim();
+  const handle    = document.getElementById("fHandle").value.trim().toLowerCase();
+  const initials  = document.getElementById("fInitials").value.trim().toUpperCase();
+  const tagsRaw   = document.getElementById("fTags").value;
+  const bio       = document.getElementById("fBio").value.trim();
   const isSubOnly = document.getElementById("fSubOnly").checked;
+  const errEl     = document.getElementById("creatorFormError");
+  const submitBtn = document.getElementById("creatorSubmitBtn");
 
-  if (!name || !handle) { toast("Name and handle are required", "error"); return; }
+  errEl.textContent = "";
+
+  if (!name || !handle) { errEl.textContent = "Name and handle are required."; return; }
   if (!/^[a-z0-9_]{3,20}$/.test(handle)) {
-    toast("Handle: 3–20 chars, letters/numbers/underscore", "error"); return;
+    errEl.textContent = "Handle: 3–20 chars, letters/numbers/underscore only.";
+    return;
   }
 
-  const list = getCreators();
+  const tags = tagsRaw.split(",").map(s => s.trim()).filter(Boolean);
 
-  if (editing) {
-    const idx = list.findIndex(c => c.handle === editing);
-    if (idx === -1) { toast("Creator not found", "error"); return; }
-    list[idx] = {
-      ...list[idx],
-      name, handle, initials: initials || list[idx].initials,
-      tags, bio, isSubOnly,
-    };
-    saveCreators(list);
-    pushActivity("✏️", `<strong>${name}</strong> profile updated`);
-    toast("Creator updated");
-  } else {
-    if (list.some(c => c.handle === handle)) {
-      toast("Handle already in use", "error"); return;
+  const gradients = [
+    "linear-gradient(135deg, #FE2C55, #A855F7)",
+    "linear-gradient(135deg, #25F4EE, #3B82F6)",
+    "linear-gradient(135deg, #A855F7, #FE2C55)",
+    "linear-gradient(135deg, #F97316, #FE2C55)",
+    "linear-gradient(135deg, #22D3EE, #A855F7)",
+  ];
+
+  submitBtn.disabled = true;
+  const origText = submitBtn.textContent;
+  submitBtn.textContent = editingId ? "Saving…" : "Creating…";
+
+  try {
+    if (editingId) {
+      const { error } = await sb.from("creators").update({
+        name, handle, initials: initials || null, tags, bio,
+        is_members_only: isSubOnly,
+      }).eq("id", editingId);
+      if (error) throw error;
+
+      await sb.from("activity").insert({
+        icon: "✏️",
+        text: `<strong>${escapeHtml(name)}</strong> profile updated`,
+      });
+      toast("Creator updated");
+    } else {
+      // Check handle uniqueness
+      const { data: existing } = await sb
+        .from("creators").select("id").eq("handle", handle).maybeSingle();
+      if (existing) {
+        errEl.textContent = "That handle is already taken.";
+        return;
+      }
+
+      const initialsAuto = initials || name.split(" ").map(w => w[0]).slice(0,2).join("").toUpperCase();
+
+      const { error } = await sb.from("creators").insert({
+        name, handle,
+        initials: initialsAuto,
+        gradient: gradients[creators.length % gradients.length],
+        tags, bio,
+        is_members_only: isSubOnly,
+        is_live: false,
+        viewers: 0,
+        streams: 0,
+      });
+      if (error) throw error;
+
+      await sb.from("activity").insert({
+        icon: "🎭",
+        text: `<strong>${escapeHtml(name)}</strong> created`,
+      });
+      toast("Creator created");
     }
-    const gradients = [
-      "linear-gradient(135deg, #FE2C55, #A855F7)",
-      "linear-gradient(135deg, #25F4EE, #3B82F6)",
-      "linear-gradient(135deg, #A855F7, #FE2C55)",
-      "linear-gradient(135deg, #F97316, #FE2C55)",
-      "linear-gradient(135deg, #22D3EE, #A855F7)",
-    ];
-    list.push({
-      handle, name,
-      initials: initials || name.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase(),
-      gradient: gradients[list.length % gradients.length],
-      tags, bio,
-      isLive: false,
-      isSubOnly,
-      viewers: 0,
-      members: 0,
-      streams: 0,
-    });
-    saveCreators(list);
-    pushActivity("🎭", `<strong>${name}</strong> created`);
-    toast("Creator created");
+
+    closeModal("creatorModal");
+    await reloadData();
+  } catch (err) {
+    console.error(err);
+    errEl.textContent = err.message || "Save failed";
+    toast("Save failed", "error");
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = origText;
   }
-
-  closeModal("creatorModal");
-  render();
 }
 
-function deleteCreator(handle) {
-  const c = getCreators().find(x => x.handle === handle);
+function deleteCreator(id) {
+  const c = creators.find(x => x.id === id);
   if (!c) return;
-
   document.getElementById("confirmMsg").innerHTML =
-    `Delete <strong>${c.name}</strong>?<br>This removes the creator and all their rooms.`;
-  document.getElementById("confirmBtn").onclick = () => {
-    const list = getCreators().filter(x => x.handle !== handle);
-    saveCreators(list);
-    pushActivity("🗑️", `<strong>${c.name}</strong> deleted`);
-    closeModal("confirmModal");
-    toast("Creator deleted");
-    render();
+    `Delete <strong>${escapeHtml(c.name)}</strong>?<br>This removes their creator row and memberships (cascade).`;
+  document.getElementById("confirmBtn").onclick = async () => {
+    try {
+      const { error } = await sb.from("creators").delete().eq("id", id);
+      if (error) throw error;
+      await sb.from("activity").insert({
+        icon: "🗑️",
+        text: `<strong>${escapeHtml(c.name)}</strong> deleted`,
+      });
+      closeModal("confirmModal");
+      toast("Creator deleted");
+      await reloadData();
+    } catch (err) {
+      toast("Delete failed: " + err.message, "error");
+    }
   };
   openModal("confirmModal");
 }
 
-function toggleLiveCreator(handle) {
-  const list = getCreators();
-  const c = list.find(x => x.handle === handle);
+async function toggleLive(id) {
+  const c = creators.find(x => x.id === id);
   if (!c) return;
-  c.isLive = !c.isLive;
-  if (!c.isLive) c.viewers = 0;
-  else c.viewers = Math.floor(Math.random() * 8000) + 1000;
-  saveCreators(list);
-  pushActivity(c.isLive ? "🟢" : "🔴",
-    `<strong>${c.name}</strong> ${c.isLive ? "went live" : "ended stream"}`);
-  toast(c.isLive ? "Stream started" : "Stream ended");
-  render();
+
+  const goingLive = !c.is_live;
+  const newViewers = goingLive ? Math.floor(Math.random() * 8000) + 1000 : 0;
+
+  try {
+    const { error } = await sb.from("creators").update({
+      is_live: goingLive,
+      viewers: newViewers,
+      streams: (c.streams || 0) + (goingLive ? 1 : 0),
+    }).eq("id", id);
+    if (error) throw error;
+
+    await sb.from("activity").insert({
+      icon: goingLive ? "🟢" : "🔴",
+      text: `<strong>${escapeHtml(c.name)}</strong> ${goingLive ? "went live" : "ended stream"}`,
+    });
+
+    toast(goingLive ? "Stream started" : "Stream ended");
+    await reloadData();
+  } catch (err) {
+    toast("Failed: " + err.message, "error");
+  }
 }
 
-function toggleSubOnlyCreator(handle) {
-  const list = getCreators();
-  const c = list.find(x => x.handle === handle);
+async function toggleSubOnly(id) {
+  const c = creators.find(x => x.id === id);
   if (!c) return;
-  c.isSubOnly = !c.isSubOnly;
-  saveCreators(list);
-  pushActivity("⚙️", `<strong>${c.name}</strong> set to ${c.isSubOnly ? "members-only" : "open"}`);
-  toast(c.isSubOnly ? "Set to members-only" : "Set to open");
-  render();
+  try {
+    const { error } = await sb.from("creators").update({
+      is_members_only: !c.is_members_only,
+    }).eq("id", id);
+    if (error) throw error;
+    await sb.from("activity").insert({
+      icon: "⚙️",
+      text: `<strong>${escapeHtml(c.name)}</strong> set to ${!c.is_members_only ? "members-only" : "open"}`,
+    });
+    toast(c.is_members_only ? "Set to open" : "Set to members-only");
+    await reloadData();
+  } catch (err) {
+    toast("Failed: " + err.message, "error");
+  }
 }
 
-// ---- Activity ----
-function pushActivity(icon, text) {
-  const list = getActivity();
-  list.unshift({ icon, text, time: "just now" });
-  saveActivity(list);
+// ============================================================
+// ACTIVITY
+// ============================================================
+async function clearActivity() {
+  if (!confirm("Clear the entire activity log?")) return;
+  try {
+    await sb.from("activity").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+    toast("Activity cleared");
+    await reloadData();
+  } catch (err) {
+    toast("Failed: " + err.message, "error");
+  }
 }
 
-function clearActivity() {
-  saveActivity([]);
-  toast("Activity log cleared");
-  render();
-}
-
-// ---- Members ----
-function removeMember(userName, creatorHandle) {
+// ============================================================
+// MEMBERS
+// ============================================================
+function removeMember(membershipId, creatorName) {
   document.getElementById("confirmMsg").innerHTML =
-    `Remove <strong>${userName}</strong> from <strong>${creatorHandle}</strong>?`;
-  document.getElementById("confirmBtn").onclick = () => {
-    const list = getMembers().filter(m => !(m.user === userName && m.creator === creatorHandle));
-    saveMembers(list);
-    pushActivity("🚫", `<strong>${userName}</strong> removed from <strong>${creatorHandle}</strong>`);
-    closeModal("confirmModal");
-    toast("Member removed");
-    render();
+    `Remove this membership from <strong>${escapeHtml(creatorName)}</strong>?`;
+  document.getElementById("confirmBtn").onclick = async () => {
+    try {
+      const { error } = await sb.from("memberships").delete().eq("id", membershipId);
+      if (error) throw error;
+      closeModal("confirmModal");
+      toast("Membership removed");
+      await reloadData();
+    } catch (err) {
+      toast("Failed: " + err.message, "error");
+    }
   };
   openModal("confirmModal");
 }
 
-// ---- Seed reset ----
-function seedDemo() {
-  localStorage.removeItem("plh_admin_creators");
-  localStorage.removeItem("plh_admin_activity");
-  localStorage.removeItem("plh_admin_members");
-  toast("Demo data reset");
-  render();
-}
-
-// ---- Renderers ----
+// ============================================================
+// RENDER
+// ============================================================
 function render() {
-  const creators = getCreators();
-  const members = getMembers();
-  const activity = getActivity();
-
   // Counts
+  const liveCount = creators.filter(c => c.is_live).length;
   document.getElementById("countCreators").textContent = creators.length;
-  document.getElementById("countRooms").textContent = creators.filter(c => c.isLive).length;
+  document.getElementById("countRooms").textContent = liveCount;
   document.getElementById("mCountCreators").textContent = creators.length;
-  document.getElementById("mCountRooms").textContent = creators.filter(c => c.isLive).length;
+  document.getElementById("mCountRooms").textContent = liveCount;
 
   // Stats
   document.getElementById("statCreators").textContent = creators.length;
-  document.getElementById("statMembers").textContent = creators
-    .reduce((sum, c) => sum + (c.members || 0), 0)
-    .toLocaleString();
-  document.getElementById("statLive").textContent = creators.filter(c => c.isLive).length;
+  document.getElementById("statMembers").textContent = members.length.toLocaleString();
+  document.getElementById("statLive").textContent = liveCount;
   document.getElementById("statViewers").textContent = creators
-    .reduce((sum, c) => sum + (c.viewers || 0), 0)
-    .toLocaleString();
+    .reduce((s, c) => s + (c.viewers || 0), 0).toLocaleString();
 
   // Dashboard activity (top 5)
   const dashActivity = document.getElementById("dashActivity");
   if (activity.length === 0) {
-    dashActivity.innerHTML = `<div style="padding:24px; text-align:center; color:var(--dim); font-size:13px;">No activity yet</div>`;
+    dashActivity.innerHTML = `<div style="padding:24px;text-align:center;color:var(--dim);font-size:13px;">No activity yet</div>`;
   } else {
     dashActivity.innerHTML = activity.slice(0, 5).map(a => `
       <div class="activity-item">
-        <div class="activity-icon">${a.icon}</div>
+        <div class="activity-icon">${a.icon || "•"}</div>
         <div class="activity-body">
           <div class="activity-text">${a.text}</div>
-          <div class="activity-time">${a.time}</div>
+          <div class="activity-time">${timeAgo(a.created_at)}</div>
         </div>
       </div>
     `).join("");
   }
 
   // Dashboard live rooms
-  const liveRooms = creators.filter(c => c.isLive);
+  const live = creators.filter(c => c.is_live);
   const dashLive = document.getElementById("dashLiveRooms");
-  if (liveRooms.length === 0) {
-    dashLive.innerHTML = `<div style="padding:24px; text-align:center; color:var(--dim); font-size:13px;">No live streams right now</div>`;
+  if (live.length === 0) {
+    dashLive.innerHTML = `<div style="padding:24px;text-align:center;color:var(--dim);font-size:13px;">No live streams right now</div>`;
   } else {
-    dashLive.innerHTML = liveRooms.map(c => `
+    dashLive.innerHTML = live.map(c => `
       <div class="activity-item" style="align-items:center;">
-        <div class="td-avatar" style="background:${c.gradient}; width:38px; height:38px;">${c.initials}</div>
+        <div class="td-avatar" style="background:${c.gradient};width:38px;height:38px;">${escapeHtml(c.initials||"")}</div>
         <div class="activity-body">
-          <div class="activity-text" style="font-weight:600;">${c.name}</div>
-          <div class="activity-time">@${c.handle} · ${(c.viewers || 0).toLocaleString()} viewers</div>
+          <div class="activity-text" style="font-weight:600;">${escapeHtml(c.name)}</div>
+          <div class="activity-time">@${escapeHtml(c.handle)} · ${(c.viewers||0).toLocaleString()} viewers</div>
         </div>
-        <span class="badge ${c.isSubOnly ? 'badge-members' : 'badge-open'}">
-          ${c.isSubOnly ? '🔒 Members' : '🌐 Open'}
+        <span class="badge ${c.is_members_only ? 'badge-members' : 'badge-open'}">
+          ${c.is_members_only ? '🔒 Members' : '🌐 Open'}
         </span>
       </div>
     `).join("");
@@ -1647,14 +1152,14 @@ function render() {
   // Full activity
   const fullActivity = document.getElementById("fullActivity");
   if (activity.length === 0) {
-    fullActivity.innerHTML = `<div style="padding:24px; text-align:center; color:var(--dim); font-size:13px;">No events logged</div>`;
+    fullActivity.innerHTML = `<div style="padding:24px;text-align:center;color:var(--dim);font-size:13px;">No events logged</div>`;
   } else {
     fullActivity.innerHTML = activity.map(a => `
       <div class="activity-item">
-        <div class="activity-icon">${a.icon}</div>
+        <div class="activity-icon">${a.icon || "•"}</div>
         <div class="activity-body">
           <div class="activity-text">${a.text}</div>
-          <div class="activity-time">${a.time}</div>
+          <div class="activity-time">${timeAgo(a.created_at)}</div>
         </div>
       </div>
     `).join("");
@@ -1677,35 +1182,31 @@ function render() {
       <tr>
         <td>
           <div class="td-creator">
-            <div class="td-avatar" style="background:${c.gradient};">${c.initials}</div>
+            <div class="td-avatar" style="background:${c.gradient || 'linear-gradient(135deg,#FE2C55,#A855F7)'};">${escapeHtml(c.initials || "")}</div>
             <div>
-              <div class="td-name">${c.name}</div>
-              <div class="td-handle">@${c.handle}</div>
+              <div class="td-name">${escapeHtml(c.name)}</div>
+              <div class="td-handle">@${escapeHtml(c.handle)}</div>
             </div>
           </div>
         </td>
         <td>
-          <span class="badge ${c.isLive ? 'badge-live' : 'badge-offline'}">
-            ${c.isLive ? '<span class="dot dot-white pulse"></span> LIVE' : 'OFFLINE'}
+          <span class="badge ${c.is_live ? 'badge-live' : 'badge-offline'}">
+            ${c.is_live ? '<span class="dot dot-white pulse"></span> LIVE' : 'OFFLINE'}
           </span>
         </td>
-        <td>${(c.members || 0).toLocaleString()}</td>
         <td>
-          <span class="badge ${c.isSubOnly ? 'badge-members' : 'badge-open'}">
-            ${c.isSubOnly ? '🔒 Members' : '🌐 Open'}
+          <span class="badge ${c.is_members_only ? 'badge-members' : 'badge-open'}">
+            ${c.is_members_only ? '🔒 Members' : '🌐 Open'}
           </span>
         </td>
+        <td>${(c.viewers || 0).toLocaleString()}</td>
         <td>${c.streams || 0}</td>
         <td>
           <div class="row-actions">
-            <button class="btn-icon" title="Toggle live" onclick="toggleLiveCreator('${c.handle}')">
-              ${c.isLive ? '⏹' : '▶'}
-            </button>
-            <button class="btn-icon" title="Toggle members-only" onclick="toggleSubOnlyCreator('${c.handle}')">
-              ${c.isSubOnly ? '🌐' : '🔒'}
-            </button>
-            <button class="btn-icon" title="Edit" onclick="openEditCreator('${c.handle}')">✏️</button>
-            <button class="btn-icon" title="Delete" onclick="deleteCreator('${c.handle}')">🗑️</button>
+            <button class="btn-icon" title="Toggle live" onclick="toggleLive('${c.id}')">${c.is_live ? '⏹' : '▶'}</button>
+            <button class="btn-icon" title="Toggle members-only" onclick="toggleSubOnly('${c.id}')">${c.is_members_only ? '🌐' : '🔒'}</button>
+            <button class="btn-icon" title="Edit" onclick="openEditCreator('${c.id}')">✏️</button>
+            <button class="btn-icon" title="Delete" onclick="deleteCreator('${c.id}')">🗑️</button>
           </div>
         </td>
       </tr>
@@ -1714,8 +1215,7 @@ function render() {
 
   // Rooms table
   const rb = document.getElementById("roomsBody");
-  const rooms = creators.filter(c => c.isLive);
-  if (rooms.length === 0) {
+  if (live.length === 0) {
     rb.innerHTML = `
       <tr><td colspan="6">
         <div class="empty">
@@ -1726,21 +1226,21 @@ function render() {
         </div>
       </td></tr>`;
   } else {
-    rb.innerHTML = rooms.map(c => `
+    rb.innerHTML = live.map(c => `
       <tr>
-        <td>${c.name} · Live</td>
-        <td>@${c.handle}</td>
+        <td>${escapeHtml(c.name)} · Live</td>
+        <td>@${escapeHtml(c.handle)}</td>
         <td><span class="badge badge-live"><span class="dot dot-white pulse"></span> LIVE</span></td>
         <td>
-          <span class="badge ${c.isSubOnly ? 'badge-members' : 'badge-open'}">
-            ${c.isSubOnly ? '🔒 Members only' : '🌐 Open'}
+          <span class="badge ${c.is_members_only ? 'badge-members' : 'badge-open'}">
+            ${c.is_members_only ? '🔒 Members' : '🌐 Open'}
           </span>
         </td>
         <td>${(c.viewers || 0).toLocaleString()}</td>
         <td>
           <div class="row-actions">
-            <a href="live.html?handle=${c.handle}" target="_blank" class="btn-icon" title="Watch">👁</a>
-            <button class="btn-icon" title="End stream" onclick="toggleLiveCreator('${c.handle}')">⏹</button>
+            <a href="live.html?handle=${encodeURIComponent(c.handle)}" target="_blank" class="btn-icon" title="Watch">👁</a>
+            <button class="btn-icon" title="End stream" onclick="toggleLive('${c.id}')">⏹</button>
           </div>
         </td>
       </tr>
@@ -1754,42 +1254,48 @@ function render() {
       <tr><td colspan="5">
         <div class="empty">
           <div class="empty-icon">🏅</div>
-          <div class="empty-title">No members yet</div>
+          <div class="empty-title">No memberships yet</div>
           <div class="empty-sub">Members appear here when users join communities.</div>
         </div>
       </td></tr>`;
   } else {
-    mb.innerHTML = members.map(m => `
-      <tr>
-        <td>
-          <div class="td-creator">
-            <div class="td-avatar" style="background: linear-gradient(135deg, var(--pink), var(--cyan));">
-              ${m.user.slice(0, 2).toUpperCase()}
+    mb.innerHTML = members.map(m => {
+      const c = creators.find(x => x.id === m.creator_id);
+      const shortId = m.user_id ? m.user_id.slice(0, 8) + "…" : "—";
+      return `
+        <tr>
+          <td>
+            <div class="td-creator">
+              <div class="td-avatar" style="background:linear-gradient(135deg,#FE2C55,#25F4EE);">
+                ${(shortId[0] || "?").toUpperCase()}
+              </div>
+              <div>
+                <div class="td-name">${escapeHtml(shortId)}</div>
+                <div class="td-handle">user_id</div>
+              </div>
             </div>
-            <div>
-              <div class="td-name">${m.user}</div>
-              <div class="td-handle">user</div>
+          </td>
+          <td>@${escapeHtml(c ? c.handle : "unknown")}</td>
+          <td><span class="badge badge-members">🏅 ${escapeHtml(m.status || "active")}</span></td>
+          <td>${timeAgo(m.created_at)}</td>
+          <td>
+            <div class="row-actions">
+              <button class="btn-icon" title="Remove" onclick="removeMember('${m.id}', '${escapeHtml(c ? c.name : 'creator')}')">🚫</button>
             </div>
-          </div>
-        </td>
-        <td>@${m.creator}</td>
-        <td>${m.joined}</td>
-        <td><span class="badge badge-members">🏅 Member</span></td>
-        <td>
-          <div class="row-actions">
-            <button class="btn-icon" title="Remove" onclick="removeMember('${m.user}', '${m.creator}')">🚫</button>
-          </div>
-        </td>
-      </tr>
-    `).join("");
+          </td>
+        </tr>
+      `;
+    }).join("");
   }
 }
 
-// ---- Boot ----
-function boot() {
+// ============================================================
+// BOOT
+// ============================================================
+async function boot() {
+  await loadData();
   render();
 
-  // Escape closes modals
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       closeModal("creatorModal");
@@ -1799,7 +1305,6 @@ function boot() {
   });
 }
 
-// ---- Init ----
 checkGate();
 </script>
 
