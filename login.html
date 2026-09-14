@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Log In · ProLoveHub</title>
+<meta name="description" content="Log in or create your ProLoveHub account — stream as a 3D avatar, join free communities." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================================================
+   RESET
+============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  background: #0A0A0F;
+  color: #ffffff;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input { font-family: inherit; }
+ul { list-style: none; }
+
+/* ============================================================
+   VARIABLES
+============================================================ */
+:root {
+  --pink: #FE2C55;
+  --cyan: #25F4EE;
+  --dark: #0A0A0F;
+  --card: #14141C;
+  --border: #1F1F2A;
+  --muted: #9CA3AF;
+  --dim: #6B7280;
+  --radius: 12px;
+  --radius-lg: 16px;
+}
+
+/* ============================================================
+   LAYOUT
+============================================================ */
+.auth {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 100vh;
+}
+@media (min-width: 1024px) {
+  .auth { grid-template-columns: 1fr 1fr; }
+}
+
+/* ============================================================
+   LEFT PANEL — BRAND STORY
+============================================================ */
+.auth-brand {
+  position: relative;
+  display: none;
+  overflow: hidden;
+  padding: 64px;
+  background:
+    linear-gradient(rgba(254, 44, 85, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 244, 238, 0.06) 1px, transparent 1px),
+    #0A0A0F;
+  background-size: 48px 48px, 48px 48px, auto;
+}
+@media (min-width: 1024px) {
+  .auth-brand { display: flex; flex-direction: column; justify-content: space-between; }
+}
+
+.brand-blob {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+}
+.brand-blob-pink { top: -160px; left: -160px; background: rgba(254, 44, 85, 0.25); }
+.brand-blob-cyan { bottom: -160px; right: -160px; background: rgba(37, 244, 238, 0.25); }
+
+.brand-content {
+  position: relative;
+  z-index: 1;
+  max-width: 460px;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 64px;
+}
+.brand-mark {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, var(--pink), var(--cyan));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 16px;
+  color: #0A0A0F;
+}
+.brand-dot {
+  position: absolute;
+  top: -2px; right: -2px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--pink);
+  animation: pulseLive 1.5s ease-in-out infinite;
+}
+.brand-wordmark {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.grad-text {
+  background: linear-gradient(90deg, var(--pink), var(--cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+@keyframes pulseLive {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.5; transform: scale(1.3); }
+}
+
+.brand-headline {
+  font-size: 44px;
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+}
+
+.brand-sub {
+  font-size: 16px;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-bottom: 40px;
+}
+
+.brand-perks {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.brand-perk {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 14px;
+  color: #D1D5DB;
+}
+.brand-perk-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.brand-foot {
+  position: relative;
+  z-index: 1;
+  font-size: 12px;
+  color: var(--dim);
+}
+
+/* ============================================================
+   RIGHT PANEL — FORM
+============================================================ */
+.auth-form-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  background: #0A0A0F;
+}
+
+.auth-form-box {
+  width: 100%;
+  max-width: 420px;
+}
+
+/* Mobile logo */
+.mobile-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 32px;
+  justify-content: center;
+}
+@media (min-width: 1024px) {
+  .mobile-logo { display: none; }
+}
+
+.auth-title {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.auth-sub {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 32px;
+}
+
+/* Tabs */
+.auth-tabs {
+  display: flex;
+  padding: 4px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 28px;
+}
+.auth-tab {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  transition: all 0.2s ease;
+}
+.auth-tab.active {
+  background: linear-gradient(90deg, var(--pink), var(--cyan));
+  color: #ffffff;
+}
+.auth-tab:not(.active):hover {
+  color: #ffffff;
+}
+
+/* Form */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.form-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #D1D5DB;
+}
+.form-label .req { color: var(--pink); }
+
+.form-input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: #ffffff;
+  font-size: 14px;
+  transition: all 0.2s;
+  outline: none;
+}
+.form-input::placeholder { color: var(--dim); }
+.form-input:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(37, 244, 238, 0.12);
+}
+.form-input.invalid {
+  border-color: var(--pink);
+  box-shadow: 0 0 0 3px rgba(254, 44, 85, 0.12);
+}
+
+.form-error {
+  font-size: 12px;
+  color: var(--pink);
+  margin-top: 2px;
+  min-height: 14px;
+}
+
+/* Password */
+.form-pass-wrap {
+  position: relative;
+}
+.form-pass-wrap .form-input { padding-right: 44px; }
+.pass-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--dim);
+  font-size: 14px;
+  padding: 4px;
+  border-radius: 6px;
+}
+.pass-toggle:hover { color: #ffffff; }
+
+/* Row (remember + forgot) */
+.form-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  font-size: 13px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  cursor: pointer;
+}
+.checkbox input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+}
+.checkbox input:checked {
+  background: linear-gradient(135deg, var(--pink), var(--cyan));
+  border-color: transparent;
+}
+.checkbox input:checked::after {
+  content: "";
+  position: absolute;
+  left: 4px; top: 1px;
+  width: 5px;
+  height: 9px;
+  border: solid #0A0A0F;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.form-forgot {
+  color: var(--cyan);
+  font-size: 13px;
+}
+.form-forgot:hover { color: #ffffff; }
+
+/* Submit */
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius);
+  font-weight: 700;
+  font-size: 15px;
+  color: #ffffff;
+  background: linear-gradient(90deg, var(--pink), var(--cyan));
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-submit:hover:not(:disabled) { opacity: 0.92; transform: translateY(-1px); }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.btn-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: -2px;
+  margin-right: 8px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
+  color: var(--dim);
+  font-size: 12px;
+}
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Social buttons */
+.social-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--card);
+  font-size: 13px;
+  font-weight: 500;
+  color: #ffffff;
+  transition: all 0.2s;
+}
+.social-btn:hover {
+  background: #1A1A24;
+  border-color: #2A2A38;
+}
+
+/* Footer link */
+.auth-foot {
+  text-align: center;
+  margin-top: 28px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.auth-foot a {
+  color: var(--cyan);
+  font-weight: 600;
+}
+.auth-foot a:hover { color: #ffffff; }
+
+/* Alert */
+.alert {
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  margin-bottom: 16px;
+  display: none;
+  line-height: 1.5;
+}
+.alert.show { display: block; }
+.alert-error {
+  background: rgba(254, 44, 85, 0.1);
+  border: 1px solid rgba(254, 44, 85, 0.3);
+  color: #FF8099;
+}
+.alert-success {
+  background: rgba(37, 244, 238, 0.1);
+  border: 1px solid rgba(37, 244, 238, 0.3);
+  color: var(--cyan);
+}
+
+/* Back link */
+.back-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--dim);
+  margin-bottom: 24px;
+  transition: color 0.2s;
+}
+.back-home:hover { color: #ffffff; }
+
+/* Legal */
+.legal {
+  font-size: 12px;
+  color: var(--dim);
+  margin-top: 20px;
+  text-align: center;
+  line-height: 1.6;
+}
+.legal a {
+  color: var(--muted);
+  text-decoration: underline;
+}
+.legal a:hover { color: #ffffff; }
+</style>
+</head>
+
+<body>
+
+<div class="auth">
+
+  <!-- ============================================================
+       LEFT PANEL — BRAND STORY
+  ============================================================ -->
+  <aside class="auth-brand">
+    <div class="brand-blob brand-blob-pink"></div>
+    <div class="brand-blob brand-blob-cyan"></div>
+
+    <div class="brand-content">
+
+      <a href="index.html" class="brand-logo">
+        <div class="brand-mark">P<span class="brand-dot"></span></div>
+        <span class="brand-wordmark">Pro<span class="grad-text">LoveHub</span></span>
+      </a>
+
+      <h1 class="brand-headline">
+        Go live as your<br />
+        <span class="grad-text">3D avatar.</span><br />
+        Build your world.
+      </h1>
+
+      <p class="brand-sub">
+        Join free, stream as your animated character, and build a real
+        community with members-only rooms, badges, and custom emotes.
+      </p>
+
+      <div class="brand-perks">
+        <div class="brand-perk">
+          <div class="brand-perk-icon">🎭</div>
+          <span>Full-body 3D avatar streaming</span>
+        </div>
+        <div class="brand-perk">
+          <div class="brand-perk-icon">🏅</div>
+          <span>Member badges &amp; custom emotes</span>
+        </div>
+        <div class="brand-perk">
+          <div class="brand-perk-icon">💬</div>
+          <span>Members-only chat &amp; private live</span>
+        </div>
+        <div class="brand-perk">
+          <div class="brand-perk-icon">✨</div>
+          <span>Free forever — no card needed</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="brand-foot">
+      © 2025 ProLoveHub. Live. Connect. Belong.
+    </div>
+  </aside>
+
+  <!-- ============================================================
+       RIGHT PANEL — FORM
+  ============================================================ -->
+  <main class="auth-form-wrap">
+    <div class="auth-form-box">
+
+      <a href="index.html" class="back-home">← Back to home</a>
+
+      <!-- Mobile logo -->
+      <div class="mobile-logo">
+        <div class="brand-mark">P<span class="brand-dot"></span></div>
+        <span class="brand-wordmark">Pro<span class="grad-text">LoveHub</span></span>
+      </div>
+
+      <h2 class="auth-title" id="authTitle">Welcome back</h2>
+      <p class="auth-sub" id="authSub">Log in to continue to your world.</p>
+
+      <!-- Tabs -->
+      <div class="auth-tabs" role="tablist">
+        <button class="auth-tab active" data-mode="login" role="tab">Log In</button>
+        <button class="auth-tab" data-mode="signup" role="tab">Sign Up</button>
+      </div>
+
+      <!-- Alerts -->
+      <div class="alert alert-error" id="alertError"></div>
+      <div class="alert alert-success" id="alertSuccess"></div>
+
+      <!-- Form -->
+      <form id="authForm" novalidate>
+
+        <!-- Username (signup only) -->
+        <div class="form-group" id="groupUsername" style="display:none;">
+          <label class="form-label" for="username">Username <span class="req">*</span></label>
+          <input
+            type="text"
+            id="username"
+            class="form-input"
+            placeholder="lunaflows"
+            autocomplete="username"
+          />
+          <div class="form-error" id="errUsername"></div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label class="form-label" for="email">Email <span class="req">*</span></label>
+          <input
+            type="email"
+            id="email"
+            class="form-input"
+            placeholder="you@prolovehub.com"
+            autocomplete="email"
+          />
+          <div class="form-error" id="errEmail"></div>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label class="form-label" for="password">Password <span class="req">*</span></label>
+          <div class="form-pass-wrap">
+            <input
+              type="password"
+              id="password"
+              class="form-input"
+              placeholder="At least 8 characters"
+              autocomplete="current-password"
+            />
+            <button type="button" class="pass-toggle" id="passToggle" aria-label="Show password">👁</button>
+          </div>
+          <div class="form-error" id="errPassword"></div>
+        </div>
+
+        <!-- Confirm password (signup only) -->
+        <div class="form-group" id="groupConfirm" style="display:none;">
+          <label class="form-label" for="confirm">Confirm password <span class="req">*</span></label>
+          <input
+            type="password"
+            id="confirm"
+            class="form-input"
+            placeholder="Repeat your password"
+            autocomplete="new-password"
+          />
+          <div class="form-error" id="errConfirm"></div>
+        </div>
+
+        <!-- Row -->
+        <div class="form-row">
+          <label class="checkbox">
+            <input type="checkbox" id="remember" checked />
+            <span id="rememberLabel">Remember me</span>
+          </label>
+          <a href="#" class="form-forgot" id="forgotLink">Forgot password?</a>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <span id="submitText">Log In</span>
+        </button>
+
+      </form>
+
+      <!-- Divider -->
+      <div class="divider">or continue with</div>
+
+      <!-- Socials (fake for now) -->
+      <div class="social-row">
+        <button class="social-btn" type="button" onclick="fakeProvider('Google')">
+          <span>🔵</span> Google
+        </button>
+        <button class="social-btn" type="button" onclick="fakeProvider('Apple')">
+          <span>⚫</span> Apple
+        </button>
+      </div>
+
+      <!-- Footer toggle -->
+      <p class="auth-foot" id="authFoot">
+        Don't have an account?
+        <a href="#" id="footToggle">Sign up free</a>
+      </p>
+
+      <p class="legal">
+        By continuing you agree to our
+        <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.
+      </p>
+
+    </div>
+  </main>
+
+</div>
+
+<script>
+/* ============================================================
+   ProLoveHub — Login / Signup logic
+   (temporary localStorage auth — Supabase will replace this)
+============================================================ */
+
+// ---- Elements ----
+const tabs        = document.querySelectorAll(".auth-tab");
+const authForm    = document.getElementById("authForm");
+const authTitle   = document.getElementById("authTitle");
+const authSub     = document.getElementById("authSub");
+const authFoot    = document.getElementById("authFoot");
+const footToggle  = document.getElementById("footToggle");
+const submitBtn   = document.getElementById("submitBtn");
+const submitText  = document.getElementById("submitText");
+const forgotLink  = document.getElementById("forgotLink");
+
+const groupUsername = document.getElementById("groupUsername");
+const groupConfirm  = document.getElementById("groupConfirm");
+
+const inputUsername = document.getElementById("username");
+const inputEmail    = document.getElementById("email");
+const inputPassword = document.getElementById("password");
+const inputConfirm  = document.getElementById("confirm");
+const inputRemember = document.getElementById("remember");
+
+const errUsername = document.getElementById("errUsername");
+const errEmail    = document.getElementById("errEmail");
+const errPassword = document.getElementById("errPassword");
+const errConfirm  = document.getElementById("errConfirm");
+
+const alertError   = document.getElementById("alertError");
+const alertSuccess = document.getElementById("alertSuccess");
+
+const passToggle = document.getElementById("passToggle");
+
+// ---- State ----
+let mode = "login"; // "login" | "signup"
+
+// ---- Mode switching ----
+function setMode(newMode) {
+  mode = newMode;
+
+  // Tabs
+  tabs.forEach(t => t.classList.toggle("active", t.dataset.mode === mode));
+
+  // Show/hide fields
+  groupUsername.style.display = mode === "signup" ? "flex" : "none";
+  groupConfirm.style.display  = mode === "signup" ? "flex" : "none";
+
+  // Copy
+  if (mode === "signup") {
+    authTitle.textContent = "Create your account";
+    authSub.textContent   = "Join free. No card. No limits.";
+    submitText.textContent = "Create account";
+    inputPassword.setAttribute("autocomplete", "new-password");
+    authFoot.innerHTML = `Already have an account? <a href="#" id="footToggle">Log in</a>`;
+  } else {
+    authTitle.textContent = "Welcome back";
+    authSub.textContent   = "Log in to continue to your world.";
+    submitText.textContent = "Log In";
+    inputPassword.setAttribute("autocomplete", "current-password");
+    authFoot.innerHTML = `Don't have an account? <a href="#" id="footToggle">Sign up free</a>`;
+  }
+
+  bindFootToggle();
+  clearErrors();
+  hideAlerts();
+}
+
+tabs.forEach(tab => tab.addEventListener("click", () => setMode(tab.dataset.mode)));
+
+// ---- Foot toggle (rebound after each mode switch) ----
+function bindFootToggle() {
+  const t = document.getElementById("footToggle");
+  if (!t) return;
+  t.addEventListener("click", (e) => {
+    e.preventDefault();
+    setMode(mode === "login" ? "signup" : "login");
+  });
+}
+bindFootToggle();
+
+// ---- Password show/hide ----
+passToggle.addEventListener("click", () => {
+  const isPass = inputPassword.type === "password";
+  inputPassword.type = isPass ? "text" : "password";
+  passToggle.textContent = isPass ? "🙈" : "👁";
+});
+
+// ---- Forgot password (placeholder) ----
+forgotLink.addEventListener("click", (e) => {
+  e.preventDefault();
+  showAlert("success", "Reset link sent! Check your inbox (demo only).");
+});
+
+// ---- Validation ----
+function setError(input, errEl, message) {
+  input.classList.add("invalid");
+  errEl.textContent = message;
+}
+function clearError(input, errEl) {
+  input.classList.remove("invalid");
+  errEl.textContent = "";
+}
+function clearErrors() {
+  [ [inputUsername, errUsername],
+    [inputEmail, errEmail],
+    [inputPassword, errPassword],
+    [inputConfirm, errConfirm],
+  ].forEach(([i, e]) => clearError(i, e));
+}
+function hideAlerts() {
+  alertError.classList.remove("show");
+  alertSuccess.classList.remove("show");
+}
+function showAlert(type, message) {
+  const el = type === "error" ? alertError : alertSuccess;
+  el.textContent = message;
+  el.classList.add("show");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function validateEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+function validateUsername(u) {
+  return /^[a-zA-Z0-9_]{3,20}$/.test(u);
+}
+
+// ---- Submit ----
+authForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  clearErrors();
+  hideAlerts();
+
+  const username = inputUsername.value.trim();
+  const email    = inputEmail.value.trim();
+  const password = inputPassword.value;
+  const confirm  = inputConfirm.value;
+
+  let hasError = false;
+
+  // Username
+  if (mode === "signup") {
+    if (!username) {
+      setError(inputUsername, errUsername, "Username is required.");
+      hasError = true;
+    } else if (!validateUsername(username)) {
+      setError(inputUsername, errUsername, "3–20 characters, letters/numbers/underscore only.");
+      hasError = true;
+    }
+  }
+
+  // Email
+  if (!email) {
+    setError(inputEmail, errEmail, "Email is required.");
+    hasError = true;
+  } else if (!validateEmail(email)) {
+    setError(inputEmail, errEmail, "Enter a valid email address.");
+    hasError = true;
+  }
+
+  // Password
+  if (!password) {
+    setError(inputPassword, errPassword, "Password is required.");
+    hasError = true;
+  } else if (mode === "signup" && password.length < 8) {
+    setError(inputPassword, errPassword, "At least 8 characters.");
+    hasError = true;
+  }
+
+  // Confirm
+  if (mode === "signup") {
+    if (!confirm) {
+      setError(inputConfirm, errConfirm, "Please confirm your password.");
+      hasError = true;
+    } else if (confirm !== password) {
+      setError(inputConfirm, errConfirm, "Passwords do not match.");
+      hasError = true;
+    }
+  }
+
+  if (hasError) return;
+
+  // Loading
+  submitBtn.disabled = true;
+  const originalText = submitText.textContent;
+  submitText.innerHTML = `<span class="btn-spinner"></span>${mode === "signup" ? "Creating account…" : "Logging in…"}`;
+
+  // Fake delay (Supabase will handle this later)
+  await new Promise(r => setTimeout(r, 900));
+
+  // Save to localStorage
+  const user = {
+    username: username || email.split("@")[0],
+    email,
+    loggedInAt: new Date().toISOString(),
+  };
+  try {
+    localStorage.setItem("plh_user", JSON.stringify(user));
+    if (inputRemember.checked) {
+      localStorage.setItem("plh_remember", "1");
+    }
+  } catch (_) {}
+
+  // Success
+  showAlert(
+    "success",
+    mode === "signup"
+      ? "Account created! Redirecting…"
+      : "Logged in! Redirecting…"
+  );
+
+  setTimeout(() => {
+    window.location.href = "index.html";
+  }, 900);
+});
+
+// ---- Social (placeholder) ----
+function fakeProvider(name) {
+  showAlert("success", `${name} sign-in coming soon (demo only).`);
+}
+</script>
+
+</body>
+</html>
